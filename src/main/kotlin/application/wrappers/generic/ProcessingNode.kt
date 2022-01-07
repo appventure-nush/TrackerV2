@@ -27,41 +27,24 @@ abstract class ProcessingNode(val node: Processing): AnchorPane() {
                 "-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);"
 
         // application.Main anchor pane
-        val menu = this
-
+        // val menu = this
         // HBox for top-left
-        menu.children.addAll(
+        children.addAll(
             HBox(8.0).apply {
                 children.add(Label(node.name).apply {
-                    font = Font(20.0)
+                    font = Font(15.0)
                     style = "-fx-font-weight: bold"
                 })
                 children.add(helpButton)
 
-                setTopAnchor(this, 20.0)
-                setLeftAnchor(this, 20.0)
+                setTopAnchor(this, 0.0)
+                setLeftAnchor(this, 0.0)
             },
             // ComboxBox for top-right
             colourspaceCombobox.apply {
-                setTopAnchor(this, 20.0)
-                setRightAnchor(this, 20.0)
+                setTopAnchor(this, 0.0)
+                setRightAnchor(this, 0.0)
             }
         )
-        menu.children.add(HBox(8.0).apply {
-            children.add(Label(node.name).apply {
-                font = Font(15.0)
-                style = "-fx-font-weight: bold"
-            })
-            children.add(helpButton)
-
-            AnchorPane.setTopAnchor(this, 0.0)
-            AnchorPane.setLeftAnchor(this, 0.0)
-        })
-
-        // ComboxBox for top-right
-        menu.children.add(colourspaceCombobox.apply {
-            AnchorPane.setTopAnchor(this, 0.0)
-            AnchorPane.setRightAnchor(this, 0.0)
-        })
     }
 }
