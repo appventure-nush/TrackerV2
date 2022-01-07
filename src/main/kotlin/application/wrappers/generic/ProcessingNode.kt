@@ -17,37 +17,34 @@ abstract class ProcessingNode(val node: Processing): AnchorPane() {
     val colourspaceCombobox = ComboBox<Colourspace>()
 
     init {
+        // Setup combobox
         colourspaceCombobox.items = FXCollections.observableList(node.inputColourspaces)
         colourspaceCombobox.valueProperty().addListener { _, _, new -> node.inputColourspace = new }
-    }
 
-    abstract fun operationMenu(menu: AnchorPane)
+        // Set style :)
+        style = "-fx-hgap: 20px; -fx-padding: 10px; -fx-background-radius: 5px;" +
+                "-fx-background-color: #eeeeee; " +
+                "-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);"
 
-    fun createWidget(): Node {
         // application.Main anchor pane
         val menu = this
 
         // HBox for top-left
         menu.children.add(HBox(8.0).apply {
             children.add(Label(node.name).apply {
-                font = Font(20.0)
+                font = Font(15.0)
                 style = "-fx-font-weight: bold"
             })
             children.add(helpButton)
 
-
-            AnchorPane.setTopAnchor(this, 20.0)
-            AnchorPane.setLeftAnchor(this, 20.0)
+            AnchorPane.setTopAnchor(this, 0.0)
+            AnchorPane.setLeftAnchor(this, 0.0)
         })
 
         // ComboxBox for top-right
         menu.children.add(colourspaceCombobox.apply {
-            AnchorPane.setTopAnchor(this, 20.0)
-            AnchorPane.setRightAnchor(this, 20.0)
+            AnchorPane.setTopAnchor(this, 0.0)
+            AnchorPane.setRightAnchor(this, 0.0)
         })
-
-        // Add in options
-        operationMenu(menu)
-        return menu
     }
 }

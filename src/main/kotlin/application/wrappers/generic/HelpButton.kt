@@ -8,7 +8,7 @@ import javafx.scene.text.Font
 
 class HelpButton(processing: Processing): Button("?") {
     init {
-        val r = 15.0
+        val r = 13.0
         shape = Circle(r)
         setMinSize(2 * r, 2 * r)
         setMaxSize(2 * r, 2 * r)
