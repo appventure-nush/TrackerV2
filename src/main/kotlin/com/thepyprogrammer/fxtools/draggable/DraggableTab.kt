@@ -52,9 +52,9 @@ class DraggableTab(text: String? = "") : Tab() {
     val label: Label = Label(text)
     private val dragText: Text
     private val dragStage: Stage
-    private var detachable: Boolean = true
+    var detachable: Boolean = true
 
-    private var labelText: String?
+    var labelText: String?
         get() = label.text
         set(text) {
             label.text = text

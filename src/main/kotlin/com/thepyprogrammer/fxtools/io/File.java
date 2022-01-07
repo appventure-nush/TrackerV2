@@ -61,7 +61,8 @@ public class File extends java.io.File implements Cloneable, AutoCloseable {
             README = new FileChooser.ExtensionFilter("README Files", "*.README"),
             BIBTEX = new FileChooser.ExtensionFilter("BibTeX Files", "*.bib"),
             LATEX = new FileChooser.ExtensionFilter("LaTeX Files", "*.tex", "*.aux", "*.toc"),
-            SQL = new FileChooser.ExtensionFilter("Structured Query Language (SQL) Files", "*.sql");
+            SQL = new FileChooser.ExtensionFilter("Structured Query Language (SQL) Files", "*.sql"),
+            MP4 = new FileChooser.ExtensionFilter("MP4 Files", "*.mp4");
 
     // Setting Initial Directory
     static {
@@ -140,6 +141,12 @@ public class File extends java.io.File implements Cloneable, AutoCloseable {
     public static File write(URI uri) throws MalformedURLException { return new File(uri, 'w'); }
     public static File write(URL url) { return new File(url, 'w'); }
 
+    public static void writeTo(java.io.File file, String text) throws IOException {
+        PrintWriter pw = new PrintWriter(file);
+        pw.println(text);
+        pw.close();
+    }
+
     public static File append(String filename) { return new File(filename, 'a'); }
     public static File append(File file) { return new File(file, 'a'); }
     public static File append(java.io.File file) { return new File(file, 'a'); }
@@ -213,6 +220,12 @@ public class File extends java.io.File implements Cloneable, AutoCloseable {
     public static File[] getPNGs(Stage stage) { return getFiles(stage, PNG); }
     public static File getPNG() { return getFile(PNG); }
     public static File[] getPNGs() { return getFiles(PNG); }
+
+
+    public static File getMP4(Stage stage) { return getFile(stage, MP4); }
+    public static File[] getMP4s(Stage stage) { return getFiles(stage, MP4); }
+    public static File getMP4() { return getFile(MP4); }
+    public static File[] getMP4s() { return getFiles(MP4); }
 
 
     public static File getJPG(Stage stage) { return getFile(stage, JPG); }
