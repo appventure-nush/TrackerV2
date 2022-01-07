@@ -183,10 +183,10 @@ open class MediaControl(val mp: MediaPlayer): BorderPane() {
                                         mediaView.fitHeight = height - bottom.prefHeight(-1.0)
                                     }
                                     super.layoutChildren()
-                                    (center as Pane).apply {
-                                        mediaView.translateX = (this.width - mediaView.prefWidth(-1.0)) / 2.0
-                                        mediaView.translateY = (this.height - mediaView.prefHeight(-1.0)) / 2.0
-                                    }
+                                        (center as Pane).apply {
+                                            mediaView.translateX = (this.width - mediaView.prefWidth(-1.0)) / 2.0
+                                            mediaView.translateY = (this.height - mediaView.prefHeight(-1.0)) / 2.0
+                                        }
 
                                 }
                             }
