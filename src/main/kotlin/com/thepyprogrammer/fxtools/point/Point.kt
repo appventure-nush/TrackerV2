@@ -1,5 +1,8 @@
 package com.thepyprogrammer.fxtools.point
 
+import com.thepyprogrammer.fxtools.methods.minus
+import com.thepyprogrammer.fxtools.methods.plus
+import com.thepyprogrammer.fxtools.methods.times
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.geometry.Point2D
