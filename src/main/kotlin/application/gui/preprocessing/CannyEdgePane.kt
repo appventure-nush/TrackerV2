@@ -45,8 +45,8 @@ class CannyEdgePane: PreprocessingPane(CannyEdgeNode()) {
             })
 
             // Set AnchorPane location
-            AnchorPane.setBottomAnchor(this, 0.0)
-            AnchorPane.setLeftAnchor(this, 0.0)
+            setBottomAnchor(this, 0.0)
+            setLeftAnchor(this, 0.0)
         })
     }
 }
