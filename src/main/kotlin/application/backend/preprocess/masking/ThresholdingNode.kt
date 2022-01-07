@@ -8,7 +8,7 @@ import org.bytedeco.opencv.global.opencv_core.bitwise_or
 import org.bytedeco.opencv.global.opencv_imgproc.*
 import org.bytedeco.opencv.opencv_core.Mat
 
-class ThresholdingNode(val minThreshold: Double, val maxThreshold: Double, val binarise: Boolean): PreprocessingNode() {
+class ThresholdingNode(var minThreshold: Double, var maxThreshold: Double, var binarise: Boolean): PreprocessingNode() {
     override val name: String = "Thresholding"
     override val help: String = "Performs a black and white threshold on the image."
 

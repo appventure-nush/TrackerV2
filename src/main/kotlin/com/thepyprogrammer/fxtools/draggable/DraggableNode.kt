@@ -223,6 +223,7 @@ abstract class DraggableNode : Pane() {
     init {
         view = createWidget()
         children.add(view)
+
         init()
         style = CSS_STYLE
     }

@@ -13,7 +13,7 @@ enum class Blurring {
     BOX_FILTER
 }
 
-data class BlurringNode(val blurType: Blurring = Blurring.GAUSSIAN, val kernelSize: Int = 3): PreprocessingNode() {
+class BlurringNode(var blurType: Blurring = Blurring.GAUSSIAN, var kernelSize: Int = 3): PreprocessingNode() {
     override val name: String = "Blurring"
     override val help: String = "This node blurs the video to remove noise. The kernel size controls the extent of blurring and " +
             "can only be odd."

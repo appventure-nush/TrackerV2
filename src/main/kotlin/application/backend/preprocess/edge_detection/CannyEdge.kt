@@ -7,7 +7,7 @@ import org.bytedeco.opencv.global.opencv_imgproc
 import org.bytedeco.opencv.global.opencv_imgproc.Canny
 import org.bytedeco.opencv.opencv_core.Mat
 
-class CannyEdge(val threshold: Double, val kernelSize: Int): PreprocessingNode() {
+class CannyEdge(var threshold: Double, var kernelSize: Int): PreprocessingNode() {
     override val name: String = "Canny Edge Detection"
     override val help: String = "Detects edges in the image. Blurring first in recommended."
 

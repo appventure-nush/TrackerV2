@@ -6,7 +6,7 @@ import javafx.scene.paint.Color
 import org.bytedeco.opencv.global.opencv_core.inRange
 import org.bytedeco.opencv.opencv_core.Mat
 
-data class ColourRangeNode(val colours: List<Pair<Color, Color>>, val binarise: Boolean): PreprocessingNode() {
+data class ColourRangeNode(var colours: List<Pair<Color, Color>>, var binarise: Boolean): PreprocessingNode() {
     override val name: String = "Filter Colours"
     override val help: String = "Filters out parts of the images within the given colour range."
 
