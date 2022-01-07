@@ -6,7 +6,7 @@ import application.backend.Processing
 import org.bytedeco.opencv.opencv_core.Mat
 
 abstract class PostprocessingNode: Processing() {
-    var scale = 0.01  // 1 pixel is scale metres
+    var scale = 1.0  // 1 pixel is scale metres
     var origin = Point(0.0, 0.0)  // The origin (in pixels)
 
     abstract val entries: List<String>

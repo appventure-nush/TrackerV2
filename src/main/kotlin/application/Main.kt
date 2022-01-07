@@ -1,7 +1,7 @@
 package application
 
 import application.gui.NodesPane
-import application.gui.preprocessing.CannyEdgePane
+import application.gui.postprocessing.CirclePane
 import javafx.application.Application
 import javafx.application.Application.launch
 import javafx.scene.Scene

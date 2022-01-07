@@ -1,24 +1,27 @@
 package application.gui
 
 import application.backend.Preprocessor
+import application.backend.postprocess.fitting.EllipseFittingNode
 import application.backend.preprocess.PreprocessingNode
+import application.gui.postprocessing.CirclePane
+import application.gui.postprocessing.EllipsePane
 import application.gui.preprocessing.BlurringPane
 import application.gui.preprocessing.CannyEdgePane
 import application.gui.preprocessing.ColourRangePane
 import application.gui.preprocessing.ThresholdingPane
 import javafx.application.Platform
 import javafx.event.EventHandler
-import javafx.geometry.Insets
-import javafx.scene.control.Button
+import javafx.scene.control.Alert
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.MenuItem
 import javafx.scene.control.ScrollPane
 import javafx.scene.layout.HBox
-import javafx.scene.layout.StackPane
+import java.awt.Dialog
 
 class NodesPane: ScrollPane() {
     val hbox: HBox = HBox(20.0)
     val nodes: ArrayList<PreprocessingPane> = arrayListOf()
+    var outputNode: PostprocessingPane? = null
 
     val preprocessor: Preprocessor
         get() {
@@ -53,6 +56,16 @@ class NodesPane: ScrollPane() {
                     deleteButton.onAction = EventHandler { deleteNode(this) }
                 }) }
             })
+            items.add(MenuItem("Add Ellipse Fitting").apply {
+                onAction = EventHandler { setOutputPane(EllipsePane().apply {
+                    deleteButton.onAction = EventHandler { deleteOutputNode(this) }
+                }) }
+            })
+            items.add(MenuItem("Add Circle Fitting").apply {
+                onAction = EventHandler { setOutputPane(CirclePane().apply {
+                    deleteButton.onAction = EventHandler { deleteOutputNode(this) }
+                }) }
+            })
         }
     }
 
@@ -63,7 +76,29 @@ class NodesPane: ScrollPane() {
     }
 
     private fun addNode(node: PreprocessingPane) {
-        Platform.runLater { hbox.children.add(node) }
+        Platform.runLater {
+            if (outputNode == null) hbox.children.add(node)
+            else hbox.children.add(hbox.children.size - 2, node)
+        }
+
         nodes.add(node)
+    }
+
+    private fun setOutputPane(node: PostprocessingPane) {
+        if (outputNode == null) {
+            Platform.runLater { hbox.children.add(node) }
+            outputNode = node
+        } else {
+            Alert(Alert.AlertType.ERROR).apply {
+                title = "Error!"
+                headerText = "Cannot have more an 1 output node!"
+                contentText = "Cannot have more an 1 output node!"
+            }.show()
+        }
+    }
+
+    private fun deleteOutputNode(node: PostprocessingPane) {
+        Platform.runLater { hbox.children.remove(node) }
+        outputNode = null
     }
 }
