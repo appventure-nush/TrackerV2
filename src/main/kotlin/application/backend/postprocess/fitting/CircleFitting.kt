@@ -12,6 +12,7 @@ import org.bytedeco.opencv.opencv_imgproc.Vec3fVector
 // Param 2 is for centre detection. Lower for lower standards of what is a circle.
 data class CircleFitting(val minDist: Double = 20.0, val param1: Double = 200.0, val param2: Double = 100.0,
                          val minRadius: Int = 0, val maxRadius: Int = 0) : PostprocessingNode() {
+    override val name: String = "Circle Fitting"
     override val help: String = "Finds circle in the pictures and returns the biggest one."
     override val entries: List<String> = listOf("centre_x", "centre_y", "radius")
 

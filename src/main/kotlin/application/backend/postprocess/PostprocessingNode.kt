@@ -11,9 +11,6 @@ abstract class PostprocessingNode: Processing() {
 
     abstract val entries: List<String>
 
-    open var inputColourspace: Colourspace = Colourspace.RGB
-    abstract val inputColourspaces: List<Colourspace>
-
     abstract fun process(img: Mat): List<Any>
 
     /** Converts a point in pixels to the same point in metres */

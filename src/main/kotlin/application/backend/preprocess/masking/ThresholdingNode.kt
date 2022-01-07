@@ -9,10 +9,11 @@ import org.bytedeco.opencv.global.opencv_imgproc.*
 import org.bytedeco.opencv.opencv_core.Mat
 
 class ThresholdingNode(val minThreshold: Double, val maxThreshold: Double, val binarise: Boolean): PreprocessingNode() {
+    override val name: String = "Thresholding"
     override val help: String = "Performs a black and white threshold on the image."
 
     override val inputColourspaces: List<Colourspace> = ALL_SPACES
-    override val outputColourspace: Colourspace = if (binarise) inputColourspace else Colourspace.GRAYSCALE
+    override val outputColourspace: Colourspace get() = if (binarise) inputColourspace else Colourspace.GRAYSCALE
 
     override fun process(img: Mat): Mat {
         val mask = Mat()

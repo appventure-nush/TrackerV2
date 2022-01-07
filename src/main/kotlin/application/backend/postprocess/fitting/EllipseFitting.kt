@@ -9,6 +9,7 @@ import org.bytedeco.opencv.opencv_core.MatVector
 
 
 class EllipseFitting : PostprocessingNode() {
+    override val name: String = "Ellipse Fitting"
     override val help: String = "Finds ellipse in the pictures and returns the biggest one."
     override val entries: List<String> = listOf("width", "height", "angle", "centre_x", "centre_y")
 
