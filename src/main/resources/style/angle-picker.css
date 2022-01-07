@@ -1,0 +1,8 @@
+.angle-picker {
+
+}
+
+.angle-picker .text-field {
+    -fx-highlight-fill: #e0e0e0;
+    -fx-faint-focus-color: #6a696c;
+}
