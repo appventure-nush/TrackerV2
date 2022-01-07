@@ -12,6 +12,7 @@ import javafx.scene.text.Font
 
 abstract class ProcessingNode(val node: Processing): AnchorPane() {
     val helpButton = HelpButton(node)
+
     val colourspaceCombobox = ComboBox<Colourspace>().apply {
         items = FXCollections.observableList(node.inputColourspaces)
         valueProperty().addListener { _, _, new -> node.inputColourspace = new }
@@ -19,9 +20,12 @@ abstract class ProcessingNode(val node: Processing): AnchorPane() {
         selectionModel.selectFirst();
     }
 
-    abstract fun operationMenu(menu: AnchorPane)
+    init {
+        // Set style :)
+        style = "-fx-hgap: 20px; -fx-padding: 10px; -fx-background-radius: 5px;" +
+                "-fx-background-color: #eeeeee; " +
+                "-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);"
 
-    fun createWidget(): Node {
         // application.Main anchor pane
         val menu = this
 
@@ -43,9 +47,21 @@ abstract class ProcessingNode(val node: Processing): AnchorPane() {
                 setRightAnchor(this, 20.0)
             }
         )
+        menu.children.add(HBox(8.0).apply {
+            children.add(Label(node.name).apply {
+                font = Font(15.0)
+                style = "-fx-font-weight: bold"
+            })
+            children.add(helpButton)
 
-        // Add in options
-        operationMenu(menu)
-        return menu
+            AnchorPane.setTopAnchor(this, 0.0)
+            AnchorPane.setLeftAnchor(this, 0.0)
+        })
+
+        // ComboxBox for top-right
+        menu.children.add(colourspaceCombobox.apply {
+            AnchorPane.setTopAnchor(this, 0.0)
+            AnchorPane.setRightAnchor(this, 0.0)
+        })
     }
 }
