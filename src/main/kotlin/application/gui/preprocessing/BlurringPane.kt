@@ -29,13 +29,13 @@ class BlurringPane: PreprocessingPane(BlurringNode()) {
             children.add(blurringComboBox.apply {
                 items = FXCollections.observableList(listOf(Blurring.GAUSSIAN, Blurring.MEDIAN, Blurring.BOX_FILTER))
                 valueProperty().addListener { _, _, new -> (node as BlurringNode).blurType = new }
-
+                selectionModel.selectFirst();
                 tooltip = Tooltip("Controls the type of blurring")
             })
 
             // Set AnchorPane location
-            AnchorPane.setBottomAnchor(this, 0.0)
-            AnchorPane.setLeftAnchor(this, 0.0)
+            setBottomAnchor(this, 0.0)
+            setLeftAnchor(this, 0.0)
         })
     }
 }
