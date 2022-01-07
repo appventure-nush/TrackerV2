@@ -8,39 +8,44 @@ class Preprocessor {
     val nodes: ArrayList<PreprocessingNode> = arrayListOf()
 
     fun process(img: Mat): Mat {
-        var finalImg = img.clone()
+        var newImg = img.clone()
+        cvtColor(img, newImg, COLOR_BGR2RGB)
+
         var currentSpace = Colourspace.RGB
 
         nodes.forEach {
             if (it.inputColourspace != currentSpace) {
                 when (currentSpace) {
                     Colourspace.RGB -> when (it.inputColourspace) {
-                        Colourspace.HSV -> cvtColor(finalImg, finalImg, COLOR_RGB2HSV)
-                        Colourspace.GRAYSCALE -> cvtColor(finalImg, finalImg, COLOR_RGB2GRAY)
+                        Colourspace.HSV -> cvtColor(newImg, newImg, COLOR_RGB2HSV)
+                        Colourspace.GRAYSCALE -> cvtColor(newImg, newImg, COLOR_RGB2GRAY)
                         else -> {}
                     }
                     Colourspace.HSV -> when (it.inputColourspace) {
-                        Colourspace.RGB -> cvtColor(finalImg, finalImg, COLOR_HSV2RGB)
+                        Colourspace.RGB -> cvtColor(newImg, newImg, COLOR_HSV2RGB)
                         Colourspace.GRAYSCALE -> {
-                            cvtColor(finalImg, finalImg, COLOR_HSV2RGB)
-                            cvtColor(finalImg, finalImg, COLOR_RGB2GRAY)
+                            cvtColor(newImg, newImg, COLOR_HSV2RGB)
+                            cvtColor(newImg, newImg, COLOR_RGB2GRAY)
                         }
                         else -> {}
                     }
                     Colourspace.GRAYSCALE -> when (it.inputColourspace) {
-                        Colourspace.RGB -> cvtColor(finalImg, finalImg, COLOR_GRAY2RGB)
+                        Colourspace.RGB -> cvtColor(newImg, newImg, COLOR_GRAY2RGB)
                         Colourspace.HSV -> {
-                            cvtColor(finalImg, finalImg, COLOR_GRAY2RGB)
-                            cvtColor(finalImg, finalImg, COLOR_RGB2HSV)
+                            cvtColor(newImg, newImg, COLOR_GRAY2RGB)
+                            cvtColor(newImg, newImg, COLOR_RGB2HSV)
                         }
                         else -> {}
                     }
                 }
             }
 
-            finalImg = it.process(finalImg)
+            newImg = it.process(newImg)
             currentSpace = it.outputColourspace
         }
+
+        val finalImg = Mat()
+        cvtColor(newImg, finalImg, COLOR_RGB2BGR)
 
         return finalImg
     }

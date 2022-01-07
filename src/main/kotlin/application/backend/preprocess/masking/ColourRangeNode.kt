@@ -14,11 +14,14 @@ data class ColourRangeNode(val colours: List<Pair<Color, Color>>, val binarise: 
 
     override fun process(img: Mat): Mat {
         val mask = Mat()
-        val newImg = img.clone()
+        var newImg = img.clone()
         colours.forEach { (start, end) ->
             inRange(newImg, Mat(start.red * 255, start.green * 255, start.blue * 255),
                 Mat(end.red * 255, end.green * 255, end.blue * 255), mask)
-            newImg.copyTo(newImg, mask)
+
+            val newerImg = Mat()
+            newImg.copyTo(newerImg, mask)
+            newImg = newerImg
         }
 
         return if (binarise) mask else newImg

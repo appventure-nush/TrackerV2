@@ -24,9 +24,9 @@ data class BlurringNode(val blurType: Blurring = Blurring.GAUSSIAN, val kernelSi
         val newImg = img.clone()
 
         when (blurType) {
-            Blurring.GAUSSIAN -> GaussianBlur(newImg, img, Size(kernelSize, kernelSize), 0.0)
-            Blurring.MEDIAN -> medianBlur(newImg, img, kernelSize)
-            else -> blur(newImg, img, Size(kernelSize, kernelSize))
+            Blurring.GAUSSIAN -> GaussianBlur(img, newImg, Size(kernelSize, kernelSize), 0.0)
+            Blurring.MEDIAN -> medianBlur(img, newImg, kernelSize)
+            else -> blur(img, newImg, Size(kernelSize, kernelSize))
         }
 
         return newImg

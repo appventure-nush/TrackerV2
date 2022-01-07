@@ -3,6 +3,8 @@ package application.backend.preprocess.masking
 import application.backend.ALL_SPACES
 import application.backend.Colourspace
 import application.backend.preprocess.PreprocessingNode
+import org.bytedeco.opencv.global.opencv_core.bitwise_and
+import org.bytedeco.opencv.global.opencv_core.bitwise_or
 import org.bytedeco.opencv.global.opencv_imgproc.*
 import org.bytedeco.opencv.opencv_core.Mat
 
@@ -28,7 +30,8 @@ class ThresholdingNode(val minThreshold: Double, val maxThreshold: Double, val b
 
         threshold(gray, mask, minThreshold, maxThreshold, 1)
 
-        if (!binarise) newImg.copyTo(newImg, mask)
-        return if (binarise) mask else newImg
+        val newerImg = Mat()
+        if (!binarise) bitwise_and(img, img, newerImg, mask)
+        return if (binarise) mask else newerImg
     }
 }
