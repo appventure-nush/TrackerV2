@@ -7,16 +7,13 @@ import org.bytedeco.opencv.opencv_core.Mat
 import org.bytedeco.opencv.opencv_videoio.VideoCapture
 
 class Postprocessor(val node: PostprocessingNode) {
-    fun process(videoCapture: VideoCapture): DataFrame {
-        val img = Mat()
-        videoCapture.read(img)
+    fun process(videoCapture: Sequence<Mat>): DataFrame {
+        val img = videoCapture.take(1).toList()[0]
 
         var data = dataFrameOf(node.entries)(node.process(img))
-        while (videoCapture.read(img)) {
+        videoCapture.forEach { _ ->
             data = data.addRow(node.process(img))
         }
-
-        videoCapture.release()
 
         return data
     }
