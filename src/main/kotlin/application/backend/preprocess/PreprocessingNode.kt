@@ -6,9 +6,9 @@ import org.bytedeco.opencv.opencv_core.Mat
 abstract class PreprocessingNode {
     abstract val help: String
 
-    abstract val inputColourspaces: List<Colourspace>
+    var inputColourspace: Colourspace = Colourspace.RGB
 
-    val inputColourspace: Colourspace = Colourspace.RGB
+    abstract val inputColourspaces: List<Colourspace>
     abstract val outputColourspace: Colourspace
 
     abstract fun process(img: Mat): Mat
