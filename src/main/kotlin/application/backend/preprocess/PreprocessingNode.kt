@@ -1,11 +1,10 @@
 package application.backend.preprocess
 
 import application.backend.Colourspace
+import application.backend.Processing
 import org.bytedeco.opencv.opencv_core.Mat
 
-abstract class PreprocessingNode {
-    abstract val help: String
-
+abstract class PreprocessingNode: Processing() {
     abstract val inputColourspaces: List<Colourspace>
 
     val inputColourspace: Colourspace = Colourspace.RGB
