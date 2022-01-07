@@ -18,6 +18,9 @@ abstract class DraggableNode : Pane() {
     private var x = 0.0
     private var y = 0.0
 
+    val nodeX get() = x
+    val nodeY get() = y
+
     // mouse position
     private var mousex = 0.0
     private var mousey = 0.0
