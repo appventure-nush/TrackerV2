@@ -31,12 +31,15 @@ class MainController: Initializable {
             )
         )
         mediaPlayer.isAutoPlay = true
+
         val mediaControl = MediaControl(mediaPlayer)
         mediaControl.setMinSize(800.0, 467.0)
         mediaControl.setPrefSize(800.0, 467.0)
         mediaControl.setMaxSize(800.0, 467.0)
+
         val box = VBox(mediaControl)
         box.isFillWidth = true
+
         return mediaControl
     }
 }
