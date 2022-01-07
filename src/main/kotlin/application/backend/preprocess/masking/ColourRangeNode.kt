@@ -7,10 +7,11 @@ import org.bytedeco.opencv.global.opencv_core.inRange
 import org.bytedeco.opencv.opencv_core.Mat
 
 data class ColourRangeNode(val colours: List<Pair<Color, Color>>, val binarise: Boolean): PreprocessingNode() {
+    override val name: String = "Filter Colours"
     override val help: String = "Filters out parts of the images within the given colour range."
 
     override val inputColourspaces: List<Colourspace> = listOf(Colourspace.RGB, Colourspace.HSV)
-    override val outputColourspace: Colourspace = inputColourspace
+    override val outputColourspace: Colourspace get() = inputColourspace
 
     override fun process(img: Mat): Mat {
         val mask = Mat()

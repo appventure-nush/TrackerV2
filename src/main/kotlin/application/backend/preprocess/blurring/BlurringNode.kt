@@ -14,11 +14,12 @@ enum class Blurring {
 }
 
 data class BlurringNode(val blurType: Blurring = Blurring.GAUSSIAN, val kernelSize: Int = 3): PreprocessingNode() {
+    override val name: String = "Blurring"
     override val help: String = "This node blurs the video to remove noise. The kernel size controls the extent of blurring and " +
             "can only be odd."
 
     override val inputColourspaces: List<Colourspace> = ALL_SPACES
-    override val outputColourspace: Colourspace = inputColourspace
+    override val outputColourspace: Colourspace get() = inputColourspace
 
     override fun process(img: Mat): Mat {
         val newImg = img.clone()
