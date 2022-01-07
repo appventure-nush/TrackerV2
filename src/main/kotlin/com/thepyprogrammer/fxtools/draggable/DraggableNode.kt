@@ -217,7 +217,7 @@ abstract class DraggableNode : Pane() {
     fun removeNode(n: Node?) = children.remove(n)
 
     companion object {
-        const val CSS_STYLE = "  -fx-alignment: center;\n" + "  -fx-font-size: 20;\n"
+        const val CSS_STYLE = "  -fx-alignment: center;  -fx-font-size: 20;"
     }
 
     init {
