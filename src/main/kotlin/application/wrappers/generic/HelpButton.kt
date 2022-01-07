@@ -11,6 +11,6 @@ class HelpButton(processing: Processing): Button("?") {
         shape = Circle(r)
         setMinSize(2 * r, 2 * r)
         setMaxSize(2 * r, 2 * r)
-        this.tooltip = Tooltip(processing.help)
+        tooltip = Tooltip(processing.help)
     }
 }
