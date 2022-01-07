@@ -4,15 +4,17 @@ import application.backend.Colourspace
 import application.backend.Processing
 import javafx.collections.FXCollections
 import javafx.scene.Node
+import javafx.scene.control.Button
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.HBox
+import javafx.scene.layout.VBox
 import javafx.scene.text.Font
 
 abstract class ProcessingNode(val node: Processing): AnchorPane() {
     val helpButton = HelpButton(node)
-
+    val deleteButton = Button("Delete")
     val colourspaceCombobox = ComboBox<Colourspace>().apply {
         items = FXCollections.observableList(node.inputColourspaces)
         valueProperty().addListener { _, _, new -> node.inputColourspace = new }
@@ -22,7 +24,7 @@ abstract class ProcessingNode(val node: Processing): AnchorPane() {
 
     init {
         // Set style :)
-        style = "-fx-hgap: 20px; -fx-padding: 10px; -fx-background-radius: 5px;" +
+        style = "-fx-hgap: 20px; -fx-margin: 30px; -fx-padding: 10px; -fx-background-radius: 5px;" +
                 "-fx-background-color: #eeeeee; " +
                 "-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);"
 
@@ -40,8 +42,11 @@ abstract class ProcessingNode(val node: Processing): AnchorPane() {
                 setTopAnchor(this, 0.0)
                 setLeftAnchor(this, 0.0)
             },
+
             // ComboxBox for top-right
-            colourspaceCombobox.apply {
+            VBox(8.0).apply {
+                children.addAll(colourspaceCombobox, deleteButton)
+
                 setTopAnchor(this, 0.0)
                 setRightAnchor(this, 0.0)
             }

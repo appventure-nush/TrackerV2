@@ -1,6 +1,7 @@
 package application.gui.preprocessing
 
 import application.backend.preprocess.edge_detection.CannyEdgeNode
+import application.gui.PreprocessingPane
 import application.wrappers.generic.ProcessingNode
 import javafx.scene.control.Label
 import javafx.scene.control.Slider
@@ -9,7 +10,7 @@ import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 
-class CannyEdgePane: ProcessingNode(CannyEdgeNode()) {
+class CannyEdgePane: PreprocessingPane(CannyEdgeNode()) {
     val kernelSizeSlider = Slider(3.0, 53.0, 3.0)
     val thresholdSlider = Slider(0.0, 255.0, 1.0)
 
