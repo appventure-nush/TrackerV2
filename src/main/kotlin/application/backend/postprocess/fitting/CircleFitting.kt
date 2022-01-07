@@ -1,6 +1,7 @@
 package application.backend.postprocess.fitting
 
 import application.backend.Colourspace
+import application.backend.Point
 import application.backend.postprocess.PostprocessingNode
 import org.bytedeco.opencv.global.opencv_imgproc.CV_HOUGH_GRADIENT
 import org.bytedeco.opencv.global.opencv_imgproc.HoughCircles
@@ -21,10 +22,11 @@ data class CircleFitting(val minDist: Double = 20.0, val param1: Double = 200.0,
         val circles = Vec3fVector()
         HoughCircles(img, circles, CV_HOUGH_GRADIENT, 1.0, minDist, param1, param2, minRadius, maxRadius)
 
-        val circlesList = arrayListOf<List<Float>>()
+        val circlesList = arrayListOf<List<Double>>()
         for (i in 0 until circles.size()) {
             val circle = circles[i]
-            circlesList.add(listOf(circle[0], circle[1], circle[2]))
+            val center = position(Point(circle[1].toDouble(), circle[2].toDouble()))
+            circlesList.add(listOf(circle[0].toDouble(), center.x, center.y))
         }
 
         return circlesList.maxByOrNull { it[2] } ?: listOf(-1, -1, -1)

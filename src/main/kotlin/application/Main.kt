@@ -4,6 +4,7 @@ import application.backend.Colourspace
 import application.backend.Postprocessor
 import application.backend.Preprocessor
 import application.backend.postprocess.fitting.CircleFitting
+import application.backend.postprocess.fitting.EllipseFitting
 import application.backend.preprocess.blurring.Blurring
 import application.backend.preprocess.blurring.BlurringNode
 import application.backend.preprocess.masking.ThresholdingNode
@@ -18,7 +19,7 @@ class Main {
             val preprocessor = Preprocessor()
             preprocessor.nodes.add(ThresholdingNode(100.0, 255.0, true))
 
-            val postprocessor = Postprocessor(CircleFitting(20.0, param2 = 20.0))
+            val postprocessor = Postprocessor(EllipseFitting())
 
             var filename = "C:\\Users\\jedli\\OneDrive - NUS High School\\Documents\\Physics\\SYPT 2022\\16. Saving Honey\\Experimental Data\\Anim2.mp4"
             // filename = "C:\\Users\\Prannaya\\Downloads\\Anim2.mp4"
