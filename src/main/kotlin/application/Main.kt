@@ -20,7 +20,8 @@ class Main {
 
             val postprocessor = Postprocessor(CircleFitting(20.0, param2 = 20.0))
 
-            val filename = "C:\\Users\\jedli\\OneDrive - NUS High School\\Documents\\Physics\\SYPT 2022\\16. Saving Honey\\Experimental Data\\Anim2.mp4"
+            var filename = "C:\\Users\\jedli\\OneDrive - NUS High School\\Documents\\Physics\\SYPT 2022\\16. Saving Honey\\Experimental Data\\Anim2.mp4"
+            // filename = "C:\\Users\\Prannaya\\Downloads\\Anim2.mp4"
 
             val video = VideoCapture(filename)
 
