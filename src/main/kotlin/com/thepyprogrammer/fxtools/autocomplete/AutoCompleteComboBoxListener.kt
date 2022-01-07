@@ -49,9 +49,7 @@ class AutoCompleteComboBoxListener<T>(private val comboBox: ComboBox<T>) : Event
                     comboBox
                         .editor.text.lowercase(Locale.getDefault())
                 )
-            ) {
-                list.add(data[i])
-            }
+            ) list.add(data[i])
         }
         val t = comboBox.editor.text
         comboBox.items = list
@@ -60,24 +58,21 @@ class AutoCompleteComboBoxListener<T>(private val comboBox: ComboBox<T>) : Event
             caretPos = -1
         }
         moveCaret(t.length)
-        if (!list.isEmpty()) {
-            comboBox.show()
-        }
+        if (!list.isEmpty()) comboBox.show()
     }
 
     private fun moveCaret(textLength: Int) {
-        if (caretPos == -1) {
-            comboBox.editor.positionCaret(textLength)
-        } else {
-            comboBox.editor.positionCaret(caretPos)
-        }
+        if (caretPos == -1) comboBox.editor.positionCaret(textLength)
+        else comboBox.editor.positionCaret(caretPos)
         moveCaretToPos = false
     }
 
     init {
-        comboBox.isEditable = true
-        comboBox.onKeyPressed = EventHandler { comboBox.hide() }
-        comboBox.onKeyReleased = this@AutoCompleteComboBoxListener
-        comboBox.isFocusTraversable = false
+        comboBox.apply {
+            isEditable = true
+            onKeyPressed = EventHandler { hide() }
+            onKeyReleased = this@AutoCompleteComboBoxListener
+            isFocusTraversable = false
+        }
     }
 }
