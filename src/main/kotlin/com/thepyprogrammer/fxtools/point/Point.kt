@@ -139,5 +139,5 @@ data class Point(
     infix operator fun minus(p: Point): Point = Point(
         xProperty - p.xProperty,
         yProperty - p.yProperty
-        )
+    )
 }

@@ -13,5 +13,4 @@ class HelpButton(processing: Processing): Button("?") {
         setMaxSize(2 * r, 2 * r)
         this.tooltip = Tooltip(processing.help)
     }
-
 }
