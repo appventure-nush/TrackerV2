@@ -1,26 +1,24 @@
 package application
 
-import application.gui.calibration.Axes
-import application.gui.calibration.CalibrationRuler
-import javafx.application.Application
-import javafx.application.Application.launch
-import javafx.scene.Scene
-import javafx.scene.layout.Pane
-import javafx.stage.Stage
+import application.backend.Preprocessor
+import org.bytedeco.opencv.global.opencv_imgcodecs.imwrite
+import org.bytedeco.opencv.opencv_core.Mat
+import org.bytedeco.opencv.opencv_videoio.VideoCapture
 
-fun main(args: Array<String>) {
-    launch(Test::class.java)
-}
+class Test {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            val preprocessor = Preprocessor()
+            //preprocessor.nodes.add(ThresholdingNode(100.0, 255.0, true))
 
-class Test : Application() {
-    override fun start(primaryStage: Stage) {
-        val root = Pane()
+            val video = VideoCapture(
+                "C:\\Users\\jedli\\OneDrive - NUS High School\\Documents\\Physics\\SYPT 2022\\" +
+                        "16. Saving Honey\\Experimental Data\\Anim2.mp4")
 
-        val ruler = CalibrationRuler(root)
-        //root.children.add(Axes())
-        primaryStage.run {
-            scene = Scene(root, 300.0, 200.0)
-            show()
+            val img = Mat()
+            video.read(img)
+            imwrite("test.png", preprocessor.process(img))
         }
     }
 }

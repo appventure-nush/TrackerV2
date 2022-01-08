@@ -52,7 +52,7 @@ class TabController: Initializable {
     lateinit var playThread: Thread
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
-        resource = Objects.requireNonNull(Main::class.java.getResource("/video/Untitledd.mp4")).toExternalForm()
+        resource = Objects.requireNonNull(Main::class.java.getResource("/videos/test.mp4")).toExternalForm()
         // play()
         // media = createContent()
         // pane.children.add(media)

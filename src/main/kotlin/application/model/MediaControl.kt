@@ -47,17 +47,19 @@ open class MediaControl(val mp: MediaPlayer): BorderPane() {
                 }
             }
         }
-
     }
+
     var playTime = Label().apply {
         minWidth = Control.USE_PREF_SIZE
     }
+
     val volumeSlider: Slider? = null
     val mediaBar = HBox(5.0).apply {
         padding = Insets(5.0, 10.0, 5.0, 10.0)
         alignment = Pos.CENTER_LEFT
         setAlignment(this, Pos.CENTER)
     }
+
     val mvPane = Pane().apply {
         children.add(mediaView)
         style = "-fx-background-color: black;"
@@ -236,7 +238,6 @@ open class MediaControl(val mp: MediaPlayer): BorderPane() {
         }
     }
 
-
     open fun formatTime(elapsed: Duration, duration: Duration): String? {
         var intElapsed = Math.floor(elapsed.toSeconds()).toInt()
         val elapsedHours = intElapsed / (60 * 60)
@@ -281,3 +282,4 @@ open class MediaControl(val mp: MediaPlayer): BorderPane() {
         }
     }
 }
+
