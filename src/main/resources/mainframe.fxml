@@ -43,13 +43,6 @@
                         </ImageView>
                     </graphic>
                 </MenuItem>
-                <MenuItem fx:id="aboutMeItem" mnemonicParsing="false" onAction="#aboutMe" text="About The Programmer">
-                    <graphic>
-                        <ImageView fitHeight="20" fitWidth="20">
-                            <Image url="@../resources/images/about/Me.png"/>
-                        </ImageView>
-                    </graphic>
-                </MenuItem>
             </Menu>
         </MenuBar>
         <Label fx:id="title" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="129.0"

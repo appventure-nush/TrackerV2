@@ -76,9 +76,7 @@ class Main : Application() {
                 stage.y = event.screenY - yOffset
             }
             val scene = Scene(root)
-            scene.stylesheets.add(
-                Objects.requireNonNull(Main::class.java.getResource("/stylesheets/style.css")).toExternalForm()
-            )
+            scene.stylesheets.add(Objects.requireNonNull(Main::class.java.getResource("/stylesheets/style.css")).toExternalForm())
             stage.scene = scene
             stage.minHeight = (root as VBox).minHeight
             stage.minWidth = root.minWidth
@@ -87,6 +85,8 @@ class Main : Application() {
             addResizeListener(stage)
         } catch (ex: IOException) {
             ex.printStackTrace()
+        } catch (ex: NullPointerException) {
+            System.out.println(ex.stackTrace)
         }
     }
 
@@ -105,12 +105,6 @@ class Main : Application() {
             stage.y = bounds.minY
             stage.width = bounds.width
             stage.height = bounds.height
-        }
-
-        @JvmStatic
-        fun main(args: Array<String>?) {
-            if(args == null) launch()
-            else launch(*args)
         }
     }
 }

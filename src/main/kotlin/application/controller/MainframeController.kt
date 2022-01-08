@@ -50,9 +50,6 @@ class MainframeController: Initializable {
     lateinit var aboutItem: MenuItem
 
     @FXML
-    lateinit var aboutMeItem: MenuItem
-
-    @FXML
     lateinit var notebook: TabPane
 
     @FXML
@@ -109,6 +106,7 @@ class MainframeController: Initializable {
             val path = file.absolutePath.split("\\\\".toRegex()).toTypedArray()
 
             val node = FXMLLoader.load<Parent>(Main::class.java.getResource("/tab.fxml"))
+            TabController.getController(node)?.setFile(file.absolutePath)
             tab = DraggableTab("      " + path[path.size - 1] + "      ")
             tab.isClosable = true
             tab.detachable = true
@@ -119,27 +117,28 @@ class MainframeController: Initializable {
 
             notebook.tabs.add(tab)
             notebook.selectionModel.select(tab)
-
-            val controller = tabController
-            controller?.setFile(file.absolutePath)
             files[file.absolutePath] = tab
 
             file.close()
     }
 
     @FXML
-    fun demo(even: ActionEvent?) {
-        val node = FXMLLoader.load<Parent>(Main::class.java.getResource("/tab.fxml"))
-        val tab = DraggableTab("      demo      ")
-        tab.isClosable = true
-        tab.detachable = true
-        tab.label.style = "-fx-background-color: #ffffbf;"
-        tab.style = "-fx-background-color: #ffffbf;"
-        tab.label.styleClass.add("tablabel")
-        tab.content = node
+    fun demo(event: ActionEvent?) {
+        try {
+            val node = FXMLLoader.load<Parent>(Main::class.java.getResource("/tab.fxml"))
+            val tab = DraggableTab("      demo      ")
+            tab.isClosable = true
+            tab.detachable = true
+            tab.label.style = "-fx-background-color: #ffffbf;"
+            tab.style = "-fx-background-color: #ffffbf;"
+            tab.label.styleClass.add("tablabel")
+            tab.content = node
 
-        notebook.tabs.add(tab)
-        notebook.selectionModel.select(tab)
+            notebook.tabs.add(tab)
+            notebook.selectionModel.select(tab)
+        } catch(ex: Exception) {
+            System.out.println("IT'S THE TAB! THAT'S THE ONE THAT DOESN'T WORK")
+        }
     }
 
     val nameOfTab: String
@@ -169,11 +168,7 @@ class MainframeController: Initializable {
         generateStage("/about/about.fxml", "About")
     }
 
-    @FXML
-    fun aboutMe(event: ActionEvent?) {
-        generateStage("/about/aboutMe.fxml", "About Me")
-    }
-    override fun initialize(location: URL, resources: ResourceBundle) {
+    override fun initialize(location: URL?, resources: ResourceBundle?) {
         notebook.selectionModel.selectedItemProperty()
             .addListener { _: ObservableValue<out Tab?>?, oldValue: Tab?, newValue: Tab? ->
                 if (oldValue != null) {
