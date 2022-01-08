@@ -38,7 +38,7 @@ class Splash {
     var dur = 800
     private var pane = Pane().apply { style = "-fx-background-color:black" }
     private val loadProgress = ProgressBar().apply { prefWidth = 800.0 }
-    private var progressText = Label("Generating phyton.workspace...").apply { font = Font("System", 13.0) }
+    private var progressText = Label("Generating tracker.workspace...").apply { font = Font("System", 13.0) }
     private var splashLayout = VBox(loadProgress, progressText).apply {
         effect = DropShadow()
         style = "-fx-border-radius: 5"
@@ -46,7 +46,7 @@ class Splash {
         layoutY = 240.0
         opaqueInsets = Insets(10.0)
     }
-    private val label = Label("phyton").apply {
+    private val label = Label("Tracker").apply {
         font = Font("Verdana", 40.0)
         style = "-fx-text-fill:white"
         layoutX = 140.0
@@ -140,7 +140,7 @@ class Splash {
             "Formatting Menubar...",
             "Creating JavaFX Controls...",
             "Initializing Drag and Drop...",
-            "Making phyton.canvas...",
+            "Making tracker.canvas...",
             "Deriving images...",
             "Finding logo...",
             "Generating logo...",
@@ -149,14 +149,14 @@ class Splash {
             "Searching for JavaFX Widgets...",
             "Generating GUI...",
             "Generating About The Programmer page...",
-            "Generating About phyton page...",
+            "Generating About tracker page...",
             "Generating autocomplete combobox...",
             "Generating sidebar...",
             "Styling the window...",
             "Initializing MainframeController...",
-            "Reading phyton source...",
+            "Reading tracker source...",
             "Calculating resistance...",
-            "Restarting phyton...",
+            "Restarting tracker...",
             "Parsing .exml files...",
             "Generating electrons...",
             "Annihilating fake electrons...",
@@ -172,7 +172,7 @@ class Splash {
             "Failing to understand PO...",
             "Ignoring PO...",
             "Preparing Environment...",
-            "Finally loading phyton.workspace...",
+            "Finally loading tracker.workspace...",
             "Completed."
         )
     }
