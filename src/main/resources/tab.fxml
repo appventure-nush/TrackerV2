@@ -16,15 +16,14 @@
       fx:controller="application.controller.TabController" stylesheets="@stylesheets/tab.css" VBox.vgrow="ALWAYS">
     <NodesPane fx:id="nodesPane" prefHeight="300.0" prefWidth="900.0" maxHeight="200.0" minHeight="300.0" />
     <HBox id="HBox" alignment="CENTER_LEFT" maxHeight="467.0" maxWidth="1.7976931348623157E308" minHeight="467.0" minWidth="900.0"
-          prefHeight="467.0" spacing="5.0" VBox.vgrow="ALWAYS">
+          prefHeight="467.0" VBox.vgrow="ALWAYS">
         <Pane fx:id="pane" prefHeight="467.0" prefWidth="800.0">
             <ImageView fx:id="imageView" fitHeight="467.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
-                <HBox.margin>
-                    <Insets left="5.0"/>
-                </HBox.margin>
             </ImageView>
         </Pane>
         <Pane prefHeight="467.0" prefWidth="100.0">
+            <ImageView fx:id="imageViewOrig" fitHeight="467.0" fitWidth="800.0" pickOnBounds="true" preserveRatio="true">
+            </ImageView>
 <!--            <Text layoutX="77.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="graph space"/>-->
         </Pane>
     </HBox>

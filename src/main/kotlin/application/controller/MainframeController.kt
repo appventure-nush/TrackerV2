@@ -1,27 +1,20 @@
 package application.controller
 
 import application.Main
-import application.Main.Companion.icon
 import com.thepyprogrammer.fxtools.draggable.DraggableTab
 import com.thepyprogrammer.fxtools.io.File
-import javafx.application.Platform
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
-import javafx.event.Event
-import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.fxml.Initializable
 import javafx.scene.Parent
-import javafx.scene.Scene
 import javafx.scene.control.*
-import javafx.scene.input.MouseEvent
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import java.io.IOException
-import java.lang.NullPointerException
 import java.net.URL
 import java.util.*
 
@@ -47,9 +40,6 @@ class MainframeController: Initializable {
     lateinit var openMenu: MenuItem
 
     @FXML
-    lateinit var aboutItem: MenuItem
-
-    @FXML
     lateinit var notebook: TabPane
 
     @FXML
@@ -69,6 +59,9 @@ class MainframeController: Initializable {
      */
     @FXML
     fun closeWin(event: ActionEvent) {
+        for (tab in notebook.tabs) {
+            tab.onCloseRequest.handle(null)
+        }
         val stage = (event.source as Hyperlink).scene.window as Stage
         stage.close()
     }
@@ -88,12 +81,13 @@ class MainframeController: Initializable {
     }
 
     @FXML
-    private fun setFullScreen(event: ActionEvent) {
-        Main.fullScreen()
+    fun stopVideo(event: ActionEvent?) {
+        tabController?.stop()
     }
 
-    fun setTitle(title: String?) {
-        this.title.text = title
+    @FXML
+    private fun setFullScreen(event: ActionEvent) {
+        Main.fullScreen()
     }
 
     @FXML
@@ -121,12 +115,17 @@ class MainframeController: Initializable {
             notebook.selectionModel.select(tab)
             files[file.absolutePath] = tab
 
+            val controller = TabController.getController(node)
+
+            tab.setOnCloseRequest {
+                controller?.stop()
+            }
+
             file.close()
     }
 
     @FXML
     fun demo(event: ActionEvent?) {
-        try {
             val node = FXMLLoader.load<Parent>(Main::class.java.getResource("/tab.fxml"))
             val tab = DraggableTab("      demo      ")
             tab.isClosable = true
@@ -138,9 +137,12 @@ class MainframeController: Initializable {
 
             notebook.tabs.add(tab)
             notebook.selectionModel.select(tab)
-        } catch(ex: Exception) {
-            System.out.println("IT'S THE TAB! THAT'S THE ONE THAT DOESN'T WORK")
-        }
+
+            val controller = TabController.getController(node)
+
+            tab.setOnCloseRequest {
+                controller?.stop()
+            }
     }
 
     val nameOfTab: String
@@ -149,26 +151,6 @@ class MainframeController: Initializable {
             val text = tab.label.text.trim { it <= ' ' }
             return text.substring(0, text.length - 5)
         }
-
-    fun generateStage(fxml: String, key: String?) {
-            val stage = Stage()
-            val root = FXMLLoader.load<Parent>(javaClass.getResource(fxml))
-            stage.scene = Scene(root)
-            stage.isResizable = false
-            stage.title = key
-            stage.icons.add(icon)
-            stage.show()
-    }
-
-    @FXML
-    fun findOut(event: MouseEvent?) {
-        generateStage("/about/about.fxml", "About")
-    }
-
-    @FXML
-    fun about(event: ActionEvent?) {
-        generateStage("/about/about.fxml", "About")
-    }
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         notebook.selectionModel.selectedItemProperty()

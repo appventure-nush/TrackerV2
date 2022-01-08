@@ -10,7 +10,7 @@
       fx:controller="application.controller.MainframeController" stylesheets="@stylesheets/style.css">
     <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="25.6" prefWidth="719.0" spacing="15.0"
           styleClass="topbar" stylesheets="@stylesheets/menubar.css" VBox.vgrow="NEVER">
-        <ImageView fitHeight="26.0" fitWidth="26.0" onMouseClicked="#findOut" pickOnBounds="true" preserveRatio="true">
+        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
             <HBox.margin>
                 <Insets left="5.0"/>
             </HBox.margin>
@@ -38,10 +38,12 @@
             <Menu fx:id="run" mnemonicParsing="false" text="Run">
                 <MenuItem fx:id="runVideo" mnemonicParsing="false" onAction="#runVideo" text="Run Video">
                 </MenuItem>
+                <MenuItem fx:id="stopVideo" mnemonicParsing="false" onAction="#stopVideo" text="Stop Video">
+                </MenuItem>
             </Menu>
         </MenuBar>
         <Label fx:id="title" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="129.0"
-               styleClass="topLabel" text="phyton.workspace" HBox.hgrow="ALWAYS"/>
+               styleClass="topLabel" text="tracker2.workspace" HBox.hgrow="ALWAYS"/>
         <Hyperlink id="buttonlink" fx:id="minimize" alignment="CENTER" onAction="#minimizeWin" prefHeight="20.0"
                    prefWidth="28.0" text="―"/>
         <Hyperlink id="buttonlink" fx:id="maximize" alignment="CENTER" onAction="#setFullScreen" prefHeight="33.0"

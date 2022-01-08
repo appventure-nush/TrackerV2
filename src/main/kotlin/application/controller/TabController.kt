@@ -44,15 +44,19 @@ class TabController: Initializable {
     @FXML lateinit var pane: Pane
     @FXML lateinit var nodesPane: NodesPane
     @FXML lateinit var imageView: ImageView
+    @FXML lateinit var imageViewOrig: ImageView
+    @FXML lateinit var parent: VBox
 
     lateinit var resource: String
 
     // lateinit var media: Parent
 
-    lateinit var playThread: Thread
+    var playThread: Thread? = null
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
+        panes[parent] = this
         resource = Objects.requireNonNull(Main::class.java.getResource("/video/Untitledd.mp4")).toExternalForm()
+
         // play()
         // media = createContent()
         // pane.children.add(media)
@@ -66,33 +70,36 @@ class TabController: Initializable {
 //            //pane.children.add(media)
 //        }
 
-        playThread.interrupt()
+        playThread?.interrupt()
 
     }
 
     fun play() {
-        if(playThread.isAlive) playThread.interrupt()
+        println("Button has been pressed!")
+        stop()
         playThread = Thread {
             val video = VideoCapture(resource)
             val img = Mat()
 
             val postprocessor = nodesPane.postprocessor
-            try {
             if(postprocessor != null) {
                 println(postprocessor.process(sequence { while (video.read(img)) yield(nodesPane.preprocessor.process(img)) }))
             } else {
-                while (video.read(img) && !Thread.interrupted()) {
+                whileLoop@ while (video.read(img) && !Thread.interrupted()) {
                     println("An Image Loaded")
                     Platform.runLater {
-                        imageView.image = convertToImage(nodesPane.preprocessor.process(img))
+                        try {
+                            imageViewOrig.image = convertToImage(img)
+                            imageView.image = convertToImage(nodesPane.preprocessor.process(img))
+                        } catch(e: RuntimeException) {}
                     }
+                    Thread.sleep(1000)
                 }
             }
-            } catch(e: RuntimeException) {}
             Platform.exit()
 
         }
-        playThread.start()
+        playThread?.start()
     }
 
     fun createContent(): Parent {
@@ -102,5 +109,9 @@ class TabController: Initializable {
         mediaControl.setPrefSize(800.0, 467.0)
         mediaControl.setMaxSize(800.0, 467.0)
         return mediaControl
+    }
+
+    fun stop() {
+        if(playThread != null && playThread!!.isAlive) playThread!!.interrupt()
     }
 }

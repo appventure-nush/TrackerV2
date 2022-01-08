@@ -65,7 +65,6 @@ class Main : Application() {
     }
 
     fun loadFXML() {
-        try {
             val root = FXMLLoader.load<Parent>(Objects.requireNonNull(javaClass.getResource("/mainframe.fxml")))
             root.onMousePressed = EventHandler { event: MouseEvent ->
                 xOffset = event.sceneX
@@ -80,14 +79,9 @@ class Main : Application() {
             stage.scene = scene
             stage.minHeight = (root as VBox).minHeight
             stage.minWidth = root.minWidth
-            stage.title = "phyton.workspace"
+            stage.title = "tracker2.workspace"
             fullScreen()
             addResizeListener(stage)
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-        } catch (ex: NullPointerException) {
-            System.out.println(ex.stackTrace)
-        }
     }
 
     companion object {
