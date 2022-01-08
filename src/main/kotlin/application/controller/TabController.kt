@@ -53,7 +53,7 @@ class TabController: Initializable {
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         resource = Objects.requireNonNull(Main::class.java.getResource("/video/Untitledd.mp4")).toExternalForm()
-        play()
+        // play()
         // media = createContent()
         // pane.children.add(media)
     }
@@ -67,21 +67,28 @@ class TabController: Initializable {
 //        }
 
         playThread.interrupt()
-        play()
 
     }
 
     fun play() {
+        if(playThread.isAlive) playThread.interrupt()
         playThread = Thread {
             val video = VideoCapture(resource)
             val img = Mat()
 
             val postprocessor = nodesPane.postprocessor
+            try {
             if(postprocessor != null) {
                 println(postprocessor.process(sequence { while (video.read(img)) yield(nodesPane.preprocessor.process(img)) }))
             } else {
-                while(video.read(img) && !Thread.interrupted()) Platform.runLater { imageView.image = convertToImage(nodesPane.preprocessor.process(img)) }
+                while (video.read(img) && !Thread.interrupted()) {
+                    println("An Image Loaded")
+                    Platform.runLater {
+                        imageView.image = convertToImage(nodesPane.preprocessor.process(img))
+                    }
+                }
             }
+            } catch(e: RuntimeException) {}
             Platform.exit()
 
         }

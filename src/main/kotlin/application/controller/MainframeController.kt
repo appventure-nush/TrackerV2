@@ -69,9 +69,6 @@ class MainframeController: Initializable {
      */
     @FXML
     fun closeWin(event: ActionEvent) {
-        for (tab in notebook.tabs) {
-            tab.onCloseRequest.handle(null)
-        }
         val stage = (event.source as Hyperlink).scene.window as Stage
         stage.close()
     }
@@ -83,6 +80,11 @@ class MainframeController: Initializable {
     fun minimizeWin(event: ActionEvent) {
         val stage = (event.source as Hyperlink).scene.window as Stage
         stage.isIconified = true
+    }
+
+    @FXML
+    fun runVideo(event: ActionEvent?) {
+        tabController?.play()
     }
 
     @FXML
