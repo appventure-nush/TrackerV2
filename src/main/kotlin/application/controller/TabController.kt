@@ -1,6 +1,7 @@
 package application.controller
 
 import application.Main
+import application.backend.convertToImage
 import application.gui.NodesPane
 import application.model.MediaControl
 import javafx.application.Platform
@@ -17,6 +18,8 @@ import javafx.scene.media.MediaPlayer
 import org.apache.poi.ss.formula.functions.NumericFunction.LOG
 import org.bytedeco.javacv.FFmpegFrameGrabber
 import org.bytedeco.javacv.JavaFXFrameConverter
+import org.bytedeco.opencv.opencv_core.Mat
+import org.bytedeco.opencv.opencv_videoio.VideoCapture
 import java.net.URL
 import java.nio.ByteBuffer
 import java.nio.ShortBuffer
@@ -70,30 +73,15 @@ class TabController: Initializable {
 
     fun play() {
         playThread = Thread {
-            val grabber = FFmpegFrameGrabber(resource)
-            grabber.start()
-            grabber.frameRate = 30.00
-            val converter = JavaFXFrameConverter()
-            val executor = Executors.newSingleThreadExecutor()
-            while (!Thread.interrupted()) {
-                val frame = grabber.grab() ?: break
-                if (frame.image != null) Platform.runLater { imageView.setImage(converter.convert(frame)) }
-                else if (frame.samples != null) {
-                    val channelSamplesShortBuffer = frame.samples[0] as ShortBuffer
-                    channelSamplesShortBuffer.rewind()
-                    val outBuffer = ByteBuffer.allocate(channelSamplesShortBuffer.capacity() * 2)
-                    for (i in 0 until channelSamplesShortBuffer.capacity()) outBuffer.putShort(channelSamplesShortBuffer[i])
-                    try {
-                        executor.execute { outBuffer.clear() }
-                    } catch (interruptedException: java.lang.Exception) {
-                        Thread.currentThread().interrupt()
-                    }
-                }
+            val video = VideoCapture(resource)
+            val img = Mat()
+
+            val postprocessor = nodesPane.postprocessor
+            if(postprocessor != null) {
+                println(postprocessor.process(sequence { while (video.read(img)) yield(nodesPane.preprocessor.process(img)) }))
+            } else {
+                while(video.read(img) && !Thread.interrupted()) Platform.runLater { imageView.image = convertToImage(nodesPane.preprocessor.process(img)) }
             }
-            executor.shutdownNow()
-            executor.awaitTermination(10, TimeUnit.SECONDS)
-            grabber.stop()
-            grabber.release()
             Platform.exit()
 
         }

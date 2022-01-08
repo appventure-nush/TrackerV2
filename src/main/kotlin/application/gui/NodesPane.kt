@@ -1,6 +1,8 @@
 package application.gui
 
+import application.backend.Postprocessor
 import application.backend.Preprocessor
+import application.backend.postprocess.PostprocessingNode
 import application.backend.postprocess.fitting.EllipseFittingNode
 import application.backend.preprocess.PreprocessingNode
 import application.gui.postprocessing.CirclePane
@@ -27,9 +29,14 @@ class NodesPane: ScrollPane() {
         get() {
             val processor = Preprocessor()
             processor.nodes.addAll(nodes.map { it.node as PreprocessingNode })
-
             return processor
         }
+
+    val postprocessor: Postprocessor?
+    get() {
+        if(outputNode != null) return Postprocessor(outputNode!!.node as PostprocessingNode)
+        else return null
+    }
 
     init {
         content = hbox
