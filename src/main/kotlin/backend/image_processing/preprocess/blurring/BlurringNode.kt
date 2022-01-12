@@ -1,18 +1,29 @@
-package backend.preprocess.blurring
+package backend.image_processing.preprocess.blurring
 
 import backend.ALL_SPACES
 import backend.Colourspace
-import backend.preprocess.PreprocessingNode
+import backend.image_processing.Image
+import backend.image_processing.preprocess.PreprocessingNode
 import org.bytedeco.opencv.global.opencv_imgproc.*
 import org.bytedeco.opencv.opencv_core.Mat
 import org.bytedeco.opencv.opencv_core.Size
 
+/**
+ * All the types of blurring supported
+ */
 enum class Blurring {
     GAUSSIAN,
     MEDIAN,
     BOX_FILTER
 }
 
+/**
+ * The node for blurring images
+ * @param blurType The type of blurring to use
+ * @property blurType The type of blurring to use
+ * @param kernelSize The kernel size to use for blurring
+ * @property kernelSize The kernel size to use for blurring
+ */
 class BlurringNode(var blurType: Blurring = Blurring.GAUSSIAN, var kernelSize: Int = 3): PreprocessingNode() {
     override val name: String = "Blurring"
     override val help: String = "This node blurs the video to remove noise. The kernel size controls the extent of blurring and " +
@@ -21,15 +32,11 @@ class BlurringNode(var blurType: Blurring = Blurring.GAUSSIAN, var kernelSize: I
     override val inputColourspaces: List<Colourspace> = ALL_SPACES
     override val outputColourspace: Colourspace get() = inputColourspace
 
-    override fun process(img: Mat): Mat {
-        val newImg = img.clone()
-
+    override fun process(img: Image): Image = img.clone().apply {
         when (blurType) {
-            Blurring.GAUSSIAN -> GaussianBlur(img, newImg, Size(kernelSize, kernelSize), 0.0)
-            Blurring.MEDIAN -> medianBlur(img, newImg, kernelSize)
-            else -> blur(img, newImg, Size(kernelSize, kernelSize))
+            Blurring.GAUSSIAN -> gaussianBlur(kernelSize)
+            Blurring.MEDIAN -> medianBlur(kernelSize)
+            else -> boxFilter(kernelSize)
         }
-
-        return newImg
     }
 }

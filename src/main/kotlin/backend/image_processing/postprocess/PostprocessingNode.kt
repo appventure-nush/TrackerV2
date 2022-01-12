@@ -1,7 +1,7 @@
-package backend.postprocess
+package backend.image_processing.postprocess
 
 import backend.Point
-import backend.Processing
+import backend.image_processing.Processing
 import org.bytedeco.opencv.opencv_core.Mat
 
 abstract class PostprocessingNode: Processing() {

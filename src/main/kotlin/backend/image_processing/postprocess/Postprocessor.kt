@@ -1,6 +1,6 @@
-package backend
+package backend.image_processing.postprocess
 
-import backend.postprocess.PostprocessingNode
+import backend.Colourspace
 import krangl.DataFrame
 import krangl.dataFrameOf
 import org.bytedeco.opencv.global.opencv_imgproc.*

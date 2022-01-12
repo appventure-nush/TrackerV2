@@ -1,8 +1,8 @@
-package backend.postprocess.fitting
+package backend.image_processing.postprocess.fitting
 
 import backend.Colourspace
 import backend.Point
-import backend.postprocess.PostprocessingNode
+import backend.image_processing.postprocess.PostprocessingNode
 import org.bytedeco.opencv.global.opencv_imgproc.*
 import org.bytedeco.opencv.opencv_core.Mat
 import org.bytedeco.opencv.opencv_core.MatVector

@@ -13,6 +13,7 @@ repositories {
 
 dependencies {
     implementation(compose.desktop.currentOs)
+    implementation("com.github.ajalt.colormath:colormath:3.2.0")
     implementation("org.bytedeco:javacv-platform:1.5.5")
     implementation("com.github.holgerbrandl:krangl:0.17.1")
     testImplementation(kotlin("test"))
