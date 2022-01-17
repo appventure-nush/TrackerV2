@@ -1,7 +1,7 @@
 package backend.image_processing.preprocess.masking
 
 import backend.Colourspace
-import backend.image_processing.Image
+import backend.Image
 import backend.image_processing.preprocess.PreprocessingNode
 import com.github.ajalt.colormath.Color
 

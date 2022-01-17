@@ -1,6 +1,6 @@
 package backend.image_processing.preprocess
 
-import backend.image_processing.Image
+import backend.Image
 
 /**
  * Preprocesses the inputted image

@@ -1,7 +1,5 @@
-package backend.image_processing
+package backend
 
-import backend.Colourspace
-import backend.Point
 import com.github.ajalt.colormath.Color
 import com.github.ajalt.colormath.model.HSV
 import com.github.ajalt.colormath.model.RGB
@@ -9,10 +7,8 @@ import org.bytedeco.javacpp.indexer.UByteIndexer
 import org.bytedeco.opencv.global.opencv_core.*
 import org.bytedeco.opencv.global.opencv_imgcodecs.imread
 import org.bytedeco.opencv.global.opencv_imgcodecs.imwrite
-import org.bytedeco.opencv.global.opencv_imgproc
 import org.bytedeco.opencv.global.opencv_imgproc.*
 import org.bytedeco.opencv.opencv_core.Mat
-import org.bytedeco.opencv.opencv_core.Scalar
 import org.bytedeco.opencv.opencv_core.Size
 import org.bytedeco.opencv.opencv_core.Point as cvPoint
 
@@ -326,6 +322,7 @@ class Image(colourspace: Colourspace, img: Mat) {
      * Returns a deep copy of the image
      */
     fun clone() = Image(colourspace, img.clone())
+
 
     /**
      * Returns the unscaled point given the scaled [point]

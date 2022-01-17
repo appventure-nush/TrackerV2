@@ -1,9 +1,8 @@
 package backend.image_processing.preprocess
 
 import backend.Colourspace
-import backend.image_processing.Image
+import backend.Image
 import backend.image_processing.Processing
-import org.bytedeco.opencv.opencv_core.Mat
 
 /**
  * The base class for all preprocessing nodes

@@ -2,11 +2,8 @@ package backend.image_processing.preprocess.masking
 
 import backend.ALL_SPACES
 import backend.Colourspace
-import backend.image_processing.Image
+import backend.Image
 import backend.image_processing.preprocess.PreprocessingNode
-import org.bytedeco.opencv.global.opencv_core.bitwise_and
-import org.bytedeco.opencv.global.opencv_imgproc.*
-import org.bytedeco.opencv.opencv_core.Mat
 
 /**
  * The node used for thresholding
