@@ -13,7 +13,7 @@ import backend.image_processing.preprocess.PreprocessingNode
  * @property kernelSize The size of the kernel used for edge detection
  */
 class CannyEdgeNode(var threshold: Double = 200.0, var kernelSize: Int = 3): PreprocessingNode() {
-    override val name: String = "Canny Edge \nDetection"
+    override val name: String = "Edge\nDetection"
     override val help: String = "Detects edges in the image. Blurring first in recommended."
 
     override val inputColourspaces: List<Colourspace> = ALL_SPACES

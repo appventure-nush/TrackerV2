@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.sp
 import backend.image_processing.Processing
 import backend.image_processing.preprocess.blurring.Blurring
 import backend.image_processing.preprocess.blurring.BlurringNode
+import backend.image_processing.preprocess.edge_detection.CannyEdgeNode
+import backend.image_processing.preprocess.masking.ThresholdingNode
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Preview
@@ -32,7 +34,7 @@ fun ProcessingPane(node: Processing, onDelete: () -> Unit, options: @Composable 
 
     // Store the pane in a card
     Card(elevation = 10.dp, modifier = Modifier.padding(10.dp), shape = RoundedCornerShape(10.dp)) {
-        Column(Modifier.padding(10.dp).fillMaxSize(), Arrangement.spacedBy(5.dp)) {
+        Column(Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
             Box {
                 Row(Modifier.padding(10.dp).fillMaxWidth(), Arrangement.spacedBy(5.dp)) {
                     // The title
@@ -162,6 +164,174 @@ fun BlurringPane(node: BlurringNode) {
                     listOf(Blurring.GAUSSIAN, Blurring.MEDIAN, Blurring.BOX_FILTER),
                     modifier = Modifier.height(53.dp),
                     onValueChanged = { node.blurType = blurType.value }
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Preview
+@Composable
+fun ThresholdingPane(node: ThresholdingNode) {
+    val thresholdRange = remember { mutableStateOf(0.0f .. 255.0f) }
+    val binarise = remember { mutableStateOf(true) }
+
+    ProcessingPane(node, {}) {
+        Column {
+            /*
+            // For adjusting minimum threshold
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Text(
+                    "Min Threshold: ",
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+
+                Slider(
+                    value = minThreshold.value,
+                    valueRange = 0.0f .. 255.0f,
+                    onValueChange = {
+                        minThreshold.value = it
+                        node.minThreshold = it.toDouble()
+                    },
+                    modifier = Modifier.width(125.dp)
+                )
+
+                Text(
+                    minThreshold.value.toInt().toString(),
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+
+            // For adjusting maximum threshold
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Text(
+                    "Max Threshold: ",
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+
+                Slider(
+                    value = maxThreshold.value,
+                    valueRange = 0.0f .. 255.0f,
+                    onValueChange = {
+                        maxThreshold.value = it
+                        node.maxThreshold = it.toDouble()
+                    },
+                    modifier = Modifier.width(125.dp)
+                )
+
+                Text(
+                    maxThreshold.value.toInt().toString(),
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+             */
+
+            // Checkbox for binarisation
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Text(
+                    "Binarise",
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+
+                Checkbox(
+                    checked = binarise.value,
+                    onCheckedChange = {
+                        binarise.value = it
+                        node.binarise = it
+                    },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = MaterialTheme.colors.primary,
+                        uncheckedColor = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
+                        checkmarkColor = MaterialTheme.colors.surface,
+                        disabledColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled),
+                        disabledIndeterminateColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.disabled)
+                    )
+                )
+            }
+
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Text(
+                    "Threshold Range: ",
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+
+                RangeSlider(
+                    values = thresholdRange.value,
+                    valueRange = 0.0f .. 255.0f,
+                    onValueChange = {
+                        thresholdRange.value = it
+                        node.minThreshold = it.start.toDouble()
+                        node.maxThreshold = it.endInclusive.toDouble()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun CannyEdgePane(node: CannyEdgeNode) {
+    val kernelSize = remember { mutableStateOf(3.0f) }
+    val threshold = remember { mutableStateOf(200.0f) }
+
+    ProcessingPane(node, {}) {
+        Column {
+            // For adjusting kernel size
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Text(
+                    "Kernel Size: ",
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+
+                Slider(
+                    value = kernelSize.value,
+                    valueRange = 3.0f .. 31.0f,
+                    onValueChange = {
+                        kernelSize.value = it
+                        node.kernelSize = kernelSize.value.toInt() / 2 * 2 + 1
+                    },
+                    modifier = Modifier.width(125.dp)
+                )
+
+                Text(
+                    (kernelSize.value.toInt() / 2 * 2 + 1).toString(),
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+
+            // Changing threshold
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Text(
+                    "Threshold: ",
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+
+                Slider(
+                    value = threshold.value,
+                    valueRange = 0.0f .. 400.0f,
+                    onValueChange = {
+                        threshold.value = it
+                        node.threshold = threshold.value.toDouble()
+                    },
+                    modifier = Modifier.width(125.dp)
+                )
+
+                Text(
+                    threshold.value.toInt().toString(),
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
                 )
             }
         }
