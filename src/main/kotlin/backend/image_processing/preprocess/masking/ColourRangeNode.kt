@@ -20,4 +20,6 @@ data class ColourRangeNode(var colours: ArrayList<Pair<Color, Color>>, var binar
     override val outputColourspace: Colourspace get() = inputColourspace
 
     override fun process(img: Image): Image = img.clone().apply { colourFilter(colours, binarise) }
+
+    override fun clone(): PreprocessingNode = ColourRangeNode(colours, binarise)
 }

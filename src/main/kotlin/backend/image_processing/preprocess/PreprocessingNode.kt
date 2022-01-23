@@ -17,4 +17,9 @@ abstract class PreprocessingNode: Processing() {
      * Processes the given [img] and outputs the processed image
      */
     abstract fun process(img: Image): Image
+
+    /**
+     * Returns a deep copy of the preprocessing node
+     */
+    abstract fun clone(): PreprocessingNode
 }

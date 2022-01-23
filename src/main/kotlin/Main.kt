@@ -8,25 +8,25 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import backend.Image
 import backend.Video
+import backend.image_processing.preprocess.Preprocessor
 import backend.image_processing.preprocess.blurring.BlurringNode
 import backend.image_processing.preprocess.edge_detection.CannyEdgeNode
 import backend.image_processing.preprocess.masking.ThresholdingNode
-import gui.BlurringPane
-import gui.CannyEdgePane
-import gui.ThresholdingPane
-import gui.VideoPlayer
+import gui.*
 
-fun main() = application {
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "Compose for Desktop",
-        state = rememberWindowState(width = 320.dp, height = 300.dp)
-    ) {
-        MaterialTheme {
-            Column(modifier = Modifier.padding(10.dp)) {
-                BlurringPane(BlurringNode())
-                ThresholdingPane(ThresholdingNode(0.0))
-                CannyEdgePane(CannyEdgeNode())
+fun main() {
+    val preprocessor = Preprocessor()
+
+    return application {
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = "Compose for Desktop",
+            state = rememberWindowState(width = 320.dp, height = 300.dp)
+        ) {
+            MaterialTheme {
+                Column(modifier = Modifier.padding(10.dp)) {
+                    NodesPane(preprocessor)
+                }
             }
         }
     }

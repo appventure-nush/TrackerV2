@@ -50,6 +50,7 @@ fun <T> Combobox(label: String, selectedItem: MutableState<T>, items: List<T>, m
                 unfocusedBorderColor = MaterialTheme.colors.primary
             )
         )
+
         DropdownMenu(
             expanded = expanded.value,
             onDismissRequest = { expanded.value = false },

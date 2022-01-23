@@ -36,4 +36,6 @@ class BlurringNode(var blurType: Blurring = Blurring.GAUSSIAN, var kernelSize: I
             else -> boxFilter(kernelSize)
         }
     }
+
+    override fun clone(): BlurringNode = BlurringNode(blurType, kernelSize)
 }

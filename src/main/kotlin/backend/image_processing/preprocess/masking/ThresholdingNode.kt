@@ -14,7 +14,7 @@ import backend.image_processing.preprocess.PreprocessingNode
  * @param binarise Should the image be converted to a binary mask?
  * @property binarise Should the image be converted to a binary mask?
  */
-class ThresholdingNode(var minThreshold: Double, var maxThreshold: Double = 255.0, var binarise: Boolean = true): PreprocessingNode() {
+class ThresholdingNode(var minThreshold: Double = 0.0, var maxThreshold: Double = 255.0, var binarise: Boolean = true): PreprocessingNode() {
     override val name: String = "Binarise"
     override val help: String = "Performs a black and white threshold on the image."
 
@@ -22,4 +22,6 @@ class ThresholdingNode(var minThreshold: Double, var maxThreshold: Double = 255.
     override val outputColourspace: Colourspace get() = if (binarise) inputColourspace else Colourspace.GRAYSCALE
 
     override fun process(img: Image): Image = img.clone().apply { threshold(minThreshold, maxThreshold, binarise) }
+
+    override fun clone(): ThresholdingNode = ThresholdingNode(minThreshold, maxThreshold, binarise)
 }

@@ -20,4 +20,6 @@ class CannyEdgeNode(var threshold: Double = 200.0, var kernelSize: Int = 3): Pre
     override val outputColourspace: Colourspace = Colourspace.GRAYSCALE
 
     override fun process(img: Image): Image = img.clone().apply { cannyEdge(threshold, kernelSize = kernelSize) }
+
+    override fun clone(): PreprocessingNode = CannyEdgeNode(threshold, kernelSize)
 }
