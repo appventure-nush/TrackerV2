@@ -26,13 +26,13 @@ fun VideoPlayer(video: Video) {
     val threadCreated = remember { mutableStateOf(false) }
     val imageBitmap = remember { mutableStateOf(loadImageBitmap(File("test.png").inputStream())) }
 
-    Column(modifier = Modifier.fillMaxSize().padding(10.dp), Arrangement.spacedBy(5.dp)) {
+    Column(modifier = Modifier.width(950.dp).padding(10.dp), Arrangement.spacedBy(5.dp)) {
         Image(
             imageBitmap.value,
             contentDescription = ""
         )
 
-        Row(modifier = Modifier.fillMaxWidth(), Arrangement.spacedBy(5.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
             // The play button
             IconButton(onClick = {
                 // Switch between play and pause
@@ -45,10 +45,12 @@ fun VideoPlayer(video: Video) {
                     // Create the thread
                     Thread {
                         while (video.hasNext()) {
-                            if (playVideo.value) video.next().write("test.png")
-                            else video.currentImage.write("test.png")
+                            try {
+                                if (!playVideo.value) video.seek(video.currentFrame)
+                                video.next().write("test.png")
 
-                            imageBitmap.value = loadImageBitmap(File("test.png").inputStream())
+                                imageBitmap.value = loadImageBitmap(File("test.png").inputStream())
+                            } catch (ignored: ConcurrentModificationException) {}
                         }
                     }.start()
                 }
@@ -68,8 +70,7 @@ fun VideoPlayer(video: Video) {
             Slider(
                 value = video.currentFrame.toFloat(),
                 valueRange = 0.0f..video.totalFrames.toFloat(),
-                onValueChange = { video.seek(it.toInt()) },
-                modifier = Modifier.fillMaxWidth()
+                onValueChange = { video.seek(it.toInt()) }
             )
         }
     }

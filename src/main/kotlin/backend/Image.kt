@@ -190,7 +190,12 @@ class Image(colourspace: Colourspace, img: Mat) {
      * Applies the given [mask] to the image
      */
     private fun applyMask(mask: Mat): Image {
-        bitwise_and(img, img, img, mask)
+        val newImg = Mat()
+        bitwise_and(img, img, newImg, mask)
+
+        img = newImg
+        indexer = img.createIndexer()
+
         return this
     }
 
@@ -201,6 +206,7 @@ class Image(colourspace: Colourspace, img: Mat) {
      */
     fun threshold(minThreshold: Double, maxThreshold: Double = 255.0, binarise: Boolean = true): Image {
         val mask = Mat()
+        val mask2 = Mat()
         val newImg = img.clone()
 
         // Converting to grayscale
@@ -215,7 +221,12 @@ class Image(colourspace: Colourspace, img: Mat) {
         }
 
         // Perform thresholding
-        threshold(gray, mask, minThreshold, maxThreshold, 1)
+        threshold(gray, mask, minThreshold, 255.0, THRESH_BINARY)
+        threshold(gray, mask2, maxThreshold, 255.0, THRESH_BINARY)
+
+        // Combine the masks
+        bitwise_not(mask2, mask2)
+        bitwise_and(mask, mask2, mask)
 
         // Apply mask on the image if necessary
         if (binarise) img = mask else applyMask(mask)
@@ -322,7 +333,6 @@ class Image(colourspace: Colourspace, img: Mat) {
      * Returns a deep copy of the image
      */
     fun clone() = Image(colourspace, img.clone())
-
 
     /**
      * Returns the unscaled point given the scaled [point]

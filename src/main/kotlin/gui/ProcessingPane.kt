@@ -320,7 +320,7 @@ fun CannyEdgePane(node: CannyEdgeNode) {
 
                 Slider(
                     value = threshold.value,
-                    valueRange = 0.0f .. 400.0f,
+                    valueRange = 0.0f .. 600.0f,
                     onValueChange = {
                         threshold.value = it
                         node.threshold = threshold.value.toDouble()

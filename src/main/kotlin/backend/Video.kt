@@ -1,5 +1,6 @@
 package backend
 
+import backend.image_processing.preprocess.Preprocessor
 import org.bytedeco.opencv.global.opencv_imgproc.COLOR_BGR2RGB
 import org.bytedeco.opencv.global.opencv_imgproc.cvtColor
 import org.bytedeco.opencv.global.opencv_videoio.CAP_PROP_FRAME_COUNT
@@ -22,6 +23,11 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
      * The total number of frames of the video
      */
     val totalFrames: Int = videoCapture.get(CAP_PROP_FRAME_COUNT).toInt()
+
+    /**
+     * The preprocessor that preprocesses the video frames
+     */
+    val preprocesser: Preprocessor = Preprocessor()
 
     /**
      * The current frame number of the video
@@ -50,6 +56,7 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
         // Convert from BGR to RGB
         cvtColor(nextImage, nextImage, COLOR_BGR2RGB)
         currentImage = Image(Colourspace.RGB, nextImage)
+        currentImage = preprocesser.process(currentImage)
 
         return currentImage
     }

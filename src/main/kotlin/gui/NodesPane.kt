@@ -38,7 +38,7 @@ fun NodesPane(preprocessor: Preprocessor) {
     Box {
         val state = rememberLazyListState()
 
-        LazyColumn(modifier = Modifier.fillMaxWidth().padding(end = 12.dp), state) {
+        LazyColumn(modifier = Modifier.width(320.dp).padding(end = 12.dp), state) {
             items(preprocessor.nodes) {
                 when (it) {
                     is BlurringNode -> BlurringPane(it)
