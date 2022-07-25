@@ -22,7 +22,7 @@ fun main() {
     return application {
         Window(
             onCloseRequest = ::exitApplication,
-            title = "Compose for Desktop",
+            title = "Tracker 2.0",
             state = rememberWindowState(width = 320.dp, height = 300.dp)
         ) {
             MaterialTheme {
