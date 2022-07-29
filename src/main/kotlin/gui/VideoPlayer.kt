@@ -18,13 +18,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.Video
 import java.io.File
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
+@OptIn(ExperimentalTime::class)
 @Preview
 @Composable
 fun VideoPlayer(video: Video) {
     val playVideo = remember { mutableStateOf(false) }
     val threadCreated = remember { mutableStateOf(false) }
-    val imageBitmap = remember { mutableStateOf(loadImageBitmap(File("test.png").inputStream())) }
+    val imageBitmap = remember { mutableStateOf(loadImageBitmap(File("test.bmp").inputStream())) }
 
     Column(modifier = Modifier.width(950.dp).padding(10.dp), Arrangement.spacedBy(5.dp)) {
         Image(
@@ -44,13 +48,16 @@ fun VideoPlayer(video: Video) {
 
                     // Create the thread
                     Thread {
+                        var time: Duration
                         while (video.hasNext()) {
-                            try {
-                                if (!playVideo.value) video.seek(video.currentFrame)
-                                video.next().write("test.png")
+                            time = measureTime {
+                                try {
+                                    if (!playVideo.value) video.seek(video.currentFrame)
 
-                                imageBitmap.value = loadImageBitmap(File("test.png").inputStream())
-                            } catch (ignored: ConcurrentModificationException) {}
+                                    val bytes = video.next().encode(".bmp")
+                                    imageBitmap.value = loadImageBitmap(bytes.inputStream())
+                                } catch (ignored: ConcurrentModificationException) {}
+                            }
                         }
                     }.start()
                 }

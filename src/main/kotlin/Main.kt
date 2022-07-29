@@ -15,8 +15,8 @@ import gui.NodesPane
 import gui.VideoPlayer
 
 fun main() {
-    val video = Video("C:\\Users\\jedli\\OneDrive - NUS High School\\Documents\\Physics\\SYPT 2022" +
-            "\\16. Saving Honey\\Experimental Data\\IMG_1911.MOV")
+    val video = Video("C:\\Users\\jedli\\OneDrive - NUS High School\\Documents\\Physics\\SYPT 2022\\" +
+            "2. Rayleigh Disk\\Experimental Data\\Intensity Data 1\\IMG_3121.MOV")
     val preprocessor = video.preprocesser
 
     return application {

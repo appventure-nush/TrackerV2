@@ -3,10 +3,10 @@ package backend
 import com.github.ajalt.colormath.Color
 import com.github.ajalt.colormath.model.HSV
 import com.github.ajalt.colormath.model.RGB
+import org.bytedeco.javacpp.BytePointer
 import org.bytedeco.javacpp.indexer.UByteIndexer
 import org.bytedeco.opencv.global.opencv_core.*
-import org.bytedeco.opencv.global.opencv_imgcodecs.imread
-import org.bytedeco.opencv.global.opencv_imgcodecs.imwrite
+import org.bytedeco.opencv.global.opencv_imgcodecs.*
 import org.bytedeco.opencv.global.opencv_imgproc.*
 import org.bytedeco.opencv.opencv_core.Mat
 import org.bytedeco.opencv.opencv_core.Size
@@ -327,6 +327,19 @@ class Image(colourspace: Colourspace, img: Mat) {
         cvtColor(img, newImg, COLOR_RGB2BGR)
 
         imwrite(path, newImg)
+    }
+
+    /**
+     * Encodes the image in a given file [format]
+     */
+    fun encode(format: String): ByteArray {
+        val newImg = Mat()
+        cvtColor(img, newImg, COLOR_RGB2BGR)
+
+        val bytes = BytePointer()
+        imencode(format, newImg, bytes)
+
+        return bytes.stringBytes
     }
 
     /**
