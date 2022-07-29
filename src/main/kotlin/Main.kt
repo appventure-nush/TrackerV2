@@ -17,8 +17,10 @@ import gui.VideoPlayer
 fun main() {
     val video = Video("C:\\Users\\jedli\\OneDrive - NUS High School\\Documents\\Physics\\SYPT 2022\\" +
             "2. Rayleigh Disk\\Experimental Data\\Intensity Data 1\\IMG_3121.MOV")
-    val preprocessor = video.preprocesser
+    video.hasNext()
+    video.next().write("test.bmp")
 
+    val preprocessor = video.preprocesser
     return application {
         Window(
             onCloseRequest = ::exitApplication,
