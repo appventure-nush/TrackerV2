@@ -48,16 +48,15 @@ fun VideoPlayer(video: Video) {
 
                     // Create the thread
                     Thread {
-                        var time: Duration
-                        while (video.hasNext()) {
-                            time = measureTime {
+                        while (true) {
+                            if (playVideo.value && video.hasNext()) {
                                 try {
-                                    if (!playVideo.value) video.seek(video.currentFrame)
+                                    // if (!playVideo.value) video.seek(video.currentFrame)
 
                                     val bytes = video.next().encode(".bmp")
                                     imageBitmap.value = loadImageBitmap(bytes.inputStream())
                                 } catch (ignored: ConcurrentModificationException) {}
-                            }
+                            } else Thread.sleep(100)
                         }
                     }.start()
                 }
@@ -77,7 +76,23 @@ fun VideoPlayer(video: Video) {
             Slider(
                 value = video.currentFrame.toFloat(),
                 valueRange = 0.0f..video.totalFrames.toFloat(),
-                onValueChange = { video.seek(it.toInt()) }
+                onValueChange = {
+                    val initiallyPlaying = playVideo.value
+
+                    // Pause the video
+                    playVideo.value = false
+
+                    // Seek to the appropiate location
+                    val time = measureTime {
+                        video.seek(it.toInt())
+
+                        val bytes = video.next().encode(".bmp")
+                        imageBitmap.value = loadImageBitmap(bytes.inputStream())
+                    }
+
+                    // Play the video again
+                    playVideo.value = initiallyPlaying
+                }
             )
         }
     }
