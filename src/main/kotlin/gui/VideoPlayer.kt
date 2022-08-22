@@ -2,10 +2,9 @@ package gui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,17 +17,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.Video
 import java.io.File
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, ExperimentalMaterialApi::class)
 @Preview
 @Composable
 fun VideoPlayer(video: Video) {
     val playVideo = remember { mutableStateOf(false) }
     val threadCreated = remember { mutableStateOf(false) }
     val imageBitmap = remember { mutableStateOf(loadImageBitmap(File("test.bmp").inputStream())) }
+
+    val openFrameNumDialog = remember { mutableStateOf(false) }
+    val frameNumberText = remember { mutableStateOf("") }
 
     Column(modifier = Modifier.width(950.dp).padding(10.dp), Arrangement.spacedBy(5.dp)) {
         Image(
@@ -70,30 +70,78 @@ fun VideoPlayer(video: Video) {
             }
 
             // Show the frame number
-            Text(video.currentFrame.toString(), fontSize = 12.sp, modifier = Modifier.align(Alignment.CenterVertically))
+            Text(
+                video.currentFrame.toString(),
+                fontSize = 12.sp,
+                modifier = Modifier.align(Alignment.CenterVertically).clickable {
+                    openFrameNumDialog.value = true
+                    frameNumberText.value = video.currentFrame.toString()
+                }
+            )
 
             // The slider to adjust the time-stamp
             Slider(
                 value = video.currentFrame.toFloat(),
                 valueRange = 0.0f..video.totalFrames.toFloat(),
-                onValueChange = {
+                onValueChange = { // TODO Speed up seeking somehow
                     val initiallyPlaying = playVideo.value
 
                     // Pause the video
                     playVideo.value = false
 
                     // Seek to the appropiate location
-                    val time = measureTime {
-                        video.seek(it.toInt())
+                    video.seek(it.toInt())
 
-                        val bytes = video.next().encode(".bmp")
-                        imageBitmap.value = loadImageBitmap(bytes.inputStream())
-                    }
+                    val bytes = video.next().encode(".bmp")
+                    imageBitmap.value = loadImageBitmap(bytes.inputStream())
 
                     // Play the video again
                     playVideo.value = initiallyPlaying
                 }
             )
         }
+    }
+
+    if (openFrameNumDialog.value) {
+        AlertDialog(
+            onDismissRequest = {
+                openFrameNumDialog.value = false
+            },
+            text = {
+                OutlinedTextField(
+                    label = { Text("Enter Frame Number") },
+                    value = frameNumberText.value,
+                    onValueChange = { frameNumberText.value = it },
+                    modifier = Modifier.padding(10.dp)
+                )
+            },
+            confirmButton = { TextButton({
+                openFrameNumDialog.value = false
+
+                if (frameNumberText.value.toIntOrNull() != null) {
+                    if (frameNumberText.value.toInt() < video.totalFrames) {
+                        // Seek to the new frame number
+                        val initiallyPlaying = playVideo.value
+
+                        // Pause the video
+                        playVideo.value = false
+
+                        // Seek to the appropiate location
+                        video.seek(frameNumberText.value.toInt())
+
+                        val bytes = video.next().encode(".bmp")
+                        imageBitmap.value = loadImageBitmap(bytes.inputStream())
+
+                        // Play the video again
+                        playVideo.value = initiallyPlaying
+                    } else {
+                        println("Frame number should not exceed total number of frames ${video.totalFrames}")
+                    }
+                } else {
+                    println("Frame number should be an integer")
+                }
+            }) { Text("Confirm") } },
+            dismissButton = { TextButton({ openFrameNumDialog.value = false }) { Text("Cancel") } },
+        )
     }
 }
