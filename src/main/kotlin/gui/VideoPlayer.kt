@@ -36,6 +36,9 @@ fun VideoPlayer(video: Video) {
     val openFrameNumDialog = remember { mutableStateOf(false) }
     val frameNumberText = remember { mutableStateOf("") }
 
+    val errorDialog = remember { mutableStateOf(false) }
+    val errorMessage = remember { mutableStateOf("") }
+
     val focusRequester = remember { FocusRequester() }
 
     Column(modifier = Modifier.width(950.dp).padding(10.dp), Arrangement.spacedBy(5.dp)) {
@@ -64,6 +67,12 @@ fun VideoPlayer(video: Video) {
                                     val bytes = video.next().encode(".bmp")
                                     imageBitmap.value = loadImageBitmap(bytes.inputStream())
                                 } catch (ignored: ConcurrentModificationException) {}
+                                catch (exception: Exception) {
+                                    playVideo.value = false
+
+                                    errorMessage.value = exception.toString()
+                                    errorDialog.value = true
+                                }
                             } else Thread.sleep(100)
                         }
                     }.start()
@@ -160,6 +169,18 @@ fun VideoPlayer(video: Video) {
             },
             confirmButton = { TextButton({ f() }) { Text("Confirm") } },
             dismissButton = { TextButton({ openFrameNumDialog.value = false }) { Text("Cancel") } },
+        )
+    }
+
+    if (errorDialog.value) {
+        AlertDialog(
+            title = { Text("Error") },
+            text = { Text(errorMessage.value) },
+            confirmButton = {
+                TextButton({ errorDialog.value = false }) { Text("Ok") }
+            },
+            onDismissRequest = { errorDialog.value = false },
+            modifier = Modifier.padding(10.dp)
         )
     }
 }

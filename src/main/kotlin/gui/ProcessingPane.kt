@@ -295,7 +295,7 @@ fun CannyEdgePane(node: CannyEdgeNode) {
 
                 Slider(
                     value = kernelSize.value,
-                    valueRange = 3.0f .. 31.0f,
+                    valueRange = 3.0f .. 7.0f,
                     onValueChange = {
                         kernelSize.value = it
                         node.kernelSize = kernelSize.value.toInt() / 2 * 2 + 1
