@@ -23,6 +23,8 @@ import backend.image_processing.preprocess.blurring.Blurring
 import backend.image_processing.preprocess.blurring.BlurringNode
 import backend.image_processing.preprocess.edge_detection.CannyEdgeNode
 import backend.image_processing.preprocess.masking.ThresholdingNode
+import backend.image_processing.preprocess.morphological.Morphological
+import backend.image_processing.preprocess.morphological.MorphologicalNode
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Preview
@@ -107,7 +109,7 @@ fun ProcessingPane(node: Processing, onDelete: () -> Unit, options: @Composable 
                 TextButton({ helpDialog.value = false }) { Text("Ok") }
             },
             onDismissRequest = { helpDialog.value = false },
-            modifier = Modifier.size(300.dp, 200.dp).padding(10.dp)
+            modifier = Modifier.size(300.dp, 250.dp).padding(10.dp)
         )
     }
 
@@ -271,6 +273,78 @@ fun ThresholdingPane(node: ThresholdingNode) {
                         node.maxThreshold = it.endInclusive.toDouble()
                     },
                     modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun MorphologicalPane(node: MorphologicalNode) {
+    val iterations = remember { mutableStateOf(1.0f) }
+    val kernelSize = remember { mutableStateOf(3.0f) }
+    val operationType = remember { mutableStateOf(Morphological.ERODE) }
+
+    ProcessingPane(node, {}) {
+        Column {
+            // For adjusting kernel size
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Text(
+                    "Kernel Size: ",
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+
+                Slider(
+                    value = kernelSize.value,
+                    valueRange = 3.0f .. 31.0f,
+                    onValueChange = {
+                        kernelSize.value = it
+                        node.kernelSize = kernelSize.value.toInt() / 2 * 2 + 1
+                    },
+                    modifier = Modifier.width(125.dp)
+                )
+
+                Text(
+                    (kernelSize.value.toInt() / 2 * 2 + 1).toString(),
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+
+            // For adjusting iterations
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Text(
+                    "Iterations: ",
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+
+                Slider(
+                    value = iterations.value,
+                    valueRange = 1.0f .. 20.0f,
+                    onValueChange = {
+                        iterations.value = it
+                        node.iterations = iterations.value.toInt()
+                    },
+                    modifier = Modifier.width(125.dp)
+                )
+
+                Text(
+                    iterations.value.toInt().toString(),
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+
+            // Changing type of morphological operation
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Combobox(
+                    "Operation Type", operationType,
+                    listOf(Morphological.ERODE, Morphological.DILATE),
+                    modifier = Modifier.height(53.dp),
+                    onValueChanged = { node.operationType = operationType.value }
                 )
             }
         }

@@ -27,11 +27,12 @@ import backend.image_processing.preprocess.Preprocessor
 import backend.image_processing.preprocess.blurring.BlurringNode
 import backend.image_processing.preprocess.edge_detection.CannyEdgeNode
 import backend.image_processing.preprocess.masking.ThresholdingNode
+import backend.image_processing.preprocess.morphological.MorphologicalNode
 
 @Preview
 @Composable
 fun NodesPane(preprocessor: Preprocessor) {
-    val items = listOf(BlurringNode(), ThresholdingNode(), CannyEdgeNode())
+    val items = listOf(BlurringNode(), MorphologicalNode(), ThresholdingNode(), CannyEdgeNode())
     val expanded = remember { mutableStateOf(false) }
 
     Box {
@@ -41,6 +42,7 @@ fun NodesPane(preprocessor: Preprocessor) {
             items(preprocessor.nodes) {
                 when (it) {
                     is BlurringNode -> BlurringPane(it)
+                    is MorphologicalNode -> MorphologicalPane(it)
                     is ThresholdingNode -> ThresholdingPane(it)
                     is CannyEdgeNode -> CannyEdgePane(it)
                 }
