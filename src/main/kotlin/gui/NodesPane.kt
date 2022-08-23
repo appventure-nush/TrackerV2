@@ -28,7 +28,6 @@ import backend.image_processing.preprocess.blurring.BlurringNode
 import backend.image_processing.preprocess.edge_detection.CannyEdgeNode
 import backend.image_processing.preprocess.masking.ThresholdingNode
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
 fun NodesPane(preprocessor: Preprocessor) {

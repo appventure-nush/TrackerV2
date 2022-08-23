@@ -25,7 +25,7 @@ import backend.Video
 import java.io.File
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class, ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Preview
 @Composable
 fun VideoPlayer(video: Video) {
