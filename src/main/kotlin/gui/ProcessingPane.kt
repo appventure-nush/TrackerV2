@@ -3,10 +3,11 @@ package gui
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipArea
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -88,7 +89,6 @@ fun ProcessingPane(node: Processing, onDelete: () -> Unit, options: @Composable 
             options()
 
             // The delete button
-            /*
             IconButton(onClick = { deleteDialog.value = true },
                 modifier = Modifier.size(23.dp).align(Alignment.End)) {
                 Icon(
@@ -96,7 +96,6 @@ fun ProcessingPane(node: Processing, onDelete: () -> Unit, options: @Composable 
                     tint = MaterialTheme.colors.primary
                 )
             }
-             */
         }
     }
 
@@ -128,11 +127,11 @@ fun ProcessingPane(node: Processing, onDelete: () -> Unit, options: @Composable 
 
 @Preview
 @Composable
-fun BlurringPane(node: BlurringNode) {
+fun BlurringPane(node: BlurringNode, onDelete: () -> Unit) {
     val kernelSize = remember { mutableStateOf(3.0f) }
     val blurType = remember { mutableStateOf(Blurring.GAUSSIAN) }
 
-    ProcessingPane(node, {}) {
+    ProcessingPane(node, onDelete) {
         Column {
             // For adjusting kernel size
             Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
@@ -175,11 +174,11 @@ fun BlurringPane(node: BlurringNode) {
 @OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
-fun ThresholdingPane(node: ThresholdingNode) {
+fun ThresholdingPane(node: ThresholdingNode, onDelete: () -> Unit) {
     val thresholdRange = remember { mutableStateOf(0.0f .. 255.0f) }
     val binarise = remember { mutableStateOf(true) }
 
-    ProcessingPane(node, {}) {
+    ProcessingPane(node, onDelete) {
         Column {
             /*
             // For adjusting minimum threshold
@@ -281,12 +280,12 @@ fun ThresholdingPane(node: ThresholdingNode) {
 
 @Preview
 @Composable
-fun MorphologicalPane(node: MorphologicalNode) {
+fun MorphologicalPane(node: MorphologicalNode, onDelete: () -> Unit) {
     val iterations = remember { mutableStateOf(1.0f) }
     val kernelSize = remember { mutableStateOf(3.0f) }
     val operationType = remember { mutableStateOf(Morphological.ERODE) }
 
-    ProcessingPane(node, {}) {
+    ProcessingPane(node, onDelete) {
         Column {
             // For adjusting kernel size
             Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
@@ -353,11 +352,11 @@ fun MorphologicalPane(node: MorphologicalNode) {
 
 @Preview
 @Composable
-fun CannyEdgePane(node: CannyEdgeNode) {
+fun CannyEdgePane(node: CannyEdgeNode, onDelete: () -> Unit) {
     val kernelSize = remember { mutableStateOf(3.0f) }
     val threshold = remember { mutableStateOf(200.0f) }
 
-    ProcessingPane(node, {}) {
+    ProcessingPane(node, onDelete) {
         Column {
             // For adjusting kernel size
             Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {

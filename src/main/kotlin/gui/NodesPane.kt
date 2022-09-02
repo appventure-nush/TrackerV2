@@ -39,12 +39,13 @@ fun NodesPane(preprocessor: Preprocessor) {
         val state = rememberLazyListState()
 
         LazyColumn(modifier = Modifier.width(320.dp).padding(end = 12.dp), state) {
+            // TODO Auto-refresh when node is deleted
             items(preprocessor.nodes) {
                 when (it) {
-                    is BlurringNode -> BlurringPane(it)
-                    is MorphologicalNode -> MorphologicalPane(it)
-                    is ThresholdingNode -> ThresholdingPane(it)
-                    is CannyEdgeNode -> CannyEdgePane(it)
+                    is BlurringNode -> BlurringPane(it) { preprocessor.nodes.remove(it) }
+                    is MorphologicalNode -> MorphologicalPane(it) { preprocessor.nodes.remove(it) }
+                    is ThresholdingNode -> ThresholdingPane(it) { preprocessor.nodes.remove(it) }
+                    is CannyEdgeNode -> CannyEdgePane(it) { preprocessor.nodes.remove(it) }
                 }
             }
         }
