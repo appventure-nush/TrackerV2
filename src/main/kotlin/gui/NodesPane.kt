@@ -23,6 +23,7 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import backend.image_processing.preprocess.PreprocessingNode
 import backend.image_processing.preprocess.Preprocessor
 import backend.image_processing.preprocess.blurring.BlurringNode
 import backend.image_processing.preprocess.edge_detection.CannyEdgeNode
@@ -35,6 +36,16 @@ fun NodesPane(preprocessor: Preprocessor) {
     val items = listOf(BlurringNode(), MorphologicalNode(), ThresholdingNode(), CannyEdgeNode())
     val expanded = remember { mutableStateOf(false) }
 
+    fun deleteNode(it: PreprocessingNode) = run { preprocessor.nodes.remove(it) }
+    fun shift(it: Int, node: PreprocessingNode) = run {
+        val index = preprocessor.nodes.indexOf(node)
+        preprocessor.nodes.remove(node)
+
+        if (index + it < 0) preprocessor.nodes.add(0, node)
+        else if (index + it >= preprocessor.nodes.size + 1) preprocessor.nodes.add(preprocessor.nodes.size, node)
+        else preprocessor.nodes.add(index + it, node)
+    }
+
     Box {
         val state = rememberLazyListState()
 
@@ -42,10 +53,10 @@ fun NodesPane(preprocessor: Preprocessor) {
             // TODO Auto-refresh when node is deleted
             items(preprocessor.nodes) {
                 when (it) {
-                    is BlurringNode -> BlurringPane(it) { preprocessor.nodes.remove(it) }
-                    is MorphologicalNode -> MorphologicalPane(it) { preprocessor.nodes.remove(it) }
-                    is ThresholdingNode -> ThresholdingPane(it) { preprocessor.nodes.remove(it) }
-                    is CannyEdgeNode -> CannyEdgePane(it) { preprocessor.nodes.remove(it) }
+                    is BlurringNode -> BlurringPane(it, { deleteNode(it) }, { j -> shift(j, it) })
+                    is MorphologicalNode -> MorphologicalPane(it, { deleteNode(it) }, { j -> shift(j, it) })
+                    is ThresholdingNode -> ThresholdingPane(it, { deleteNode(it) }, { j -> shift(j, it) })
+                    is CannyEdgeNode -> CannyEdgePane(it, { deleteNode(it) }, { j -> shift(j, it) })
                 }
             }
         }

@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,7 +33,7 @@ import backend.image_processing.preprocess.morphological.MorphologicalNode
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Preview
 @Composable
-fun ProcessingPane(node: Processing, onDelete: () -> Unit, options: @Composable () -> Unit) {
+fun ProcessingPane(node: Processing, onDelete: () -> Unit, shift: (Int) -> Unit, options: @Composable () -> Unit) {
     val helpDialog = remember { mutableStateOf(false) }
     val deleteDialog = remember { mutableStateOf(false) }
     val count = remember { mutableStateOf(0) }
@@ -88,13 +91,31 @@ fun ProcessingPane(node: Processing, onDelete: () -> Unit, options: @Composable 
 
             options()
 
-            // The delete button
-            IconButton(onClick = { deleteDialog.value = true },
-                modifier = Modifier.size(23.dp).align(Alignment.End)) {
-                Icon(
-                    Icons.Filled.Delete, contentDescription = "",
-                    tint = MaterialTheme.colors.primary
-                )
+            Row(modifier = Modifier.align(Alignment.End)) {
+                // Shift up button
+                IconButton(onClick = { shift(-1) }, modifier = Modifier.size(23.dp)) {
+                    Icon(
+                        Icons.Filled.KeyboardArrowUp, contentDescription = "",
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
+
+                // Shift down button
+                IconButton(onClick = { shift(1) }, modifier = Modifier.size(23.dp)) {
+                    Icon(
+                        Icons.Filled.KeyboardArrowDown, contentDescription = "",
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
+
+                // The delete button
+                IconButton(onClick = { deleteDialog.value = true },
+                    modifier = Modifier.size(23.dp)) {
+                    Icon(
+                        Icons.Filled.Delete, contentDescription = "",
+                        tint = Color.Red
+                    )
+                }
             }
         }
     }
@@ -127,11 +148,11 @@ fun ProcessingPane(node: Processing, onDelete: () -> Unit, options: @Composable 
 
 @Preview
 @Composable
-fun BlurringPane(node: BlurringNode, onDelete: () -> Unit) {
+fun BlurringPane(node: BlurringNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
     val kernelSize = remember { mutableStateOf(3.0f) }
     val blurType = remember { mutableStateOf(Blurring.GAUSSIAN) }
 
-    ProcessingPane(node, onDelete) {
+    ProcessingPane(node, onDelete, shift) {
         Column {
             // For adjusting kernel size
             Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
@@ -174,11 +195,11 @@ fun BlurringPane(node: BlurringNode, onDelete: () -> Unit) {
 @OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
-fun ThresholdingPane(node: ThresholdingNode, onDelete: () -> Unit) {
+fun ThresholdingPane(node: ThresholdingNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
     val thresholdRange = remember { mutableStateOf(0.0f .. 255.0f) }
     val binarise = remember { mutableStateOf(true) }
 
-    ProcessingPane(node, onDelete) {
+    ProcessingPane(node, onDelete, shift) {
         Column {
             /*
             // For adjusting minimum threshold
@@ -280,12 +301,12 @@ fun ThresholdingPane(node: ThresholdingNode, onDelete: () -> Unit) {
 
 @Preview
 @Composable
-fun MorphologicalPane(node: MorphologicalNode, onDelete: () -> Unit) {
+fun MorphologicalPane(node: MorphologicalNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
     val iterations = remember { mutableStateOf(1.0f) }
     val kernelSize = remember { mutableStateOf(3.0f) }
     val operationType = remember { mutableStateOf(Morphological.ERODE) }
 
-    ProcessingPane(node, onDelete) {
+    ProcessingPane(node, onDelete, shift) {
         Column {
             // For adjusting kernel size
             Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
@@ -352,11 +373,11 @@ fun MorphologicalPane(node: MorphologicalNode, onDelete: () -> Unit) {
 
 @Preview
 @Composable
-fun CannyEdgePane(node: CannyEdgeNode, onDelete: () -> Unit) {
+fun CannyEdgePane(node: CannyEdgeNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
     val kernelSize = remember { mutableStateOf(3.0f) }
     val threshold = remember { mutableStateOf(200.0f) }
 
-    ProcessingPane(node, onDelete) {
+    ProcessingPane(node, onDelete, shift) {
         Column {
             // For adjusting kernel size
             Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
