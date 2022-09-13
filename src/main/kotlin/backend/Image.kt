@@ -1,17 +1,21 @@
 package backend
 
+import backend.image_processing.Circle
+import backend.image_processing.Ellipse
 import com.github.ajalt.colormath.Color
 import com.github.ajalt.colormath.model.HSV
 import com.github.ajalt.colormath.model.RGB
 import org.bytedeco.javacpp.BytePointer
+import org.bytedeco.javacpp.annotation.ByVal
 import org.bytedeco.javacpp.indexer.UByteIndexer
 import org.bytedeco.opencv.global.opencv_core.*
 import org.bytedeco.opencv.global.opencv_imgcodecs.*
 import org.bytedeco.opencv.global.opencv_imgproc.*
-import org.bytedeco.opencv.opencv_core.Mat
-import org.bytedeco.opencv.opencv_core.Size
+import org.bytedeco.opencv.opencv_core.*
+import org.bytedeco.opencv.opencv_imgproc.Vec3fVector
 import org.bytedeco.opencv.opencv_core.Point as cvPoint
-
+import org.bytedeco.opencv.global.opencv_imgproc.circle as cvCircle
+import org.bytedeco.opencv.global.opencv_imgproc.ellipse as cvEllipse
 
 /**
  * Represents an image
@@ -316,6 +320,83 @@ class Image(colourspace: Colourspace, img: Mat) {
     }
 
     /* Fitting Shapes */
+
+    /**
+     * Fits circles with radius between [minRadius] and [maxRadius] to the image and
+     * returns a list of the circles fitted
+     * @param minDist The minimum distance between circles
+     * @param param1 This parameter is used for edge detection
+     * @param param2 This controls how circular an object must be to be considered a circle
+     */
+    fun fitCircle(minDist: Double = 20.0, param1: Double = 200.0, param2: Double = 100.0,
+                  minRadius: Int = 0, maxRadius: Int = 0): List<Circle> {
+        val circles = Vec3fVector()
+        HoughCircles(img, circles, CV_HOUGH_GRADIENT, 1.0, minDist, param1, param2, minRadius, maxRadius)
+
+        val circlesList = arrayListOf<Circle>()
+        for (i in 0 until circles.size()) {
+            val circle = circles[i]
+            val center = fromScaled(Point(circle[1].toDouble(), circle[2].toDouble()))
+            circlesList.add(Circle(center, circle[0].toDouble() * scale))
+        }
+
+        return circlesList
+    }
+
+    fun fitEllipse(): List<Ellipse> {
+        val hierarchy = Mat()
+        val contours = MatVector()
+        findContours(img, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE)
+
+        val ellipses = Array(contours.size().toInt()) {
+            if (contours.size() > 5) fitEllipse(contours[it.toLong()])
+            else null
+        }.filterNotNull()
+
+        return ellipses.map {
+            val centre = fromScaled(Point(it.center().x().toDouble(), it.center().y().toDouble()))
+            Ellipse(centre, it.angle().toDouble(), it.size().width().toDouble(), it.size().height().toDouble())
+        }
+    }
+
+    /* Drawing Shapes */
+
+    /**
+     * Draw a [circle] on the image
+     */
+    fun drawCircle(circle: Circle, thickness: Int = 5) {
+        val centre = fromScaled(circle.centre)
+        cvCircle(
+            img,
+            cvPoint(centre.x.toInt(), centre.y.toInt()),
+            (circle.radius / scale).toInt(),
+            Scalar.RED, thickness, 8, 0
+        )
+    }
+
+    /**
+     * Draws the given [circles] on the image
+     */
+    fun drawCircle(circles: Collection<Circle>) = circles.forEach { drawCircle(it) }
+
+    /**
+     * Draws an [ellipse] on the image
+     */
+    fun drawEllipse(ellipse: Ellipse, thickness: Int = 5) {
+        val centre = fromScaled(ellipse.centre)
+        cvEllipse(
+            img,
+            cvPoint(centre.x.toInt(), centre.y.toInt()),
+            Size((ellipse.width / scale).toInt(), (ellipse.height / scale).toInt()),
+            ellipse.angle, 0.0, 360.0,
+            Scalar.RED, thickness, 8, 0
+        )
+    }
+
+    /**
+     * Draws the given [ellipses] on the image
+     */
+    fun drawEllipse(ellipses: Collection<Ellipse>) = ellipses.forEach { drawEllipse(it) }
 
     /* Misc */
 

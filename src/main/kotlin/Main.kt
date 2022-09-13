@@ -1,7 +1,4 @@
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -14,7 +11,11 @@ import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import backend.Image
+import backend.Point
 import backend.Video
+import backend.image_processing.Circle
+import backend.image_processing.Ellipse
 import gui.NodesPane
 import gui.VideoPlayer
 
@@ -42,11 +43,10 @@ fun main() {
             MaterialTheme {
                 Row(modifier = Modifier.padding(10.dp)) {
                     VideoPlayer(video)
-                    Divider(
-                        color = Color.Gray,
-                        modifier = Modifier.fillMaxHeight().width(1.dp)
-                    )
-                    NodesPane(preprocessor)
+
+                    Column {
+                        NodesPane(preprocessor)
+                    }
                 }
             }
         }

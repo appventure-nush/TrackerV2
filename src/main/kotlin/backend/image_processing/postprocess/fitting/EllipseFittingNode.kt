@@ -1,6 +1,7 @@
 package backend.image_processing.postprocess.fitting
 
 import backend.Colourspace
+import backend.Image
 import backend.Point
 import backend.image_processing.postprocess.PostprocessingNode
 import org.bytedeco.opencv.global.opencv_imgproc.*
@@ -16,19 +17,15 @@ class EllipseFittingNode : PostprocessingNode() {
     override val inputColourspaces: List<Colourspace> = listOf(Colourspace.GRAYSCALE)
     override var inputColourspace: Colourspace = Colourspace.GRAYSCALE
 
-    override fun process(img: Mat): List<Any> {
-        val hierarchy = Mat()
-        val contours = MatVector()
-        findContours(img, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE)
+    override fun process(img: Image): Pair<List<Any>, Image> {
+        val ellipses = img.fitEllipse()
+        val biggestEllipse = ellipses.maxByOrNull { it.width * it.height }
 
-        val ellipses = Array(contours.size().toInt()) {
-            require(contours.size() > 5) { "Ellipse needs to fitted to at least 5 points." }
-            fitEllipse(contours[it.toLong()])
+        val newImg = img.clone().apply { drawEllipse(ellipses) }
+
+        return if (biggestEllipse == null) Pair(listOf(-1, -1, -1), newImg)
+        else with(biggestEllipse) {
+            Pair(listOf(width, height, angle, centre.x, centre.y), newImg)
         }
-
-        return ellipses.map {
-            val centre = position(Point(it.center().x().toDouble(), it.center().y().toDouble()))
-            listOf(it.size().width(), it.size().height(), it.angle(), centre.x, centre.y)
-        }.maxByOrNull { it[0] as Double } ?: listOf(-1, -1, -1, -1)
     }
 }

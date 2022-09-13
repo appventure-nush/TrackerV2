@@ -1,31 +1,35 @@
 package backend.image_processing.postprocess
 
-import backend.Colourspace
+import backend.Image
 import krangl.DataFrame
 import krangl.dataFrameOf
 import org.bytedeco.opencv.global.opencv_imgproc.*
-import org.bytedeco.opencv.opencv_core.Mat
 
+/**
+ * Performs postprocessing on the images and converts the outputs into a DataFrame that
+ * can be exported as a CSV file.
+ */
 class Postprocessor(val node: PostprocessingNode) {
-    fun process(videoCapture: Sequence<Mat>): DataFrame {
-        val img = videoCapture.take(1).toList()[0]
+    /**
+     * The data will be eventually be outputted to a csv
+     */
+    lateinit var data: DataFrame
 
-        var data = dataFrameOf(node.entries)(node.process(convert(img, node.inputColourspace)))
-        videoCapture.forEach { _ ->
-            data = data.addRow(node.process(convert(img, node.inputColourspace)))
-        }
+    /**
+     * Preprocesses the image with the [node]
+     */
+    fun process(img: Image): Image {
+        // Clone the image and convert to the correct colourspace
+        val newImg = img.clone()
+        newImg.colourspace = node.inputColourspace
 
-        return data
-    }
+        val (row, newerImg) = node.process(newImg)
 
-    fun convert(img: Mat, colour: Colourspace): Mat {
-        val newImg = Mat()
-        when (colour) {
-            Colourspace.RGB -> cvtColor(img, newImg, COLOR_BGR2RGB)
-            Colourspace.HSV -> cvtColor(img, newImg, COLOR_BGR2HSV)
-            Colourspace.GRAYSCALE -> cvtColor(img, newImg, COLOR_BGR2GRAY)
-        }
+        // Adding to dataframe
+        data = if (this::data.isInitialized) {
+            data.addRow(row)
+        } else dataFrameOf(node.entries)(row)
 
-        return newImg
+        return newerImg
     }
 }
