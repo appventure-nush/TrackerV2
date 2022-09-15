@@ -1,9 +1,9 @@
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.unit.dp
@@ -11,22 +11,22 @@ import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import backend.Image
-import backend.Point
 import backend.Video
-import backend.image_processing.Circle
-import backend.image_processing.Ellipse
+import backend.image_processing.postprocess.Postprocessor
+import backend.image_processing.postprocess.fitting.CircleFittingNode
+import backend.image_processing.postprocess.fitting.EllipseFittingNode
 import gui.NodesPane
 import gui.VideoPlayer
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    val video = Video("C:\\Users\\jedli\\OneDrive - NUS High School\\Documents\\Physics\\SYPT 2022\\" +
-            "2. Rayleigh Disk\\Experimental Data\\Intensity Data 1\\IMG_3121.MOV")
+    val video = Video("video.mp4")
     video.hasNext()
     video.next().write("test.bmp")
 
     val preprocessor = video.preprocesser
+    video.postprocessor = Postprocessor(EllipseFittingNode())
+
     return application {
         Window(
             onCloseRequest = ::exitApplication,

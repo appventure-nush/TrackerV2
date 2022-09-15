@@ -233,7 +233,11 @@ class Image(colourspace: Colourspace, img: Mat) {
         bitwise_and(mask, mask2, mask)
 
         // Apply mask on the image if necessary
-        if (binarise) img = mask else applyMask(mask)
+        if (binarise) {
+            colourspace = Colourspace.GRAYSCALE
+            img = mask
+        }
+        else applyMask(mask)
 
         indexer = img.createIndexer()
         return this
@@ -314,7 +318,10 @@ class Image(colourspace: Colourspace, img: Mat) {
             else -> gray = img
         }
 
-        Canny(gray, img, lowerThreshold, upperThreshold, kernelSize, false)
+        Canny(gray, gray, lowerThreshold, upperThreshold, kernelSize, false)
+
+        colourspace = Colourspace.GRAYSCALE
+        img = gray
 
         return this
     }
@@ -343,19 +350,22 @@ class Image(colourspace: Colourspace, img: Mat) {
         return circlesList
     }
 
+    /**
+     * Fits ellipses to the image
+     */
     fun fitEllipse(): List<Ellipse> {
         val hierarchy = Mat()
         val contours = MatVector()
         findContours(img, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE)
 
         val ellipses = Array(contours.size().toInt()) {
-            if (contours.size() > 5) fitEllipse(contours[it.toLong()])
-            else null
+            try { fitEllipse(contours[it.toLong()]) }
+            catch (exception: Exception) { println(exception); null }
         }.filterNotNull()
 
         return ellipses.map {
             val centre = fromScaled(Point(it.center().x().toDouble(), it.center().y().toDouble()))
-            Ellipse(centre, it.angle().toDouble(), it.size().width().toDouble(), it.size().height().toDouble())
+            Ellipse(centre, it.angle().toDouble(), it.size().width().toDouble() / 2, it.size().height().toDouble() / 2)
         }
     }
 

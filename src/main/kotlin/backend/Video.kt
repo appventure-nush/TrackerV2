@@ -1,5 +1,6 @@
 package backend
 
+import backend.image_processing.postprocess.Postprocessor
 import backend.image_processing.preprocess.Preprocessor
 import org.bytedeco.opencv.global.opencv_imgproc.COLOR_BGR2RGB
 import org.bytedeco.opencv.global.opencv_imgproc.cvtColor
@@ -30,6 +31,11 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
     val preprocesser: Preprocessor = Preprocessor()
 
     /**
+     * The postprocessor that converts the information in the video frames to data
+     */
+    var postprocessor: Postprocessor? = null
+
+    /**
      * The current frame number of the video
      */
     var currentFrame: Int = 0
@@ -57,6 +63,9 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
         cvtColor(nextImage, nextImage, COLOR_BGR2RGB)
         currentImage = Image(Colourspace.RGB, nextImage)
         currentImage = preprocesser.process(currentImage)
+
+        if (postprocessor != null)
+            currentImage = postprocessor!!.process(currentImage)
 
         return currentImage
     }

@@ -68,10 +68,10 @@ fun VideoPlayer(video: Video) {
                                     imageBitmap.value = loadImageBitmap(bytes.inputStream())
                                 } catch (ignored: ConcurrentModificationException) {}
                                 catch (exception: Exception) {
-                                    playVideo.value = false
+                                    //playVideo.value = false
 
-                                    errorMessage.value = exception.toString()
-                                    errorDialog.value = true
+                                    //errorMessage.value = exception.toString()
+                                    //errorDialog.value = true
                                 }
                             } else Thread.sleep(100)
                         }
