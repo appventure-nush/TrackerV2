@@ -360,7 +360,7 @@ class Image(colourspace: Colourspace, img: Mat) {
 
         val ellipses = Array(contours.size().toInt()) {
             try { fitEllipse(contours[it.toLong()]) }
-            catch (exception: Exception) { println(exception); null }
+            catch (exception: Exception) { null }
         }.filterNotNull()
 
         return ellipses.map {

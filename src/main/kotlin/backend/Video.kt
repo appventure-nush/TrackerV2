@@ -56,6 +56,7 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
      * Moves the video to the specified [frameNumber]
      */
     fun seek(frameNumber: Int) {
+        println(frameNumber)
         videoCapture.set(1, (frameNumber - 1).toDouble())
         currentFrame = frameNumber - 1
     }

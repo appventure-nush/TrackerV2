@@ -30,6 +30,7 @@ import kotlin.time.ExperimentalTime
 @Composable
 fun VideoPlayer(video: Video) {
     val playVideo = remember { mutableStateOf(false) }
+    val pauseSyncing = remember { mutableStateOf(false) }
     val threadCreated = remember { mutableStateOf(false) }
     val imageBitmap = remember { mutableStateOf(loadImageBitmap(File("test.bmp").inputStream())) }
 
@@ -60,18 +61,18 @@ fun VideoPlayer(video: Video) {
                     // Create the thread
                     Thread {
                         while (true) {
-                            if (playVideo.value && video.hasNext()) {
+                            if (!pauseSyncing.value && video.hasNext()) {
                                 try {
-                                    // if (!playVideo.value) video.seek(video.currentFrame)
+                                    if (!playVideo.value) video.seek(video.currentFrame)
 
                                     val bytes = video.next().encode(".bmp")
                                     imageBitmap.value = loadImageBitmap(bytes.inputStream())
                                 } catch (ignored: ConcurrentModificationException) {}
                                 catch (exception: Exception) {
-                                    //playVideo.value = false
+                                    playVideo.value = false
 
-                                    //errorMessage.value = exception.toString()
-                                    //errorDialog.value = true
+                                    errorMessage.value = exception.toString()
+                                    errorDialog.value = true
                                 }
                             } else Thread.sleep(100)
                         }
@@ -104,19 +105,20 @@ fun VideoPlayer(video: Video) {
                 value = video.currentFrame.toFloat(),
                 valueRange = 0.0f..video.totalFrames.toFloat(),
                 onValueChange = { // TODO Speed up seeking somehow
-                    val initiallyPlaying = playVideo.value
+                    // Stop the video from syncing for a while
+                    pauseSyncing.value = true
 
-                    // Pause the video
-                    playVideo.value = false
+                    Thread.sleep(100)
 
                     // Seek to the appropiate location
                     video.seek(it.toInt())
+                    video.hasNext()
 
                     val bytes = video.next().encode(".bmp")
                     imageBitmap.value = loadImageBitmap(bytes.inputStream())
 
-                    // Play the video again
-                    playVideo.value = initiallyPlaying
+                    // Start syncing again
+                    pauseSyncing.value = false
                 }
             )
         }
@@ -127,20 +129,20 @@ fun VideoPlayer(video: Video) {
 
         if (frameNumberText.value.toIntOrNull() != null) {
             if (frameNumberText.value.toInt() < video.totalFrames) {
-                // Seek to the new frame number
-                val initiallyPlaying = playVideo.value
+                // Stop the video from syncing for a while
+                pauseSyncing.value = true
 
-                // Pause the video
-                playVideo.value = false
+                Thread.sleep(100)
 
                 // Seek to the appropiate location
                 video.seek(frameNumberText.value.toInt())
+                video.hasNext()
 
                 val bytes = video.next().encode(".bmp")
                 imageBitmap.value = loadImageBitmap(bytes.inputStream())
 
                 // Play the video again
-                playVideo.value = initiallyPlaying
+                pauseSyncing.value = false
             } else {
                 println("Frame number should not exceed total number of frames ${video.totalFrames}")
             }
