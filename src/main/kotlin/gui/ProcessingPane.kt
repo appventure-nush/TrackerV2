@@ -155,8 +155,8 @@ fun ProcessingPane(node: Processing, postProcessing: Boolean = false,
 @Preview
 @Composable
 fun BlurringPane(node: BlurringNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
-    val kernelSize = remember { mutableStateOf(3.0f) }
-    val blurType = remember { mutableStateOf(Blurring.GAUSSIAN) }
+    val kernelSize = remember { mutableStateOf(node.kernelSize.toFloat()) }
+    val blurType = remember { mutableStateOf(node.blurType) }
 
     ProcessingPane(node, false, onDelete, shift) {
         Column {
@@ -202,8 +202,8 @@ fun BlurringPane(node: BlurringNode, onDelete: () -> Unit, shift: (Int) -> Unit)
 @Preview
 @Composable
 fun ThresholdingPane(node: ThresholdingNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
-    val thresholdRange = remember { mutableStateOf(0.0f .. 255.0f) }
-    val binarise = remember { mutableStateOf(true) }
+    val thresholdRange = remember { mutableStateOf(node.minThreshold.toFloat() .. node.maxThreshold.toFloat()) }
+    val binarise = remember { mutableStateOf(node.binarise) }
 
     ProcessingPane(node, false, onDelete, shift) {
         Column {
@@ -308,9 +308,9 @@ fun ThresholdingPane(node: ThresholdingNode, onDelete: () -> Unit, shift: (Int) 
 @Preview
 @Composable
 fun MorphologicalPane(node: MorphologicalNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
-    val iterations = remember { mutableStateOf(1.0f) }
-    val kernelSize = remember { mutableStateOf(3.0f) }
-    val operationType = remember { mutableStateOf(Morphological.ERODE) }
+    val iterations = remember { mutableStateOf(node.iterations.toFloat()) }
+    val kernelSize = remember { mutableStateOf(node.kernelSize.toFloat()) }
+    val operationType = remember { mutableStateOf(node.operationType) }
 
     ProcessingPane(node, false, onDelete, shift) {
         Column {
@@ -380,8 +380,8 @@ fun MorphologicalPane(node: MorphologicalNode, onDelete: () -> Unit, shift: (Int
 @Preview
 @Composable
 fun CannyEdgePane(node: CannyEdgeNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
-    val kernelSize = remember { mutableStateOf(3.0f) }
-    val threshold = remember { mutableStateOf(200.0f) }
+    val kernelSize = remember { mutableStateOf(node.kernelSize.toFloat()) }
+    val threshold = remember { mutableStateOf(node.threshold.toFloat()) }
 
     ProcessingPane(node, false, onDelete, shift) {
         Column {
