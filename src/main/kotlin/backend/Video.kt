@@ -5,6 +5,7 @@ import backend.image_processing.preprocess.Preprocessor
 import org.bytedeco.opencv.global.opencv_imgproc.COLOR_BGR2RGB
 import org.bytedeco.opencv.global.opencv_imgproc.cvtColor
 import org.bytedeco.opencv.global.opencv_videoio.CAP_PROP_FRAME_COUNT
+import org.bytedeco.opencv.global.opencv_videoio.CAP_PROP_FPS
 import org.bytedeco.opencv.opencv_core.Mat
 import org.bytedeco.opencv.opencv_videoio.VideoCapture
 
@@ -29,6 +30,11 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
      * The preprocessor that preprocesses the video frames
      */
     val preprocesser: Preprocessor = Preprocessor()
+
+    /**
+     * The frame rate of the video
+     */
+    val frameRate: Double = videoCapture.get(CAP_PROP_FPS)
 
     /**
      * The postprocessor that converts the information in the video frames to data
@@ -65,7 +71,7 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
         currentImage = preprocesser.process(currentImage)
 
         if (postprocessor != null)
-            currentImage = postprocessor!!.process(currentImage)
+            currentImage = postprocessor!!.process(currentImage, currentFrame / frameRate)
 
         return currentImage
     }

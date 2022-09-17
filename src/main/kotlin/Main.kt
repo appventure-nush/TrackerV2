@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.unit.dp
@@ -17,6 +18,8 @@ import backend.image_processing.postprocess.fitting.CircleFittingNode
 import backend.image_processing.postprocess.fitting.EllipseFittingNode
 import gui.NodesPane
 import gui.VideoPlayer
+import java.awt.FileDialog
+import java.io.File
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
@@ -37,6 +40,17 @@ fun main() {
                 Menu("File", mnemonic = 'F') {
                     Item("Open File", onClick = { }, shortcut = KeyShortcut(Key.O, ctrl = true))
                     Item("Save File", onClick = { }, shortcut = KeyShortcut(Key.S, ctrl = true))
+                }
+
+                Menu("Data") {
+                    Item(
+                        "Export Data",
+                        onClick = {
+                            val dialog = FileDialog(ComposeWindow(), "Save Data", FileDialog.SAVE)
+                            dialog.isVisible = true
+                            video.postprocessor!!.export(File(dialog.directory + "/" + dialog.file))
+                        }
+                    )
                 }
             }
 
