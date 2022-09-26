@@ -14,7 +14,8 @@ repositories {
 
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation("com.github.ajalt.colormath:colormath:3.2.0")
+    implementation("org.jetbrains.compose.material:material-icons-extended-desktop:1.1.0")
+    implementation("com.github.ajalt.colormath:colormath:3.2.1")
     implementation("org.bytedeco:javacv-platform:1.5.7")
     implementation("com.github.holgerbrandl:krangl:0.18")
     testImplementation(kotlin("test"))
