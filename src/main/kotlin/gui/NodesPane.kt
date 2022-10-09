@@ -11,11 +11,13 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.Video
@@ -33,7 +35,7 @@ data class Page(val name: String, val content: @Composable () -> Unit)
 @OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
-fun NodesPane(video: Video) {
+fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<Dp>) {
     val preprocessor = video.preprocesser
     val postprocessors = video.postprocessors
 
@@ -43,6 +45,8 @@ fun NodesPane(video: Video) {
 
     fun deleteNode(it: PreprocessingNode) = run { preprocessor.nodes.remove(it) }
     fun shift(it: Int, node: PreprocessingNode) = run {
+        println(windowWidth.value)
+
         val index = preprocessor.nodes.indexOf(node)
         preprocessor.nodes.remove(node)
 
@@ -57,7 +61,7 @@ fun NodesPane(video: Video) {
             Box {
                 val state = rememberLazyListState()
 
-                LazyColumn(modifier = Modifier.width(250.dp).padding(end = 12.dp), state) {
+                LazyColumn(modifier = Modifier.width(windowWidth.value - 95.dp - width.value).padding(end = 12.dp), state) {
                     // TODO Auto-refresh when node is deleted
                     items(preprocessor.nodes.size) {
                         Row(modifier = Modifier.animateItemPlacement()) {
@@ -99,7 +103,7 @@ fun NodesPane(video: Video) {
             Box {
                 val state = rememberLazyListState()
 
-                LazyColumn(modifier = Modifier.width(250.dp).padding(end = 12.dp), state) {
+                LazyColumn(modifier = Modifier.width(windowWidth.value - 95.dp - width.value).padding(end = 12.dp), state) {
                     // TODO Auto-refresh when node is deleted
                     items(postprocessors.size) {
                         Row(modifier = Modifier.animateItemPlacement()) {

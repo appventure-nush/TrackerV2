@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -19,16 +20,16 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.Video
 import java.io.File
-import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Preview
 @Composable
-fun VideoPlayer(video: Video) {
+fun VideoPlayer(video: Video, width: MutableState<Dp>) {
     val playVideo = remember { mutableStateOf(false) }
     val pauseSyncing = remember { mutableStateOf(false) }
     val threadCreated = remember { mutableStateOf(false) }
@@ -42,7 +43,7 @@ fun VideoPlayer(video: Video) {
 
     val focusRequester = remember { FocusRequester() }
 
-    Column(modifier = Modifier.width(950.dp).padding(10.dp), Arrangement.spacedBy(5.dp)) {
+    Column(modifier = Modifier.width(width.value).padding(10.dp), Arrangement.spacedBy(5.dp)) {
         Image(
             imageBitmap.value,
             contentDescription = ""
