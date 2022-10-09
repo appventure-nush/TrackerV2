@@ -26,4 +26,6 @@ data class CircleFittingNode(var minDist: Double = 20.0, var param1: Double = 20
         return if (biggestCircle == null) Pair(listOf(-1, -1, -1), newImg)
         else Pair(listOf(biggestCircle.centre.x, biggestCircle.centre.y, biggestCircle.radius), newImg)
     }
+
+    override fun clone() = CircleFittingNode(minDist, param1, param2, minRadius, maxRadius)
 }

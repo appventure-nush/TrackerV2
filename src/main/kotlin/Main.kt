@@ -14,12 +14,10 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import backend.Video
 import backend.image_processing.postprocess.Postprocessor
-import backend.image_processing.postprocess.fitting.CircleFittingNode
 import backend.image_processing.postprocess.fitting.EllipseFittingNode
 import gui.NodesPane
 import gui.VideoPlayer
 import java.awt.FileDialog
-import java.io.File
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
@@ -28,7 +26,7 @@ fun main() {
     video.next().write("test.bmp")
 
     val preprocessor = video.preprocesser
-    video.postprocessor = Postprocessor(EllipseFittingNode())
+    video.postprocessors.add(Postprocessor(EllipseFittingNode()))
 
     return application {
         Window(
@@ -48,7 +46,7 @@ fun main() {
                         onClick = {
                             val dialog = FileDialog(ComposeWindow(), "Save Data", FileDialog.SAVE)
                             dialog.isVisible = true
-                            video.postprocessor!!.export(File(dialog.directory + "/" + dialog.file))
+                            //video.postprocessor!!.export(File(dialog.directory + "/" + dialog.file))
                         }
                     )
                 }
@@ -59,7 +57,7 @@ fun main() {
                     VideoPlayer(video)
 
                     Column {
-                        NodesPane(preprocessor)
+                        NodesPane(video)
                     }
                 }
             }

@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.image_processing.Processing
 import backend.image_processing.postprocess.fitting.CircleFittingNode
+import backend.image_processing.postprocess.fitting.EllipseFittingNode
 import backend.image_processing.preprocess.blurring.Blurring
 import backend.image_processing.preprocess.blurring.BlurringNode
 import backend.image_processing.preprocess.edge_detection.CannyEdgeNode
@@ -440,10 +441,8 @@ fun CannyEdgePane(node: CannyEdgeNode, onDelete: () -> Unit, shift: (Int) -> Uni
 
 @Preview
 @Composable
-fun CircleFittingPane(node: CircleFittingNode, onDelete: () -> Unit) {
+fun EllipseFittingPane(node: EllipseFittingNode, onDelete: () -> Unit) {
     ProcessingPane(node, true, onDelete, {}) {
-        Column {
-
-        }
+        Column { }
     }
 }

@@ -1,17 +1,15 @@
 package gui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.filled.SquareFoot
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,8 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import backend.Video
+import backend.image_processing.postprocess.Postprocessor
+import backend.image_processing.postprocess.fitting.EllipseFittingNode
 import backend.image_processing.preprocess.PreprocessingNode
-import backend.image_processing.preprocess.Preprocessor
 import backend.image_processing.preprocess.blurring.BlurringNode
 import backend.image_processing.preprocess.edge_detection.CannyEdgeNode
 import backend.image_processing.preprocess.masking.ThresholdingNode
@@ -30,10 +30,15 @@ import backend.image_processing.preprocess.morphological.MorphologicalNode
 
 data class Page(val name: String, val content: @Composable () -> Unit)
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
-fun NodesPane(preprocessor: Preprocessor) {
-    val items = listOf(BlurringNode(), MorphologicalNode(), ThresholdingNode(), CannyEdgeNode())
+fun NodesPane(video: Video) {
+    val preprocessor = video.preprocesser
+    val postprocessors = video.postprocessors
+
+    val preprocessingItems = listOf(BlurringNode(), MorphologicalNode(), ThresholdingNode(), CannyEdgeNode())
+    val postprocessingItems = listOf(EllipseFittingNode())
     val expanded = remember { mutableStateOf(false) }
 
     fun deleteNode(it: PreprocessingNode) = run { preprocessor.nodes.remove(it) }
@@ -54,12 +59,14 @@ fun NodesPane(preprocessor: Preprocessor) {
 
                 LazyColumn(modifier = Modifier.width(250.dp).padding(end = 12.dp), state) {
                     // TODO Auto-refresh when node is deleted
-                    items(preprocessor.nodes) {
-                        when (it) {
-                            is BlurringNode -> BlurringPane(it, { deleteNode(it) }, { j -> shift(j, it) })
-                            is MorphologicalNode -> MorphologicalPane(it, { deleteNode(it) }, { j -> shift(j, it) })
-                            is ThresholdingNode -> ThresholdingPane(it, { deleteNode(it) }, { j -> shift(j, it) })
-                            is CannyEdgeNode -> CannyEdgePane(it, { deleteNode(it) }, { j -> shift(j, it) })
+                    items(preprocessor.nodes.size) {
+                        Row(modifier = Modifier.animateItemPlacement()) {
+                            when (val node = preprocessor.nodes[it]) {
+                                is BlurringNode -> BlurringPane(node, { deleteNode(node) }, { j -> shift(j, node) })
+                                is MorphologicalNode -> MorphologicalPane(node, { deleteNode(node) }, { j -> shift(j, node) })
+                                is ThresholdingNode -> ThresholdingPane(node, { deleteNode(node) }, { j -> shift(j, node) })
+                                is CannyEdgeNode -> CannyEdgePane(node, { deleteNode(node) }, { j -> shift(j, node) })
+                            }
                         }
                     }
                 }
@@ -76,7 +83,7 @@ fun NodesPane(preprocessor: Preprocessor) {
                         expanded = expanded.value,
                         onDismissRequest = { expanded.value = false }
                     ) {
-                        items.forEach {
+                        preprocessingItems.forEach {
                             DropdownMenuItem(onClick = {
                                 expanded.value = false
                                 preprocessor.nodes.add(it.clone())
@@ -88,10 +95,50 @@ fun NodesPane(preprocessor: Preprocessor) {
                 }
             }
         },
-        Page("Postprocessing") {}
+        Page("Postprocessing") {
+            Box {
+                val state = rememberLazyListState()
+
+                LazyColumn(modifier = Modifier.width(250.dp).padding(end = 12.dp), state) {
+                    // TODO Auto-refresh when node is deleted
+                    items(postprocessors.size) {
+                        Row(modifier = Modifier.animateItemPlacement()) {
+                            when (val node = postprocessors[it].node) {
+                                is EllipseFittingNode -> EllipseFittingPane(node) {}
+                            }
+                        }
+                    }
+                }
+
+                VerticalScrollbar(
+                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                    adapter = rememberScrollbarAdapter(
+                        scrollState = state
+                    )
+                )
+
+                Column(modifier = Modifier.align(Alignment.BottomEnd)) {
+                    DropdownMenu(
+                        expanded = expanded.value,
+                        onDismissRequest = { expanded.value = false }
+                    ) {
+                        postprocessingItems.forEach {
+                            DropdownMenuItem(onClick = {
+                                expanded.value = false
+                                postprocessors.add(Postprocessor(it.clone()))
+                            }) {
+                                Text(text = it.name, fontSize = 12.sp)
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        Page("Data") {},  // TODO Display data
+        Page("Settings") {}  // TODO Change settings here
     )
 
-    val icons = listOf(Icons.Filled.FilterAlt, Icons.Filled.SquareFoot)
+    val icons = listOf(Icons.Filled.FilterAlt, Icons.Filled.SquareFoot, Icons.Filled.ShowChart, Icons.Filled.Settings)
     Box {
         Row(
             modifier = Modifier.align(Alignment.BottomEnd).fillMaxWidth(),

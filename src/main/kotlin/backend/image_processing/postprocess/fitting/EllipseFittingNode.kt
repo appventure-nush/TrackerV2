@@ -31,4 +31,6 @@ class EllipseFittingNode : PostprocessingNode() {
             Pair(listOf(width, height, angle, centre.x, centre.y), newImg)
         }
     }
+
+    override fun clone() = EllipseFittingNode()
 }

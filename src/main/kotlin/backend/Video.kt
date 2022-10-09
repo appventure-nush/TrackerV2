@@ -37,9 +37,14 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
     val frameRate: Double = videoCapture.get(CAP_PROP_FPS)
 
     /**
-     * The postprocessor that converts the information in the video frames to data
+     * The postprocessors that convert the information in the video frames to data
      */
-    var postprocessor: Postprocessor? = null
+    val postprocessors: MutableList<Postprocessor> = arrayListOf()
+
+    /**
+     * The postprocessor that will be used in displaying the video frames
+     */
+    val focusedPostprocessor: Int = -1
 
     /**
      * The current frame number of the video
@@ -71,8 +76,9 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
         currentImage = Image(Colourspace.RGB, nextImage)
         currentImage = preprocesser.process(currentImage)
 
-        if (postprocessor != null)
-            currentImage = postprocessor!!.process(currentImage, currentFrame / frameRate)
+        // Perform post-processing
+        val list = postprocessors.map { it.process(currentImage, currentFrame / frameRate) }
+        currentImage = if (focusedPostprocessor != -1) list[focusedPostprocessor] else currentImage
 
         return currentImage
     }

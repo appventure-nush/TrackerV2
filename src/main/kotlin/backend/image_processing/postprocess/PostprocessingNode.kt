@@ -3,6 +3,7 @@ package backend.image_processing.postprocess
 import backend.Image
 import backend.Point
 import backend.image_processing.Processing
+import backend.image_processing.preprocess.PreprocessingNode
 import org.bytedeco.opencv.opencv_core.Mat
 
 /**
@@ -32,4 +33,9 @@ abstract class PostprocessingNode: Processing() {
 
     /** Converts a point in pixels to the same point in metres */
     fun position(point: Point) = (point - origin) * scale
+
+    /**
+     * Returns a deep copy of the postprocessing node
+     */
+    abstract fun clone(): PostprocessingNode
 }
