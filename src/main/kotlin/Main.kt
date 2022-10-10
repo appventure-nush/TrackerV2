@@ -10,6 +10,7 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
@@ -21,7 +22,6 @@ import gui.VideoPlayer
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.awt.FileDialog
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
@@ -30,7 +30,6 @@ fun main() {
     video.next().write("test.bmp")
 
     video.postprocessors.add(Postprocessor(EllipseFittingNode()))
-
 
     return application {
         val windowState = rememberWindowState(placement = WindowPlacement.Maximized)
@@ -69,16 +68,16 @@ fun main() {
 
             MaterialTheme {
                 Row(modifier = Modifier.padding(10.dp)) {
+                    val offsetX = remember { mutableStateOf(0) }
                     VideoPlayer(video, width)
 
-                    Button(  // TODO Fix bug causing funny scaling issues
+                    Button(
                         modifier = Modifier.fillMaxHeight()
                             .width(1.dp)
-                            .offset { IntOffset(width.value.toPx().toInt() - 900.dp.toPx().toInt(), 0) }
                             .pointerInput(Unit) {
                                 detectDragGestures { change, dragAmount ->
                                     change.consumeAllChanges()
-                                    width.value += dragAmount.x.toSp().toDp()
+                                    width.value += dragAmount.x.toDp()
                                 }
                             },
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
