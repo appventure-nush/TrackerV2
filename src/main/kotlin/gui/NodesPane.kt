@@ -28,6 +28,7 @@ import backend.image_processing.preprocess.blurring.BlurringNode
 import backend.image_processing.preprocess.edge_detection.CannyEdgeNode
 import backend.image_processing.preprocess.masking.ThresholdingNode
 import backend.image_processing.preprocess.morphological.MorphologicalNode
+import kotlin.random.Random
 
 
 data class Page(val name: String, val content: @Composable () -> Unit)
@@ -43,26 +44,32 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
     val postprocessingItems = listOf(EllipseFittingNode())
     val expanded = remember { mutableStateOf(false) }
 
-    fun deleteNode(it: PreprocessingNode) = run { preprocessor.nodes.remove(it) }
-    fun shift(it: Int, node: PreprocessingNode) = run {
-        println(windowWidth.value)
+    val onUpdate = remember { mutableStateOf(0) }
 
+    fun deleteNode(it: PreprocessingNode) = run {
+        preprocessor.nodes.remove(it)
+        onUpdate.value = Random.nextInt(100)
+    }
+
+    fun shift(it: Int, node: PreprocessingNode) = run {
         val index = preprocessor.nodes.indexOf(node)
         preprocessor.nodes.remove(node)
 
         if (index + it < 0) preprocessor.nodes.add(0, node)
         else if (index + it >= preprocessor.nodes.size + 1) preprocessor.nodes.add(preprocessor.nodes.size, node)
         else preprocessor.nodes.add(index + it, node)
+
+        onUpdate.value = Random.nextInt(100)
     }
 
     val selectedItem = remember { mutableStateOf(0) }
     val pages = listOf(
         Page("Preprocessing") {
             Box {
-                val state = rememberLazyListState()
+                onUpdate.value  // magic h0xs
 
+                val state = rememberLazyListState()
                 LazyColumn(modifier = Modifier.width(windowWidth.value - 95.dp - width.value).padding(end = 12.dp), state) {
-                    // TODO Auto-refresh when node is deleted
                     items(preprocessor.nodes.size) {
                         Row(modifier = Modifier.animateItemPlacement()) {
                             when (val node = preprocessor.nodes[it]) {

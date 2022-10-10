@@ -68,7 +68,6 @@ fun main() {
 
             MaterialTheme {
                 Row(modifier = Modifier.padding(10.dp)) {
-                    val offsetX = remember { mutableStateOf(0) }
                     VideoPlayer(video, width)
 
                     Button(
