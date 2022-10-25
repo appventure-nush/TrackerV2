@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,10 +37,16 @@ fun ProcessingPane(node: Processing, postProcessing: Boolean = false,
                    onDelete: () -> Unit, shift: (Int) -> Unit, options: @Composable () -> Unit) {
     val helpDialog = remember { mutableStateOf(false) }
     val deleteDialog = remember { mutableStateOf(false) }
+
     val count = remember { mutableStateOf(0) }
+    val collecting = remember { mutableStateOf(false) }
 
     // Store the pane in a card
-    Card(elevation = 10.dp, modifier = Modifier.padding(10.dp), shape = RoundedCornerShape(10.dp)) {
+    Card(
+        elevation = 10.dp,
+        modifier = Modifier.padding(10.dp),
+        shape = RoundedCornerShape(10.dp)
+    ) {
         Column(Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
             Box {
                 Row(Modifier.padding(10.dp).fillMaxWidth(), Arrangement.spacedBy(5.dp)) {
@@ -94,7 +98,7 @@ fun ProcessingPane(node: Processing, postProcessing: Boolean = false,
 
             options()
 
-            Row(modifier = Modifier.align(Alignment.End)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                 if (!postProcessing) {
                     // Shift up button
                     IconButton(onClick = { shift(-1) }, modifier = Modifier.size(23.dp)) {
@@ -111,7 +115,29 @@ fun ProcessingPane(node: Processing, postProcessing: Boolean = false,
                             tint = MaterialTheme.colors.primary
                         )
                     }
+                } else {
+                    // Collect data
+                    IconButton(
+                        onClick = { collecting.value = !collecting.value },
+                        modifier = Modifier.size(23.dp)
+                    ) {
+                        Icon(
+                            if (!collecting.value) Icons.Filled.PlayArrow else Icons.Filled.Pause,
+                            contentDescription = "",
+                            tint = if (!collecting.value) Color.Green else Color.Black
+                        )
+                    }
+
+                    // Save data
+                    IconButton(onClick = { }, modifier = Modifier.size(23.dp)) {
+                        Icon(
+                            Icons.Filled.Save, contentDescription = "",
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
                 }
+
+                Spacer(Modifier.weight(1f))
 
                 // The delete button
                 IconButton(

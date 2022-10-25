@@ -77,9 +77,7 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
         currentImage = preprocesser.process(currentImage)
 
         // Perform post-processing
-        val list = postprocessors.map { it.process(currentImage, currentFrame / frameRate) }
-        currentImage = if (focusedPostprocessor != -1) list[focusedPostprocessor] else currentImage
-
+        postprocessors.map { currentImage = it.process(currentImage, currentFrame / frameRate) }
         return currentImage
     }
 }

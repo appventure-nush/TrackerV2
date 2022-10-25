@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.Video
+import backend.image_processing.postprocess.PostprocessingNode
 import backend.image_processing.postprocess.Postprocessor
 import backend.image_processing.postprocess.fitting.EllipseFittingNode
 import backend.image_processing.preprocess.PreprocessingNode
@@ -48,6 +49,11 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
 
     fun deleteNode(it: PreprocessingNode) = run {
         preprocessor.nodes.remove(it)
+        onUpdate.value = Random.nextInt(100)
+    }
+
+    fun deleteNode(node: PostprocessingNode) = run {
+        postprocessors.removeAll { it.node == node }
         onUpdate.value = Random.nextInt(100)
     }
 
@@ -108,6 +114,8 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
         },
         Page("Postprocessing") {
             Box {
+                onUpdate.value  // magic h0xs
+
                 val state = rememberLazyListState()
 
                 LazyColumn(modifier = Modifier.width(windowWidth.value - 95.dp - width.value).padding(end = 12.dp), state) {
@@ -115,7 +123,7 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
                     items(postprocessors.size) {
                         Row(modifier = Modifier.animateItemPlacement()) {
                             when (val node = postprocessors[it].node) {
-                                is EllipseFittingNode -> EllipseFittingPane(node) {}
+                                is EllipseFittingNode -> EllipseFittingPane(node) { deleteNode(node) }
                             }
                         }
                     }
