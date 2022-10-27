@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.image_processing.Processing
-import backend.image_processing.postprocess.fitting.CircleFittingNode
 import backend.image_processing.postprocess.fitting.EllipseFittingNode
 import backend.image_processing.preprocess.blurring.Blurring
 import backend.image_processing.preprocess.blurring.BlurringNode
@@ -33,8 +31,15 @@ import backend.image_processing.preprocess.morphological.MorphologicalNode
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Preview
 @Composable
-fun ProcessingPane(node: Processing, postProcessing: Boolean = false,
-                   onDelete: () -> Unit, shift: (Int) -> Unit, options: @Composable () -> Unit) {
+fun ProcessingPane(
+    node: Processing,
+    postProcessing: Boolean = false,
+    onDelete: () -> Unit,
+    shift: (Int) -> Unit,
+    clearData: () -> Unit,
+    save: () -> Unit,
+    options: @Composable () -> Unit
+) {
     val helpDialog = remember { mutableStateOf(false) }
     val deleteDialog = remember { mutableStateOf(false) }
 
@@ -118,18 +123,18 @@ fun ProcessingPane(node: Processing, postProcessing: Boolean = false,
                 } else {
                     // Collect data
                     IconButton(
-                        onClick = { collecting.value = !collecting.value },
+                        onClick = { clearData() },
                         modifier = Modifier.size(23.dp)
                     ) {
                         Icon(
-                            if (!collecting.value) Icons.Filled.PlayArrow else Icons.Filled.Pause,
+                            Icons.Filled.ClearAll,
                             contentDescription = "",
-                            tint = if (!collecting.value) Color.Green else Color.Black
+                            tint = MaterialTheme.colors.primary
                         )
                     }
 
                     // Save data
-                    IconButton(onClick = { }, modifier = Modifier.size(23.dp)) {
+                    IconButton(onClick = { save() }, modifier = Modifier.size(23.dp)) {
                         Icon(
                             Icons.Filled.Save, contentDescription = "",
                             tint = MaterialTheme.colors.primary
@@ -185,7 +190,7 @@ fun BlurringPane(node: BlurringNode, onDelete: () -> Unit, shift: (Int) -> Unit)
     val kernelSize = remember { mutableStateOf(node.kernelSize.toFloat()) }
     val blurType = remember { mutableStateOf(node.blurType) }
 
-    ProcessingPane(node, false, onDelete, shift) {
+    ProcessingPane(node, false, onDelete, shift, {}, {}) {
         Column {
             // For adjusting kernel size
             Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
@@ -232,7 +237,7 @@ fun ThresholdingPane(node: ThresholdingNode, onDelete: () -> Unit, shift: (Int) 
     val thresholdRange = remember { mutableStateOf(node.minThreshold.toFloat() .. node.maxThreshold.toFloat()) }
     val binarise = remember { mutableStateOf(node.binarise) }
 
-    ProcessingPane(node, false, onDelete, shift) {
+    ProcessingPane(node, false, onDelete, shift, {}, {}) {
         Column {
             /*
             // For adjusting minimum threshold
@@ -339,7 +344,7 @@ fun MorphologicalPane(node: MorphologicalNode, onDelete: () -> Unit, shift: (Int
     val kernelSize = remember { mutableStateOf(node.kernelSize.toFloat()) }
     val operationType = remember { mutableStateOf(node.operationType) }
 
-    ProcessingPane(node, false, onDelete, shift) {
+    ProcessingPane(node, false, onDelete, shift, {}, {}) {
         Column {
             // For adjusting kernel size
             Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
@@ -410,7 +415,7 @@ fun CannyEdgePane(node: CannyEdgeNode, onDelete: () -> Unit, shift: (Int) -> Uni
     val kernelSize = remember { mutableStateOf(node.kernelSize.toFloat()) }
     val threshold = remember { mutableStateOf(node.threshold.toFloat()) }
 
-    ProcessingPane(node, false, onDelete, shift) {
+    ProcessingPane(node, false, onDelete, shift, {}, {}) {
         Column {
             // For adjusting kernel size
             Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
@@ -467,8 +472,8 @@ fun CannyEdgePane(node: CannyEdgeNode, onDelete: () -> Unit, shift: (Int) -> Uni
 
 @Preview
 @Composable
-fun EllipseFittingPane(node: EllipseFittingNode, onDelete: () -> Unit) {
-    ProcessingPane(node, true, onDelete, {}) {
+fun EllipseFittingPane(node: EllipseFittingNode, onDelete: () -> Unit, startCollecting: () -> Unit, save: () -> Unit) {
+    ProcessingPane(node, true, onDelete, {}, startCollecting, save) {
         Column { }
     }
 }

@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -29,6 +30,8 @@ import backend.image_processing.preprocess.blurring.BlurringNode
 import backend.image_processing.preprocess.edge_detection.CannyEdgeNode
 import backend.image_processing.preprocess.masking.ThresholdingNode
 import backend.image_processing.preprocess.morphological.MorphologicalNode
+import java.awt.FileDialog
+import java.io.File
 import kotlin.random.Random
 
 
@@ -123,7 +126,19 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
                     items(postprocessors.size) {
                         Row(modifier = Modifier.animateItemPlacement()) {
                             when (val node = postprocessors[it].node) {
-                                is EllipseFittingNode -> EllipseFittingPane(node) { deleteNode(node) }
+                                is EllipseFittingNode -> EllipseFittingPane(
+                                    node,
+                                    { deleteNode(node) },
+                                    { postprocessors[it].clear() },
+                                    {
+                                        val dialog = FileDialog(ComposeWindow(), "Save Data", FileDialog.SAVE)
+                                        dialog.file = "*.csv"
+                                        dialog.isVisible = true
+
+                                        if (dialog.file != null)
+                                            postprocessors[it].export(File(dialog.directory + "/" + dialog.file))
+                                    }
+                                )
                             }
                         }
                     }
