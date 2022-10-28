@@ -62,9 +62,9 @@ fun <T> Combobox(label: String, selectedItem: MutableState<T>, items: List<T>, m
         ) {
             items.forEach {
                 DropdownMenuItem(onClick = {
-                    onValueChanged()
                     selectedItem.value = it
                     expanded.value = false
+                    onValueChanged()
                 }) {
                     Text(text = it.toString(), fontSize = fontSize)
                 }
