@@ -9,6 +9,9 @@ import org.bytedeco.opencv.opencv_core.Mat
 import org.bytedeco.opencv.opencv_core.MatVector
 
 
+/**
+ * The post-processing node used to fit ellipses and return the biggest one TODO Return all ellipses
+ */
 class EllipseFittingNode : PostprocessingNode() {
     override val name: String = "Ellipse Fitting"
     override val help: String = "Finds ellipse in the pictures and returns the biggest one."

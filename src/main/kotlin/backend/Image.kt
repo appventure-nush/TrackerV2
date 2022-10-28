@@ -343,8 +343,8 @@ class Image(colourspace: Colourspace, img: Mat) {
         val circlesList = arrayListOf<Circle>()
         for (i in 0 until circles.size()) {
             val circle = circles[i]
-            val center = fromScaled(Point(circle[1].toDouble(), circle[2].toDouble()))
-            circlesList.add(Circle(center, circle[0].toDouble() * scale))
+            val center = fromScaled(Point(circle[0].toDouble(), circle[1].toDouble()))
+            circlesList.add(Circle(center, circle[2].toDouble() / scale))
         }
 
         return circlesList

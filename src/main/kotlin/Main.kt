@@ -10,26 +10,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.*
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPlacement
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import backend.Video
-import backend.image_processing.postprocess.Postprocessor
-import backend.image_processing.postprocess.fitting.EllipseFittingNode
 import gui.NodesPane
 import gui.VideoPlayer
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import java.awt.FileDialog
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    val video = Video("video.mp4")
+    val video = Video("video2.mp4")
     video.hasNext()
     video.next().write("test.bmp")
 
@@ -50,6 +47,7 @@ fun main() {
                     .launchIn(this)
             }
 
+            /*
             MenuBar { // TODO Add actual functionality to menu bar
                 Menu("File", mnemonic = 'F') {
                     Item("Open File", onClick = { }, shortcut = KeyShortcut(Key.O, ctrl = true))
@@ -67,6 +65,7 @@ fun main() {
                     )
                 }
             }
+             */
 
             MaterialTheme {
                 Row(modifier = Modifier.padding(10.dp)) {

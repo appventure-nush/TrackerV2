@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.image_processing.Processing
+import backend.image_processing.postprocess.fitting.CircleFittingNode
 import backend.image_processing.postprocess.fitting.EllipseFittingNode
 import backend.image_processing.preprocess.blurring.Blurring
 import backend.image_processing.preprocess.blurring.BlurringNode
@@ -475,5 +476,114 @@ fun CannyEdgePane(node: CannyEdgeNode, onDelete: () -> Unit, shift: (Int) -> Uni
 fun EllipseFittingPane(node: EllipseFittingNode, onDelete: () -> Unit, startCollecting: () -> Unit, save: () -> Unit) {
     ProcessingPane(node, true, onDelete, {}, startCollecting, save) {
         Column { }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Preview
+@Composable
+fun CircleFittingPane(node: CircleFittingNode, onDelete: () -> Unit, startCollecting: () -> Unit, save: () -> Unit) {
+    val param1 = remember { mutableStateOf(node.param1.toFloat()) }
+    val param2 = remember { mutableStateOf(node.param2.toFloat()) }
+    val minDist = remember { mutableStateOf(node.param1.toFloat()) }
+    val radiusRange = remember { mutableStateOf(node.minRadius.toFloat() .. node.maxRadius.toFloat()) }
+
+    ProcessingPane(node, true, onDelete, {}, startCollecting, save) {
+        Column {
+            // Parameter 1 -> Controls edge detection
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Text(
+                    "Parameter 1: ",
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+
+                Slider(
+                    value = param1.value,
+                    valueRange = 0.0f .. 600.0f,
+                    onValueChange = {
+                        param1.value = it
+                        node.param1 = param1.value.toDouble()
+                    },
+                    modifier = Modifier.width(125.dp)
+                )
+
+                Text(
+                    param1.value.toInt().toString(),
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+
+            // Parameter 2 -> Controls how circular an objects has to be a circle
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Text(
+                    "Parameter 2: ",
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+
+                Slider(
+                    value = param2.value,
+                    valueRange = 0.0f .. 100.0f,
+                    onValueChange = {
+                        param2.value = it
+                        node.param2 = param2.value.toDouble()
+                    },
+                    modifier = Modifier.width(125.dp)
+                )
+
+                Text(
+                    param2.value.toInt().toString(),
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+
+            // Adjust minimum distance between circles
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Text(
+                    "Minimum Distance: ",
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+
+                Slider(
+                    value = minDist.value,
+                    valueRange = 0.0f .. 200.0f,
+                    onValueChange = {
+                        minDist.value = it
+                        node.minDist = minDist.value.toDouble()
+                    },
+                    modifier = Modifier.width(125.dp)
+                )
+
+                Text(
+                    minDist.value.toInt().toString(),
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+
+            // Changing range of radii
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Text(
+                    "Radius Range: ",
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+
+                RangeSlider(
+                    values = radiusRange.value,
+                    valueRange = 0.0f .. 100.0f,
+                    onValueChange = {
+                        radiusRange.value = it
+                        node.minRadius = it.start.toInt()
+                        node.maxRadius = it.endInclusive.toInt()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     }
 }

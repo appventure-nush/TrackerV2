@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import backend.Video
 import backend.image_processing.postprocess.PostprocessingNode
 import backend.image_processing.postprocess.Postprocessor
+import backend.image_processing.postprocess.fitting.CircleFittingNode
 import backend.image_processing.postprocess.fitting.EllipseFittingNode
 import backend.image_processing.preprocess.PreprocessingNode
 import backend.image_processing.preprocess.blurring.BlurringNode
@@ -45,7 +46,7 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
     val postprocessors = video.postprocessors
 
     val preprocessingItems = listOf(BlurringNode(), MorphologicalNode(), ThresholdingNode(), CannyEdgeNode())
-    val postprocessingItems = listOf(EllipseFittingNode())
+    val postprocessingItems = listOf(EllipseFittingNode(), CircleFittingNode())
     val expanded = remember { mutableStateOf(false) }
 
     val onUpdate = remember { mutableStateOf(0) }
@@ -127,6 +128,19 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
                         Row(modifier = Modifier.animateItemPlacement()) {
                             when (val node = postprocessors[it].node) {
                                 is EllipseFittingNode -> EllipseFittingPane(
+                                    node,
+                                    { deleteNode(node) },
+                                    { postprocessors[it].clear() },
+                                    {
+                                        val dialog = FileDialog(ComposeWindow(), "Save Data", FileDialog.SAVE)
+                                        dialog.file = "*.csv"
+                                        dialog.isVisible = true
+
+                                        if (dialog.file != null)
+                                            postprocessors[it].export(File(dialog.directory + "/" + dialog.file))
+                                    }
+                                )
+                                is CircleFittingNode -> CircleFittingPane(
                                     node,
                                     { deleteNode(node) },
                                     { postprocessors[it].clear() },
