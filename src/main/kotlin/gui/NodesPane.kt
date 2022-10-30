@@ -182,7 +182,9 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
                 }
             }
         },
-        Page("Data") {},  // TODO Display data
+        Page("Data") {
+            DataDisplay(video.postprocessors)
+        },  // TODO Display data
         Page("Settings") {}  // TODO Change settings here
     )
 
