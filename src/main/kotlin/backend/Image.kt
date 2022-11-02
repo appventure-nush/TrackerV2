@@ -6,16 +6,17 @@ import com.github.ajalt.colormath.Color
 import com.github.ajalt.colormath.model.HSV
 import com.github.ajalt.colormath.model.RGB
 import org.bytedeco.javacpp.BytePointer
-import org.bytedeco.javacpp.annotation.ByVal
+import org.bytedeco.javacpp.indexer.UByteBufferIndexer
 import org.bytedeco.javacpp.indexer.UByteIndexer
 import org.bytedeco.opencv.global.opencv_core.*
 import org.bytedeco.opencv.global.opencv_imgcodecs.*
 import org.bytedeco.opencv.global.opencv_imgproc.*
 import org.bytedeco.opencv.opencv_core.*
 import org.bytedeco.opencv.opencv_imgproc.Vec3fVector
-import org.bytedeco.opencv.opencv_core.Point as cvPoint
 import org.bytedeco.opencv.global.opencv_imgproc.circle as cvCircle
 import org.bytedeco.opencv.global.opencv_imgproc.ellipse as cvEllipse
+import org.bytedeco.opencv.opencv_core.Point as cvPoint
+
 
 /**
  * Represents an image
@@ -369,6 +370,30 @@ class Image(colourspace: Colourspace, img: Mat) {
         }
     }
 
+    /**
+     * Fits contours to the image
+     */
+    fun fitContours(): Array<List<Point>> {
+        val hierarchy = Mat()
+        val contours = MatVector()
+        findContours(img, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE)
+
+        return Array(contours.size().toInt()) {
+            val points = arrayListOf<Point>()
+
+            val img = contours[it.toLong()]
+            val sI: UByteBufferIndexer = img.createIndexer()
+            for (y in 0 until img.rows()) {
+                for (x in 0 until img.cols()) {
+                    if (sI[y.toLong(), x.toLong()] > 0)
+                        points.add(Point(x.toDouble(), y.toDouble()))
+                }
+            }
+
+            points
+        }
+    }
+
     /* Drawing Shapes */
 
     /**
@@ -407,6 +432,13 @@ class Image(colourspace: Colourspace, img: Mat) {
      * Draws the given [ellipses] on the image
      */
     fun drawEllipse(ellipses: Collection<Ellipse>) = ellipses.forEach { drawEllipse(it) }
+
+    /**
+     * Draws the given [contours] on the image
+     */
+    fun drawContours(contours: List<List<Point>>) {
+
+    }
 
     /* Misc */
 
