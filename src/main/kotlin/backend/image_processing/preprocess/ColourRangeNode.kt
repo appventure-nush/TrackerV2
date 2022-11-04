@@ -1,9 +1,9 @@
-package backend.image_processing.preprocess.masking
+package backend.image_processing.preprocess
 
 import backend.Colourspace
 import backend.Image
-import backend.image_processing.preprocess.PreprocessingNode
 import com.github.ajalt.colormath.Color
+import kotlinx.serialization.Serializable
 
 /**
  * The node for filter colours within the specified colour ranges
@@ -12,6 +12,7 @@ import com.github.ajalt.colormath.Color
  * @param binarise Should the image outputted be a binary mask?
  * @property binarise Should the image outputted be a binary mask?
  */
+@Serializable
 data class ColourRangeNode(var colours: ArrayList<Pair<Color, Color>>, var binarise: Boolean): PreprocessingNode() {
     override val name: String = "Filter Colours"
     override val help: String = "Filters out parts of the images within the given colour range."

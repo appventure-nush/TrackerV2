@@ -1,9 +1,10 @@
-package backend.image_processing.preprocess.morphological
+package backend.image_processing.preprocess
 
 import backend.ALL_SPACES
 import backend.Colourspace
 import backend.Image
 import backend.image_processing.preprocess.PreprocessingNode
+import kotlinx.serialization.Serializable
 
 /**
  * All the types of blurring supported
@@ -25,6 +26,7 @@ enum class Morphological {
  * @param iterations The number of times to apply the operation
  * @property iterations The number of times to apply the operation
  */
+@Serializable
 class MorphologicalNode(var operationType: Morphological = Morphological.ERODE,
                         var kernelSize: Int = 3, var iterations: Int = 1): PreprocessingNode() {
     override val name: String = "Morphing"

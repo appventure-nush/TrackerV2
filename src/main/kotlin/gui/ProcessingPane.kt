@@ -22,12 +22,12 @@ import androidx.compose.ui.unit.sp
 import backend.image_processing.Processing
 import backend.image_processing.postprocess.fitting.CircleFittingNode
 import backend.image_processing.postprocess.fitting.EllipseFittingNode
-import backend.image_processing.preprocess.blurring.Blurring
-import backend.image_processing.preprocess.blurring.BlurringNode
-import backend.image_processing.preprocess.edge_detection.CannyEdgeNode
-import backend.image_processing.preprocess.masking.ThresholdingNode
-import backend.image_processing.preprocess.morphological.Morphological
-import backend.image_processing.preprocess.morphological.MorphologicalNode
+import backend.image_processing.preprocess.Blurring
+import backend.image_processing.preprocess.BlurringNode
+import backend.image_processing.preprocess.CannyEdgeNode
+import backend.image_processing.preprocess.ThresholdingNode
+import backend.image_processing.preprocess.Morphological
+import backend.image_processing.preprocess.MorphologicalNode
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Preview

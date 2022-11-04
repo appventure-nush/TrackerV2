@@ -1,9 +1,9 @@
-package backend.image_processing.preprocess.masking
+package backend.image_processing.preprocess
 
 import backend.ALL_SPACES
 import backend.Colourspace
 import backend.Image
-import backend.image_processing.preprocess.PreprocessingNode
+import kotlinx.serialization.Serializable
 
 /**
  * The node used for thresholding
@@ -14,6 +14,7 @@ import backend.image_processing.preprocess.PreprocessingNode
  * @param binarise Should the image be converted to a binary mask?
  * @property binarise Should the image be converted to a binary mask?
  */
+@Serializable
 class ThresholdingNode(var minThreshold: Double = 0.0, var maxThreshold: Double = 255.0, var binarise: Boolean = true): PreprocessingNode() {
     override val name: String = "Binarise"
     override val help: String = "Performs a black and white threshold on the image."

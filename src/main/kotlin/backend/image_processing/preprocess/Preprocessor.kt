@@ -1,10 +1,12 @@
 package backend.image_processing.preprocess
 
 import backend.Image
+import kotlinx.serialization.Serializable
 
 /**
  * Preprocesses the inputted image
  */
+@Serializable
 class Preprocessor {
     /**
      * The nodes to use in the pre-processing

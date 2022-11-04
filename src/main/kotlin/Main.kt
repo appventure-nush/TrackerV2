@@ -10,19 +10,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.WindowPlacement
-import androidx.compose.ui.window.application
-import androidx.compose.ui.window.rememberWindowState
+import androidx.compose.ui.window.*
 import backend.Video
+import backend.image_processing.preprocess.Preprocessor
 import gui.NodesPane
 import gui.VideoPlayer
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.awt.FileDialog
+import java.io.File
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
@@ -47,25 +53,40 @@ fun main() {
                     .launchIn(this)
             }
 
-            /*
             MenuBar { // TODO Add actual functionality to menu bar
                 Menu("File", mnemonic = 'F') {
-                    Item("Open File", onClick = { }, shortcut = KeyShortcut(Key.O, ctrl = true))
-                    Item("Save File", onClick = { }, shortcut = KeyShortcut(Key.S, ctrl = true))
-                }
-
-                Menu("Data") {
                     Item(
-                        "Export Data",
+                        "Open Configuration",
                         onClick = {
-                            val dialog = FileDialog(ComposeWindow(), "Save Data", FileDialog.SAVE)
+                            val dialog = FileDialog(ComposeWindow(), "Open Configuration", FileDialog.LOAD)
+                            dialog.file = "*.trk2"
                             dialog.isVisible = true
-                            //video.postprocessor!!.export(File(dialog.directory + "/" + dialog.file))
-                        }
+
+                            if (dialog.file != null) {
+                                val newNodes = Json.decodeFromString<Preprocessor>(
+                                    File(dialog.directory + "/" + dialog.file).readText()
+                                ).nodes
+
+                                video.preprocesser.nodes.clear()
+                                video.preprocesser.nodes.addAll(newNodes)
+                            }
+                        },
+                        shortcut = KeyShortcut(Key.O, ctrl = true)
+                    )
+                    Item(
+                        "Save Configuration",
+                        onClick = {
+                            val dialog = FileDialog(ComposeWindow(), "Save Configuration", FileDialog.SAVE)
+                            dialog.file = "*.trk2"
+                            dialog.isVisible = true
+
+                            if (dialog.file != null)
+                                File(dialog.directory + "/" + dialog.file).writeText(Json.encodeToString(video.preprocesser))
+                        },
+                        shortcut = KeyShortcut(Key.S, ctrl = true)
                     )
                 }
             }
-             */
 
             MaterialTheme {
                 Row(modifier = Modifier.padding(10.dp)) {

@@ -27,10 +27,10 @@ import backend.image_processing.postprocess.Postprocessor
 import backend.image_processing.postprocess.fitting.CircleFittingNode
 import backend.image_processing.postprocess.fitting.EllipseFittingNode
 import backend.image_processing.preprocess.PreprocessingNode
-import backend.image_processing.preprocess.blurring.BlurringNode
-import backend.image_processing.preprocess.edge_detection.CannyEdgeNode
-import backend.image_processing.preprocess.masking.ThresholdingNode
-import backend.image_processing.preprocess.morphological.MorphologicalNode
+import backend.image_processing.preprocess.BlurringNode
+import backend.image_processing.preprocess.CannyEdgeNode
+import backend.image_processing.preprocess.ThresholdingNode
+import backend.image_processing.preprocess.MorphologicalNode
 import java.awt.FileDialog
 import java.io.File
 import kotlin.random.Random

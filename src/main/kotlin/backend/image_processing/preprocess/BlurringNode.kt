@@ -1,9 +1,10 @@
-package backend.image_processing.preprocess.blurring
+package backend.image_processing.preprocess
 
 import backend.ALL_SPACES
 import backend.Colourspace
 import backend.Image
 import backend.image_processing.preprocess.PreprocessingNode
+import kotlinx.serialization.Serializable
 
 /**
  * All the types of blurring supported
@@ -21,6 +22,7 @@ enum class Blurring {
  * @param kernelSize The kernel size to use for blurring
  * @property kernelSize The kernel size to use for blurring
  */
+@Serializable
 class BlurringNode(var blurType: Blurring = Blurring.GAUSSIAN, var kernelSize: Int = 3): PreprocessingNode() {
     override val name: String = "Blurring"
     override val help: String = "This node blurs the video to remove noise. The kernel size controls the extent of blurring and " +

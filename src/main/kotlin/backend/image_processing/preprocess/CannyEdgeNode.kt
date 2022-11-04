@@ -1,9 +1,9 @@
-package backend.image_processing.preprocess.edge_detection
+package backend.image_processing.preprocess
 
 import backend.ALL_SPACES
 import backend.Colourspace
 import backend.Image
-import backend.image_processing.preprocess.PreprocessingNode
+import kotlinx.serialization.Serializable
 
 /**
  * The node that performs canny edge detection
@@ -12,6 +12,7 @@ import backend.image_processing.preprocess.PreprocessingNode
  * @param kernelSize The size of the kernel used for edge detection
  * @property kernelSize The size of the kernel used for edge detection
  */
+@Serializable
 class CannyEdgeNode(var threshold: Double = 200.0, var kernelSize: Int = 3): PreprocessingNode() {
     override val name: String = "Edge\nDetection"
     override val help: String = "Detects edges in the image. Blurring first in recommended."

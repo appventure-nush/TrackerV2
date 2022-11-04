@@ -3,11 +3,13 @@ package backend.image_processing.preprocess
 import backend.Colourspace
 import backend.Image
 import backend.image_processing.Processing
+import kotlinx.serialization.Serializable
 
 /**
  * The base class for all preprocessing nodes
  */
-abstract class PreprocessingNode: Processing() {
+@Serializable
+sealed class PreprocessingNode: Processing() {
     /**
      * The output colourspace of the node
      */
