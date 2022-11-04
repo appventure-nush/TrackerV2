@@ -1,17 +1,14 @@
-package backend.image_processing.postprocess.fitting
+package backend.image_processing.postprocess
 
 import backend.Colourspace
 import backend.Image
-import backend.Point
-import backend.image_processing.postprocess.PostprocessingNode
-import org.bytedeco.opencv.global.opencv_imgproc.*
-import org.bytedeco.opencv.opencv_core.Mat
-import org.bytedeco.opencv.opencv_core.MatVector
+import kotlinx.serialization.Serializable
 
 
 /**
  * The post-processing node used to fit ellipses and return the biggest one TODO Return all ellipses
  */
+@Serializable
 class EllipseFittingNode : PostprocessingNode() {
     override val name: String = "Ellipse Fitting"
     override val help: String = "Finds ellipse in the pictures and returns the biggest one."

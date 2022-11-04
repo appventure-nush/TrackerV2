@@ -19,6 +19,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import backend.Video
+import backend.image_processing.postprocess.PostprocessingNode
+import backend.image_processing.postprocess.Postprocessor
 import backend.image_processing.preprocess.Preprocessor
 import gui.NodesPane
 import gui.VideoPlayer
@@ -32,7 +34,7 @@ import java.io.File
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    val video = Video("video2.mp4")
+    val video = Video("video.mp4")
     video.hasNext()
     video.next().write("test.bmp")
 
@@ -63,12 +65,17 @@ fun main() {
                             dialog.isVisible = true
 
                             if (dialog.file != null) {
-                                val newNodes = Json.decodeFromString<Preprocessor>(
-                                    File(dialog.directory + "/" + dialog.file).readText()
-                                ).nodes
+                                val text = File(dialog.directory + "/" + dialog.file).readText().split("\n")
+                                val newPreprocessingNodes = Json.decodeFromString<Preprocessor>(text[0]).nodes
+                                val newPostprocessingNodes = Json.decodeFromString<List<PostprocessingNode>>(text[1])
 
                                 video.preprocesser.nodes.clear()
-                                video.preprocesser.nodes.addAll(newNodes)
+                                video.preprocesser.nodes.addAll(newPreprocessingNodes)
+
+                                video.postprocessors.clear()
+                                newPostprocessingNodes.forEach {
+                                    video.postprocessors.add(Postprocessor(it))
+                                }
                             }
                         },
                         shortcut = KeyShortcut(Key.O, ctrl = true)
@@ -80,8 +87,13 @@ fun main() {
                             dialog.file = "*.trk2"
                             dialog.isVisible = true
 
-                            if (dialog.file != null)
-                                File(dialog.directory + "/" + dialog.file).writeText(Json.encodeToString(video.preprocesser))
+                            if (dialog.file != null) {
+                                val serialisedPreprocessor = Json.encodeToString(video.preprocesser)
+                                val serialisedPostprocessor = Json.encodeToString(video.postprocessors.map { it.node })
+                                File(dialog.directory + "/" + dialog.file).writeText(
+                                    serialisedPreprocessor + "\n" + serialisedPostprocessor
+                                )
+                            }
                         },
                         shortcut = KeyShortcut(Key.S, ctrl = true)
                     )

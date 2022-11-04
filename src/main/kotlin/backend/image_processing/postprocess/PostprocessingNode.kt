@@ -4,12 +4,14 @@ import backend.Image
 import backend.Point
 import backend.image_processing.Processing
 import backend.image_processing.preprocess.PreprocessingNode
+import kotlinx.serialization.Serializable
 import org.bytedeco.opencv.opencv_core.Mat
 
 /**
  * The base class for all post-processing nodes
  */
-abstract class PostprocessingNode: Processing() {
+@Serializable
+sealed class PostprocessingNode: Processing() {
     /**
      * The scaling of the video. 1 px is to [scale] meters.
      */

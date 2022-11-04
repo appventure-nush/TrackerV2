@@ -20,8 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.image_processing.Processing
-import backend.image_processing.postprocess.fitting.CircleFittingNode
-import backend.image_processing.postprocess.fitting.EllipseFittingNode
+import backend.image_processing.postprocess.CircleFittingNode
+import backend.image_processing.postprocess.EllipseFittingNode
 import backend.image_processing.preprocess.Blurring
 import backend.image_processing.preprocess.BlurringNode
 import backend.image_processing.preprocess.CannyEdgeNode

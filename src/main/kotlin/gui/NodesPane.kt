@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.sp
 import backend.Video
 import backend.image_processing.postprocess.PostprocessingNode
 import backend.image_processing.postprocess.Postprocessor
-import backend.image_processing.postprocess.fitting.CircleFittingNode
-import backend.image_processing.postprocess.fitting.EllipseFittingNode
+import backend.image_processing.postprocess.CircleFittingNode
+import backend.image_processing.postprocess.EllipseFittingNode
 import backend.image_processing.preprocess.PreprocessingNode
 import backend.image_processing.preprocess.BlurringNode
 import backend.image_processing.preprocess.CannyEdgeNode

@@ -4,7 +4,6 @@ import backend.Image
 import krangl.DataFrame
 import krangl.dataFrameOf
 import krangl.writeCSV
-import org.bytedeco.opencv.global.opencv_imgproc.*
 import java.io.File
 
 /**
