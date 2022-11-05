@@ -6,7 +6,8 @@ import com.github.ajalt.colormath.Color
 import com.github.ajalt.colormath.model.HSV
 import com.github.ajalt.colormath.model.RGB
 import org.bytedeco.javacpp.BytePointer
-import org.bytedeco.javacpp.indexer.UByteBufferIndexer
+import org.bytedeco.javacpp.indexer.IntIndexer
+import org.bytedeco.javacpp.indexer.IntRawIndexer
 import org.bytedeco.javacpp.indexer.UByteIndexer
 import org.bytedeco.opencv.global.opencv_core.*
 import org.bytedeco.opencv.global.opencv_imgcodecs.*
@@ -373,22 +374,33 @@ class Image(colourspace: Colourspace, img: Mat) {
     /**
      * Fits contours to the image
      */
-    fun fitContours(): Array<List<Point>> {
+    fun fitContours(): List<List<Point>> {
+        val newImg = img.clone()
+
+        // Converting to grayscale
+        var gray = Mat()
+        when (colourspace) {
+            Colourspace.RGB -> cvtColor(newImg, gray, COLOR_RGB2GRAY)
+            Colourspace.HSV -> {
+                cvtColor(newImg, gray, COLOR_HSV2RGB)
+                cvtColor(gray, gray, COLOR_RGB2GRAY)
+            }
+            else -> gray = newImg
+        }
+
         val hierarchy = Mat()
         val contours = MatVector()
-        findContours(img, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE)
+        findContours(gray, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE)
 
-        return Array(contours.size().toInt()) {
+        return List(contours.size().toInt()) {
             val points = arrayListOf<Point>()
 
             val img = contours[it.toLong()]
-            val sI: UByteBufferIndexer = img.createIndexer()
-            for (y in 0 until img.rows()) {
-                for (x in 0 until img.cols()) {
-                    if (sI[y.toLong(), x.toLong()] > 0)
-                        points.add(Point(x.toDouble(), y.toDouble()))
-                }
+            val sI: IntRawIndexer = img.createIndexer()
+            for (j in 0 until img.rows()) {
+                points.add(Point(sI[j.toLong(), 0, 0].toDouble(), sI[j.toLong(), 0, 1].toDouble()))
             }
+
 
             points
         }
@@ -405,14 +417,17 @@ class Image(colourspace: Colourspace, img: Mat) {
             img,
             cvPoint(centre.x.toInt(), centre.y.toInt()),
             (circle.radius / scale).toInt(),
-            Scalar.RED, thickness, 8, 0
+            Scalar.BLUE, thickness, 8, 0
         )
     }
 
     /**
      * Draws the given [circles] on the image
      */
-    fun drawCircle(circles: Collection<Circle>) = circles.forEach { drawCircle(it) }
+    fun drawCircle(circles: Collection<Circle>) {
+        circles.forEach { drawCircle(it) }
+        indexer = img.createIndexer()
+    }
 
     /**
      * Draws an [ellipse] on the image
@@ -424,8 +439,10 @@ class Image(colourspace: Colourspace, img: Mat) {
             cvPoint(centre.x.toInt(), centre.y.toInt()),
             Size((ellipse.width / scale).toInt(), (ellipse.height / scale).toInt()),
             ellipse.angle, 0.0, 360.0,
-            Scalar.RED, thickness, 8, 0
+            Scalar.BLUE, thickness, 8, 0
         )
+
+        indexer = img.createIndexer()
     }
 
     /**
@@ -436,8 +453,25 @@ class Image(colourspace: Colourspace, img: Mat) {
     /**
      * Draws the given [contours] on the image
      */
-    fun drawContours(contours: List<List<Point>>) {
+    fun drawContours2(contours: List<List<Point>>) {
+        // creating contours in the format e.g. drawContours() uses
+        val contours2 = MatVector()
 
+        for (i in contours.indices) {
+            // CV_32SC2 - 32-bit signed values, 2 channels
+            val points = Mat(contours[i].size, 1, CV_32SC2)
+            val pointsIndexer: IntIndexer = points.createIndexer();
+
+            for (j in 0 until contours[i].size) {
+                pointsIndexer.put(j.toLong(), 0L, 0L, contours[i][j].x.toInt())
+                pointsIndexer.put(j.toLong(), 0L, 1L, contours[i][j].y.toInt())
+            }
+
+            contours2.push_back(points)
+        }
+
+        for (i in contours.indices)
+            drawContours(img, contours2, i, Scalar.BLUE, 5, LINE_8, null, Int.MAX_VALUE, null)
     }
 
     /* Misc */

@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.image_processing.Processing
 import backend.image_processing.postprocess.CircleFittingNode
+import backend.image_processing.postprocess.ContourFittingNode
 import backend.image_processing.postprocess.EllipseFittingNode
 import backend.image_processing.preprocess.Blurring
 import backend.image_processing.preprocess.BlurringNode
@@ -585,5 +586,14 @@ fun CircleFittingPane(node: CircleFittingNode, onDelete: () -> Unit, startCollec
                 )
             }
         }
+    }
+}
+
+
+@Preview
+@Composable
+fun ContourFittingPane(node: ContourFittingNode, onDelete: () -> Unit, startCollecting: () -> Unit, save: () -> Unit) {
+    ProcessingPane(node, true, onDelete, {}, startCollecting, save) {
+        Column { }
     }
 }

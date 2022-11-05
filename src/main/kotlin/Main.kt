@@ -34,9 +34,11 @@ import java.io.File
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    val video = Video("video.mp4")
+    val video = Video("video3.mov")
     video.hasNext()
     video.next().write("test.bmp")
+
+    val img = video.next()
 
     return application {
         val windowState = rememberWindowState(placement = WindowPlacement.Maximized)

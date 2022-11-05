@@ -22,10 +22,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.Video
-import backend.image_processing.postprocess.PostprocessingNode
-import backend.image_processing.postprocess.Postprocessor
-import backend.image_processing.postprocess.CircleFittingNode
-import backend.image_processing.postprocess.EllipseFittingNode
+import backend.image_processing.postprocess.*
 import backend.image_processing.preprocess.PreprocessingNode
 import backend.image_processing.preprocess.BlurringNode
 import backend.image_processing.preprocess.CannyEdgeNode
@@ -46,7 +43,7 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
     val postprocessors = video.postprocessors
 
     val preprocessingItems = listOf(BlurringNode(), MorphologicalNode(), ThresholdingNode(), CannyEdgeNode())
-    val postprocessingItems = listOf(EllipseFittingNode(), CircleFittingNode())
+    val postprocessingItems = listOf(EllipseFittingNode(), CircleFittingNode(), ContourFittingNode())
     val expanded = remember { mutableStateOf(false) }
 
     val onUpdate = remember { mutableStateOf(0) }
@@ -153,6 +150,19 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
                                             postprocessors[it].export(File(dialog.directory + "/" + dialog.file))
                                     }
                                 )
+                                is ContourFittingNode -> ContourFittingPane(
+                                    node,
+                                    { deleteNode(node) },
+                                    { postprocessors[it].clear() },
+                                    {
+                                        val dialog = FileDialog(ComposeWindow(), "Save Data", FileDialog.SAVE)
+                                        dialog.file = "*.csv"
+                                        dialog.isVisible = true
+
+                                        if (dialog.file != null)
+                                            postprocessors[it].export(File(dialog.directory + "/" + dialog.file))
+                                    }
+                                )
                             }
                         }
                     }
@@ -181,11 +191,7 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
                     }
                 }
             }
-        },
-        Page("Data") {
-            DataDisplay(video.postprocessors)
-        },  // TODO Display data
-        Page("Settings") {}  // TODO Change settings here
+        }
     )
 
     val icons = listOf(Icons.Filled.FilterAlt, Icons.Filled.SquareFoot, Icons.Filled.ShowChart, Icons.Filled.Settings)
