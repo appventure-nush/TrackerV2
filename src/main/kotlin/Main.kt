@@ -31,6 +31,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.awt.FileDialog
 import java.io.File
+import kotlin.random.Random
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
@@ -38,13 +39,13 @@ fun main() {
     video.hasNext()
     video.next().write("test.bmp")
 
-    val img = video.next()
-
     return application {
         val windowState = rememberWindowState(placement = WindowPlacement.Maximized)
 
         val width = remember { mutableStateOf(900.dp) }
         val windowWidth = remember { mutableStateOf(windowState.size.width) }
+
+        val onUpdate = remember { mutableStateOf(0) }
 
         Window(
             onCloseRequest = ::exitApplication,
@@ -78,6 +79,8 @@ fun main() {
                                 newPostprocessingNodes.forEach {
                                     video.postprocessors.add(Postprocessor(it))
                                 }
+
+                                onUpdate.value = Random.nextInt(100)
                             }
                         },
                         shortcut = KeyShortcut(Key.O, ctrl = true)
@@ -126,7 +129,7 @@ fun main() {
                     }
 
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        NodesPane(video, windowWidth, width)
+                        NodesPane(video, windowWidth, width, onUpdate)
                     }
                 }
             }

@@ -38,15 +38,13 @@ data class Page(val name: String, val content: @Composable () -> Unit)
 @OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
-fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<Dp>) {
+fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<Dp>, onUpdate: MutableState<Int>) {
     val preprocessor = video.preprocesser
     val postprocessors = video.postprocessors
 
     val preprocessingItems = listOf(BlurringNode(), MorphologicalNode(), ThresholdingNode(), CannyEdgeNode())
     val postprocessingItems = listOf(EllipseFittingNode(), CircleFittingNode(), ContourFittingNode())
     val expanded = remember { mutableStateOf(false) }
-
-    val onUpdate = remember { mutableStateOf(0) }
 
     fun deleteNode(it: PreprocessingNode) = run {
         preprocessor.nodes.remove(it)
