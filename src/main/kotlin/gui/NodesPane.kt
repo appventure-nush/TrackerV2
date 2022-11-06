@@ -43,7 +43,11 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
     val postprocessors = video.postprocessors
 
     val preprocessingItems = listOf(BlurringNode(), MorphologicalNode(), ThresholdingNode(), CannyEdgeNode())
-    val postprocessingItems = listOf(EllipseFittingNode(), CircleFittingNode(), ContourFittingNode(-1))
+    val postprocessingItems = listOf(  // -1 is needed because Kotlin is being funny and refusing to compile
+        EllipseFittingNode(-1),
+        CircleFittingNode(index=-1),
+        ContourFittingNode(-1)
+    )
     val expanded = remember { mutableStateOf(false) }
 
     fun deleteNode(it: PreprocessingNode) = run {
@@ -82,6 +86,7 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
                                 is MorphologicalNode -> MorphologicalPane(node, { deleteNode(node) }, { j -> shift(j, node) })
                                 is ThresholdingNode -> ThresholdingPane(node, { deleteNode(node) }, { j -> shift(j, node) })
                                 is CannyEdgeNode -> CannyEdgePane(node, { deleteNode(node) }, { j -> shift(j, node) })
+                                else -> println()
                             }
                         }
                     }

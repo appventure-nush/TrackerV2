@@ -475,8 +475,18 @@ fun CannyEdgePane(node: CannyEdgeNode, onDelete: () -> Unit, shift: (Int) -> Uni
 @Preview
 @Composable
 fun EllipseFittingPane(node: EllipseFittingNode, onDelete: () -> Unit, startCollecting: () -> Unit, save: () -> Unit) {
+    val index = remember { mutableStateOf(if (node.index == -1) "All Ellipses" else "Ellipse ${node.index}") }
     ProcessingPane(node, true, onDelete, {}, startCollecting, save) {
-        Column { }
+        Column {
+            // Change with circle to track
+            Combobox(
+                "Contour", index, listOf("All Ellipses") + (0 .. 100).map { "Ellipse $it" },
+                modifier = Modifier.height(53.dp),
+                onValueChanged = {
+                    node.index = if (index.value == "All Ellipses") -1 else index.value.split(" ")[1].toInt()
+                }
+            )
+        }
     }
 }
 
@@ -488,6 +498,8 @@ fun CircleFittingPane(node: CircleFittingNode, onDelete: () -> Unit, startCollec
     val param2 = remember { mutableStateOf(node.param2.toFloat()) }
     val minDist = remember { mutableStateOf(node.param1.toFloat()) }
     val radiusRange = remember { mutableStateOf(node.minRadius.toFloat() .. node.maxRadius.toFloat()) }
+
+    val index = remember { mutableStateOf(if (node.index == -1) "All Circles" else "Circle ${node.index}") }
 
     ProcessingPane(node, true, onDelete, {}, startCollecting, save) {
         Column {
@@ -585,6 +597,15 @@ fun CircleFittingPane(node: CircleFittingNode, onDelete: () -> Unit, startCollec
                     modifier = Modifier.fillMaxWidth()
                 )
             }
+
+            // Change with circle to track
+            Combobox(
+                "Contour", index, listOf("All Circles") + (0 .. 100).map { "Circle $it" },
+                modifier = Modifier.height(53.dp),
+                onValueChanged = {
+                    node.index = if (index.value == "All Circles") -1 else index.value.split(" ")[1].toInt()
+                }
+            )
         }
     }
 }
