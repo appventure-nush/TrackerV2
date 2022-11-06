@@ -593,7 +593,16 @@ fun CircleFittingPane(node: CircleFittingNode, onDelete: () -> Unit, startCollec
 @Preview
 @Composable
 fun ContourFittingPane(node: ContourFittingNode, onDelete: () -> Unit, startCollecting: () -> Unit, save: () -> Unit) {
+    val index = remember { mutableStateOf(if (node.index == -1) "All Contours" else "Contour ${node.index}") }
     ProcessingPane(node, true, onDelete, {}, startCollecting, save) {
-        Column { }
+        Column {
+            Combobox(
+                "Contour", index, listOf("All Contours") + (0 .. 100).map { "Contour $it" },
+                modifier = Modifier.height(53.dp),
+                onValueChanged = {
+                    node.index = if (index.value == "All Contours") -1 else index.value.split(" ")[1].toInt()
+                }
+            )
+        }
     }
 }

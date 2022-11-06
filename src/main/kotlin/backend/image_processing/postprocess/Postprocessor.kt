@@ -29,11 +29,14 @@ class Postprocessor(val node: PostprocessingNode) {
         val newImg = img.clone()
         newImg.colourspace = node.inputColourspace
 
-        val (row, newerImg) = node.process(newImg)
-        val rowWithTime = listOf(time) + row
+        val (rows, newerImg) = node.process(newImg)
 
         // Adding to dataframe
-        data = data?.addRow(rowWithTime) ?: (dataFrameOf(entries)(rowWithTime))
+        rows.forEach {
+            val rowWithTime = listOf(time) + it
+            data = data?.addRow(rowWithTime) ?: (dataFrameOf(entries)(rowWithTime))
+        }
+
         return newerImg
     }
 

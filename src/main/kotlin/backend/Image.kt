@@ -398,9 +398,13 @@ class Image(colourspace: Colourspace, img: Mat) {
             val img = contours[it.toLong()]
             val sI: IntRawIndexer = img.createIndexer()
             for (j in 0 until img.rows()) {
-                points.add(Point(sI[j.toLong(), 0, 0].toDouble(), sI[j.toLong(), 0, 1].toDouble()))
+                points.add(
+                    Point(
+                        sI[j.toLong(), 0, 0].toDouble() * scale,
+                        sI[j.toLong(), 0, 1].toDouble() * scale
+                    ) + origin
+                )
             }
-
 
             points
         }
@@ -453,18 +457,19 @@ class Image(colourspace: Colourspace, img: Mat) {
     /**
      * Draws the given [contours] on the image
      */
-    fun drawContours2(contours: List<List<Point>>) {
+    fun drawContours(contours: List<List<Point>>) {
         // creating contours in the format e.g. drawContours() uses
         val contours2 = MatVector()
 
         for (i in contours.indices) {
             // CV_32SC2 - 32-bit signed values, 2 channels
             val points = Mat(contours[i].size, 1, CV_32SC2)
-            val pointsIndexer: IntIndexer = points.createIndexer();
+            val pointsIndexer: IntIndexer = points.createIndexer()
 
             for (j in 0 until contours[i].size) {
-                pointsIndexer.put(j.toLong(), 0L, 0L, contours[i][j].x.toInt())
-                pointsIndexer.put(j.toLong(), 0L, 1L, contours[i][j].y.toInt())
+                val point = fromScaled(contours[i][j])
+                pointsIndexer.put(j.toLong(), 0L, 0L, point.x.toInt())
+                pointsIndexer.put(j.toLong(), 0L, 1L, point.y.toInt())
             }
 
             contours2.push_back(points)

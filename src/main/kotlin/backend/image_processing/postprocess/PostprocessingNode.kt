@@ -31,7 +31,7 @@ sealed class PostprocessingNode: Processing() {
      * Processes the [img] and outputs the information stated in [entries] as well as an output image
      * which is used to indicate that the processing is working well
      */
-    abstract fun process(img: Image): Pair<List<Any>, Image>
+    abstract fun process(img: Image): Pair<List<List<Any>>, Image>
 
     /** Converts a point in pixels to the same point in metres */
     fun position(point: Point) = (point - origin) * scale

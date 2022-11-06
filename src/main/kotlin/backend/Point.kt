@@ -11,4 +11,6 @@ data class Point(val x: Double, val y: Double) {
     operator fun div(other: Double) = Point(x / other, y / other)
 
     operator fun unaryMinus() = Point(-x, -y)
+
+    override fun toString() = "($x, $y)"
 }

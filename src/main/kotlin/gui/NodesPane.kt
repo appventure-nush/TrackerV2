@@ -43,7 +43,7 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
     val postprocessors = video.postprocessors
 
     val preprocessingItems = listOf(BlurringNode(), MorphologicalNode(), ThresholdingNode(), CannyEdgeNode())
-    val postprocessingItems = listOf(EllipseFittingNode(), CircleFittingNode(), ContourFittingNode())
+    val postprocessingItems = listOf(EllipseFittingNode(), CircleFittingNode(), ContourFittingNode(-1))
     val expanded = remember { mutableStateOf(false) }
 
     fun deleteNode(it: PreprocessingNode) = run {

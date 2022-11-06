@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 /**
  * The post-processing node that fits circles with radius between [minRadius] and [maxRadius] to the image and
- * returns the biggest circle. TODO Return all circles
+ * returns the biggest circle.
  * @param minDist The minimum distance between circles
  * @param param1 This parameter is used for edge detection
  * @param param2 This controls how circular an object must be to be considered a circle
@@ -22,17 +22,14 @@ data class CircleFittingNode(var minDist: Double = 20.0, var param1: Double = 20
     override val inputColourspaces: List<Colourspace> = listOf(Colourspace.RGB, Colourspace.HSV, Colourspace.GRAYSCALE)
     override var inputColourspace: Colourspace = Colourspace.RGB
 
-    override fun process(img: Image): Pair<List<Any>, Image> {
+    override fun process(img: Image): Pair<List<List<Any>>, Image> {
         val grayscaleImg = img.clone()
         grayscaleImg.colourspace = Colourspace.GRAYSCALE
 
         val circles = grayscaleImg.fitCircle(minDist, param1, param2, minRadius, maxRadius)
-        val biggestCircle = circles.maxByOrNull { it.radius }
-
         val newImg = img.clone().apply { drawCircle(circles) }
 
-        return if (biggestCircle == null) Pair(listOf(-1, -1, -1), newImg)
-        else Pair(listOf(biggestCircle.centre.x, biggestCircle.centre.y, biggestCircle.radius), newImg)
+        return Pair(circles.map { listOf(it.centre.x, it.centre.y, it.radius) }, newImg)
     }
 
     override fun clone() = CircleFittingNode(minDist, param1, param2, minRadius, maxRadius)
