@@ -340,13 +340,23 @@ class Image(colourspace: Colourspace, img: Mat) {
     fun fitCircle(minDist: Double = 20.0, param1: Double = 200.0, param2: Double = 100.0,
                   minRadius: Int = 0, maxRadius: Int = 0): List<Circle> {
         val circles = Vec3fVector()
-        HoughCircles(img, circles, CV_HOUGH_GRADIENT, 1.0, minDist, param1, param2, minRadius, maxRadius)
+        HoughCircles(
+            img,
+            circles,
+            CV_HOUGH_GRADIENT,
+            1.0,
+            minDist,
+            param1,
+            param2,
+            (minRadius / scale).toInt(),
+            (maxRadius / scale).toInt()
+        )
 
         val circlesList = arrayListOf<Circle>()
         for (i in 0 until circles.size()) {
             val circle = circles[i]
-            val center = fromScaled(Point(circle[0].toDouble(), circle[1].toDouble()))
-            circlesList.add(Circle(center, circle[2].toDouble() / scale))
+            val center = toScaled(Point(circle[0].toDouble(), circle[1].toDouble()))
+            circlesList.add(Circle(center, circle[2].toDouble() * scale))
         }
 
         return circlesList
@@ -366,8 +376,13 @@ class Image(colourspace: Colourspace, img: Mat) {
         }.filterNotNull()
 
         return ellipses.map {
-            val centre = fromScaled(Point(it.center().x().toDouble(), it.center().y().toDouble()))
-            Ellipse(centre, it.angle().toDouble(), it.size().width().toDouble() / 2, it.size().height().toDouble() / 2)
+            val centre = toScaled(Point(it.center().x().toDouble(), it.center().y().toDouble()))
+            Ellipse(
+                centre,
+                it.angle().toDouble(),
+                it.size().width().toDouble() / 2 * scale,
+                it.size().height().toDouble() / 2 * scale
+            )
         }
     }
 
@@ -399,10 +414,12 @@ class Image(colourspace: Colourspace, img: Mat) {
             val sI: IntRawIndexer = img.createIndexer()
             for (j in 0 until img.rows()) {
                 points.add(
-                    Point(
-                        sI[j.toLong(), 0, 0].toDouble() * scale,
-                        sI[j.toLong(), 0, 1].toDouble() * scale
-                    ) + origin
+                    toScaled(
+                        Point(
+                            sI[j.toLong(), 0, 0].toDouble(),
+                            sI[j.toLong(), 0, 1].toDouble()
+                        )
+                    )
                 )
             }
 
@@ -509,10 +526,21 @@ class Image(colourspace: Colourspace, img: Mat) {
      */
     fun clone() = Image(colourspace, img.clone())
 
+
+    /**
+     * Returns the scaled point given the unscaled [point]
+     */
+    private fun toScaled(point: Point) = (point + origin) * scale
+
+    /**
+     * Returns the scaled point given the unscaled [x] and [y] coordinates
+     */
+    private fun toScaled(x: Double, y: Double) = toScaled(Point(x, y))
+
     /**
      * Returns the unscaled point given the scaled [point]
      */
-    private fun fromScaled(point: Point) = (point - origin) * scale
+    private fun fromScaled(point: Point) = point / scale - origin
 
     /**
      * Returns the unscaled point given the scaled [x] and [y] coordinates

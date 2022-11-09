@@ -35,7 +35,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    val video = Video("video3.mov")
+    val video = Video("video.mp4")
     video.hasNext()
     video.next().write("test.bmp")
 
