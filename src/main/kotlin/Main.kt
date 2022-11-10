@@ -14,7 +14,6 @@ import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
-import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
@@ -22,6 +21,7 @@ import backend.Video
 import backend.image_processing.postprocess.PostprocessingNode
 import backend.image_processing.postprocess.Postprocessor
 import backend.image_processing.preprocess.Preprocessor
+import gui.Axes
 import gui.NodesPane
 import gui.VideoPlayer
 import kotlinx.coroutines.flow.launchIn
@@ -46,6 +46,8 @@ fun main() {
         val windowWidth = remember { mutableStateOf(windowState.size.width) }
 
         val onUpdate = remember { mutableStateOf(0) }
+
+        val isAxesVisible = remember { mutableStateOf(false) }
 
         Window(
             onCloseRequest = ::exitApplication,
@@ -103,6 +105,14 @@ fun main() {
                         shortcut = KeyShortcut(Key.S, ctrl = true)
                     )
                 }
+                Menu("View", mnemonic = 'V') {
+                    Item(
+                        "Toggle Axes Visibility",
+                        onClick = {
+                            isAxesVisible.value = !isAxesVisible.value
+                        }
+                    )
+                }
             }
 
             MaterialTheme {
@@ -114,7 +124,7 @@ fun main() {
                             .width(1.dp)
                             .pointerInput(Unit) {
                                 detectDragGestures { change, dragAmount ->
-                                    change.consumeAllChanges()
+                                    change.consume()
                                     width.value += dragAmount.x.toDp()
                                 }
                             },
@@ -133,6 +143,8 @@ fun main() {
                     }
                 }
             }
+
+            if (isAxesVisible.value) Axes()
         }
     }
 }
