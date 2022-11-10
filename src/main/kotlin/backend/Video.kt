@@ -1,5 +1,8 @@
 package backend
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import backend.image_processing.postprocess.Postprocessor
 import backend.image_processing.preprocess.Preprocessor
 import org.bytedeco.opencv.global.opencv_imgproc.COLOR_BGR2RGB
@@ -47,6 +50,16 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
     val focusedPostprocessor: Int = -1
 
     /**
+     * The x coordinate of the origin point
+     */
+    var originX: MutableState<Float> = mutableStateOf(0.0f)
+
+    /**
+     * The y coordinate of the origin point
+     */
+    var originY: MutableState<Float> = mutableStateOf(0.0f)
+
+    /**
      * The current frame number of the video
      */
     var currentFrame: Int = 0
@@ -73,6 +86,7 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
         // Convert from BGR to RGB
         cvtColor(nextImage, nextImage, COLOR_BGR2RGB)
         currentImage = Image(Colourspace.RGB, nextImage)
+        currentImage.origin = Point(originX.value.toDouble(), originY.value.toDouble())
         currentImage = preprocesser.process(currentImage)
 
         // Perform post-processing

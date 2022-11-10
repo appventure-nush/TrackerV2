@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import backend.Video
@@ -48,6 +49,11 @@ fun main() {
         val onUpdate = remember { mutableStateOf(0) }
 
         val isAxesVisible = remember { mutableStateOf(false) }
+
+        val originX = remember { mutableStateOf(0.0f) }
+        val originY = remember { mutableStateOf(0.0f) }
+        video.originX = originX
+        video.originY = originY
 
         Window(
             onCloseRequest = ::exitApplication,
@@ -144,7 +150,7 @@ fun main() {
                 }
             }
 
-            if (isAxesVisible.value) Axes()
+            if (isAxesVisible.value) Axes(originX, originY)
         }
     }
 }

@@ -524,13 +524,18 @@ class Image(colourspace: Colourspace, img: Mat) {
     /**
      * Returns a deep copy of the image
      */
-    fun clone() = Image(colourspace, img.clone())
-
+    fun clone(): Image {
+        val newImg = Image(colourspace, img.clone())
+        newImg.origin = origin
+        newImg.scale = scale
+        newImg.angle = angle
+        return newImg
+    }
 
     /**
      * Returns the scaled point given the unscaled [point]
      */
-    private fun toScaled(point: Point) = (point + origin) * scale
+    private fun toScaled(point: Point) = (point - origin) * scale
 
     /**
      * Returns the scaled point given the unscaled [x] and [y] coordinates
@@ -540,7 +545,7 @@ class Image(colourspace: Colourspace, img: Mat) {
     /**
      * Returns the unscaled point given the scaled [point]
      */
-    private fun fromScaled(point: Point) = point / scale - origin
+    private fun fromScaled(point: Point) = point / scale + origin
 
     /**
      * Returns the unscaled point given the scaled [x] and [y] coordinates
