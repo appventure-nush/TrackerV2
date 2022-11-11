@@ -90,15 +90,34 @@ fun ProcessingPane(
                 }
 
                 Column(modifier = Modifier.align(Alignment.TopEnd)) {
-                    // Colourspace selector
-                    TextButton(
-                        onClick = {
-                            count.value++
-                            count.value %= node.inputColourspaces.size
-                            node.inputColourspace = node.inputColourspaces[count.value]
-                        }
+                    TooltipArea(
+                        tooltip = {
+                            Surface(
+                                modifier = Modifier.shadow(4.dp),
+                                color = Color(50, 50, 50, 255),
+                                shape = RoundedCornerShape(4.dp)
+                            ) {
+                                Text(
+                                    text = "Changes the colourspace of the image going through this node",
+                                    fontSize = 8.sp,
+                                    modifier = Modifier.padding(5.dp),
+                                    color = Color(255, 255, 255)
+                                )
+                            }
+                        },
+                        modifier = Modifier.padding(start = 0.dp),
+                        delayMillis = 600
                     ) {
-                        Text(node.inputColourspaces[count.value].toString(), fontSize = 12.sp)
+                        // Colourspace selector
+                        TextButton(
+                            onClick = {
+                                count.value++
+                                count.value %= node.inputColourspaces.size
+                                node.inputColourspace = node.inputColourspaces[count.value]
+                            }
+                        ) {
+                            Text(node.inputColourspaces[count.value].toString(), fontSize = 12.sp)
+                        }
                     }
                 }
             }
@@ -107,54 +126,149 @@ fun ProcessingPane(
 
             Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                 if (!postProcessing) {
-                    // Shift up button
-                    IconButton(onClick = { shift(-1) }, modifier = Modifier.size(23.dp)) {
-                        Icon(
-                            Icons.Filled.KeyboardArrowUp, contentDescription = "",
-                            tint = MaterialTheme.colors.primary
-                        )
+                    TooltipArea(
+                        tooltip = {
+                            Surface(
+                                modifier = Modifier.shadow(4.dp),
+                                color = Color(50, 50, 50, 255),
+                                shape = RoundedCornerShape(4.dp)
+                            ) {
+                                Text(
+                                    text = "Shifts this node upwards",
+                                    fontSize = 8.sp,
+                                    modifier = Modifier.padding(5.dp),
+                                    color = Color(255, 255, 255)
+                                )
+                            }
+                        },
+                        modifier = Modifier.padding(start = 0.dp),
+                        delayMillis = 600
+                    ) {
+                        // Shift up button
+                        IconButton(onClick = { shift(-1) }, modifier = Modifier.size(23.dp)) {
+                            Icon(
+                                Icons.Filled.KeyboardArrowUp, contentDescription = "",
+                                tint = MaterialTheme.colors.primary
+                            )
+                        }
                     }
 
-                    // Shift down button
-                    IconButton(onClick = { shift(1) }, modifier = Modifier.size(23.dp)) {
-                        Icon(
-                            Icons.Filled.KeyboardArrowDown, contentDescription = "",
-                            tint = MaterialTheme.colors.primary
-                        )
+                    TooltipArea(
+                        tooltip = {
+                            Surface(
+                                modifier = Modifier.shadow(4.dp),
+                                color = Color(50, 50, 50, 255),
+                                shape = RoundedCornerShape(4.dp)
+                            ) {
+                                Text(
+                                    text = "Shifts this node downwards",
+                                    fontSize = 8.sp,
+                                    modifier = Modifier.padding(5.dp),
+                                    color = Color(255, 255, 255)
+                                )
+                            }
+                        },
+                        modifier = Modifier.padding(start = 0.dp),
+                        delayMillis = 600
+                    ) {
+                        // Shift down button
+                        IconButton(onClick = { shift(1) }, modifier = Modifier.size(23.dp)) {
+                            Icon(
+                                Icons.Filled.KeyboardArrowDown, contentDescription = "",
+                                tint = MaterialTheme.colors.primary
+                            )
+                        }
                     }
                 } else {
-                    // Collect data
-                    IconButton(
-                        onClick = { clearData() },
-                        modifier = Modifier.size(23.dp)
+                    TooltipArea(
+                        tooltip = {
+                            Surface(
+                                modifier = Modifier.shadow(4.dp),
+                                color = Color(50, 50, 50, 255),
+                                shape = RoundedCornerShape(4.dp)
+                            ) {
+                                Text(
+                                    text = "Clear existing data in the node",
+                                    fontSize = 8.sp,
+                                    modifier = Modifier.padding(5.dp),
+                                    color = Color(255, 255, 255)
+                                )
+                            }
+                        },
+                        modifier = Modifier.padding(start = 0.dp),
+                        delayMillis = 600
                     ) {
-                        Icon(
-                            Icons.Filled.ClearAll,
-                            contentDescription = "",
-                            tint = MaterialTheme.colors.primary
-                        )
+                        // Clear data
+                        IconButton(
+                            onClick = { clearData() },
+                            modifier = Modifier.size(23.dp)
+                        ) {
+                            Icon(
+                                Icons.Filled.ClearAll,
+                                contentDescription = "",
+                                tint = MaterialTheme.colors.primary
+                            )
+                        }
                     }
 
-                    // Save data
-                    IconButton(onClick = { save() }, modifier = Modifier.size(23.dp)) {
-                        Icon(
-                            Icons.Filled.Save, contentDescription = "",
-                            tint = MaterialTheme.colors.primary
-                        )
+                    TooltipArea(
+                        tooltip = {
+                            Surface(
+                                modifier = Modifier.shadow(4.dp),
+                                color = Color(50, 50, 50, 255),
+                                shape = RoundedCornerShape(4.dp)
+                            ) {
+                                Text(
+                                    text = "Saves existing data into a CSV",
+                                    fontSize = 8.sp,
+                                    modifier = Modifier.padding(5.dp),
+                                    color = Color(255, 255, 255)
+                                )
+                            }
+                        },
+                        modifier = Modifier.padding(start = 0.dp),
+                        delayMillis = 600
+                    ) {
+                        // Save data
+                        IconButton(onClick = { save() }, modifier = Modifier.size(23.dp)) {
+                            Icon(
+                                Icons.Filled.Save, contentDescription = "",
+                                tint = MaterialTheme.colors.primary
+                            )
+                        }
                     }
                 }
 
                 Spacer(Modifier.weight(1f))
 
                 // The delete button
-                IconButton(
-                    onClick = { deleteDialog.value = true },
-                    modifier = Modifier.size(23.dp)
+                TooltipArea(
+                    tooltip = {
+                        Surface(
+                            modifier = Modifier.shadow(4.dp),
+                            color = Color(50, 50, 50, 255),
+                            shape = RoundedCornerShape(4.dp)
+                        ) {
+                            Text(
+                                text = "Deletes this node",
+                                fontSize = 8.sp,
+                                modifier = Modifier.padding(5.dp),
+                                color = Color(255, 255, 255)
+                            )
+                        }
+                    },
+                    modifier = Modifier.padding(start = 0.dp),
+                    delayMillis = 600
                 ) {
-                    Icon(
-                        Icons.Filled.Delete, contentDescription = "",
-                        tint = Color.Red
-                    )
+                    IconButton(
+                        onClick = { deleteDialog.value = true },
+                        modifier = Modifier.size(23.dp)
+                    ) {
+                        Icon(
+                            Icons.Filled.Delete, contentDescription = "",
+                            tint = Color.Red
+                        )
+                    }
                 }
             }
         }

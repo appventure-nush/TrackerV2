@@ -2,11 +2,13 @@ package gui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.TooltipArea
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -17,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -209,13 +212,32 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
                 modifier = Modifier
             ) {
                 pages.forEachIndexed { index, item ->
-                    NavigationRailItem(
-                        //label = { Text(item.name) },
-                        icon = { Icon(icons[index], contentDescription = "") },
-                        selected = selectedItem.value == index,
-                        onClick = { selectedItem.value = index },
-                        //alwaysShowLabel = false
-                    )
+                    TooltipArea(
+                        tooltip = {
+                            Surface(
+                                modifier = Modifier.shadow(4.dp),
+                                color = Color(50, 50, 50, 255),
+                                shape = RoundedCornerShape(4.dp)
+                            ) {
+                                Text(
+                                    text = item.name,
+                                    fontSize = 8.sp,
+                                    modifier = Modifier.padding(5.dp),
+                                    color = Color(255, 255, 255)
+                                )
+                            }
+                        },
+                        modifier = Modifier.padding(start = 0.dp),
+                        delayMillis = 600
+                    ) {
+                        NavigationRailItem(
+                            //label = { Text(item.name) },
+                            icon = { Icon(icons[index], contentDescription = "") },
+                            selected = selectedItem.value == index,
+                            onClick = { selectedItem.value = index },
+                            //alwaysShowLabel = false
+                        )
+                    }
                 }
             }
         }
