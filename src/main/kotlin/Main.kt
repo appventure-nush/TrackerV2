@@ -1,9 +1,6 @@
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import backend.Video
@@ -34,7 +30,7 @@ import java.awt.FileDialog
 import java.io.File
 import kotlin.random.Random
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun main() {
     val video = Video("video3.mov")
     video.hasNext()
@@ -54,6 +50,8 @@ fun main() {
         val originY = remember { mutableStateOf(0.0f) }
         video.originX = originX
         video.originY = originY
+
+        val aboutDialog = remember { mutableStateOf(false) }
 
         Window(
             onCloseRequest = ::exitApplication,
@@ -119,6 +117,14 @@ fun main() {
                         }
                     )
                 }
+                Menu("About", mnemonic = 'B') {
+                    Item(
+                        "About this",
+                        onClick = {
+                            aboutDialog.value = true
+                        }
+                    )
+                }
             }
 
             MaterialTheme {
@@ -151,6 +157,24 @@ fun main() {
             }
 
             if (isAxesVisible.value) Axes(originX, originY)
+
+            if (aboutDialog.value) {
+                AlertDialog(
+                    title = { Text("About") },
+                    text = {
+                        Text("""
+                        Tracker but better! This application is brought to you by AppVenture, the CS Interest Group
+                        as well as your SYPT / IYPT alumni.
+                        It was created and is maintained by Jed, with the help of Luc, Kabir and Prannaya.
+                        """.trimIndent().replace("\n", " "))
+                    },
+                    confirmButton = {
+                        TextButton({ aboutDialog.value = false }) { Text("Ok") }
+                    },
+                    onDismissRequest = { aboutDialog.value = false },
+                    modifier = Modifier.size(300.dp, 300.dp).padding(10.dp)
+                )
+            }
         }
     }
 }
