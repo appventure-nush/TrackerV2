@@ -15,8 +15,19 @@ import org.bytedeco.opencv.opencv_videoio.VideoCapture
 /**
  * Represents a video
  */
-class Video(val videoCapture: VideoCapture) : Iterator<Image> {
+class Video(videoCapture: VideoCapture) : Iterator<Image> {
     private var nextImage: Mat = Mat()
+
+    /**
+     * The video that is currently loaded
+     */
+    var videoCapture: VideoCapture = videoCapture
+        set(video) {
+            field = VideoCapture(video)
+            currentFrame = 0
+            totalFrames = field.get(CAP_PROP_FRAME_COUNT).toInt()
+            frameRate = field.get(CAP_PROP_FPS)
+        }
 
     /**
      * The current image shown in the video
@@ -27,7 +38,8 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
     /**
      * The total number of frames of the video
      */
-    val totalFrames: Int = videoCapture.get(CAP_PROP_FRAME_COUNT).toInt()
+    var totalFrames: Int = videoCapture.get(CAP_PROP_FRAME_COUNT).toInt()
+        private set
 
     /**
      * The preprocessor that preprocesses the video frames
@@ -37,7 +49,8 @@ class Video(val videoCapture: VideoCapture) : Iterator<Image> {
     /**
      * The frame rate of the video
      */
-    val frameRate: Double = videoCapture.get(CAP_PROP_FPS)
+    var frameRate: Double = videoCapture.get(CAP_PROP_FPS)
+        private set
 
     /**
      * The postprocessors that convert the information in the video frames to data

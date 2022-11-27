@@ -59,7 +59,7 @@ fun main() = application {
                     )
                     when (currentColorPicker) {
                         ColorPicker.CLASSIC -> {
-                            //ClassicColorPickerScreen()
+                             //ClaossicColorPickerScreen()
                         }
                         ColorPicker.HARMONY -> {
                             ClassicColorPickerScreen()

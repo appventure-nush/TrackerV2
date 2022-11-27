@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.Video
 import java.io.File
+import kotlin.concurrent.timer
+import kotlin.system.measureTimeMillis
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Preview
@@ -64,10 +66,15 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>) {
                         while (true) {
                             if (!pauseSyncing.value && video.hasNext()) {
                                 try {
-                                    if (!playVideo.value) video.seek(video.currentFrame)
+                                    val ms = measureTimeMillis {
+                                        if (!playVideo.value) video.seek(video.currentFrame)
 
-                                    val bytes = video.next().encode(".bmp")
-                                    imageBitmap.value = loadImageBitmap(bytes.inputStream())
+                                        val bytes = video.next().encode(".bmp")
+                                        imageBitmap.value = loadImageBitmap(bytes.inputStream())
+                                    }
+
+                                    if (ms < 10)
+                                        Thread.sleep(10 - ms)
                                 } catch (ignored: ConcurrentModificationException) {}
                                 catch (exception: Exception) {
                                     playVideo.value = false
@@ -112,7 +119,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>) {
                     Thread.sleep(100)
 
                     // Seek to the appropiate location
-                    video.seek(it.toInt())
+                    video.seek(video.currentFrame)
                     video.hasNext()
 
                     val bytes = video.next().encode(".bmp")

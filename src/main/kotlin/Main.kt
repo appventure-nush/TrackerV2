@@ -1,4 +1,3 @@
-
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -27,13 +26,14 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.bytedeco.opencv.opencv_videoio.VideoCapture
 import java.awt.FileDialog
 import java.io.File
 import kotlin.random.Random
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun main() {
-    val video = Video("IMG_3782.mov")
+    val video = Video("video.mov")
     video.hasNext()
     video.next().write("test.bmp")
 
@@ -67,6 +67,18 @@ fun main() {
 
             MenuBar { // TODO Add actual functionality to menu bar
                 Menu("File", mnemonic = 'F') {
+                    Item(
+                        "Open Video",
+                        onClick = {
+                            val dialog = FileDialog(ComposeWindow(), "Open Configuration", FileDialog.LOAD)
+                            dialog.file = "*.mp4;*.mov;*avi"
+                            dialog.isVisible = true
+
+                            if (dialog.file != null) {
+                                video.videoCapture = VideoCapture(dialog.directory + "/" + dialog.file)
+                            }
+                        }
+                    )
                     Item(
                         "Open Configuration",
                         onClick = {
