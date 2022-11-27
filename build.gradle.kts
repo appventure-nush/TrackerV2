@@ -20,6 +20,7 @@ dependencies {
     implementation("com.github.ajalt.colormath:colormath:3.2.1")
     implementation("org.bytedeco:javacv-platform:1.5.7")
     implementation("com.github.holgerbrandl:krangl:0.18")
+    implementation("com.godaddy.android.colorpicker:compose-color-picker-jvm:0.5.1")
     testImplementation(kotlin("test"))
 }
 
