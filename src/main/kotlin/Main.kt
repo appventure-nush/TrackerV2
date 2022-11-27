@@ -79,6 +79,7 @@ fun main() {
                             }
                         }
                     )
+                    Separator()
                     Item(
                         "Open Configuration",
                         onClick = {
