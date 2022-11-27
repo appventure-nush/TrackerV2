@@ -1,3 +1,4 @@
+
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -32,7 +33,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun main() {
-    val video = Video("video3.mov")
+    val video = Video("IMG_3782.mov")
     video.hasNext()
     video.next().write("test.bmp")
 
