@@ -112,7 +112,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>) {
                     Thread.sleep(100)
 
                     // Seek to the appropiate location
-                    video.seek(it.toInt())
+                    video.seek(video.currentFrame)
                     video.hasNext()
 
                     val bytes = video.next().encode(".bmp")
