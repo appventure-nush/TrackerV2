@@ -58,12 +58,11 @@ fun main() = application {
                         contentColor = Color.White
                     )
                     when (currentColorPicker) {
-                        ColorPicker.CLASSIC -> {
-                             //ClaossicColorPickerScreen()
-                        }
                         ColorPicker.HARMONY -> {
                             ClassicColorPickerScreen()
                         }
+
+                        else -> {}
                     }
                 }
             }
