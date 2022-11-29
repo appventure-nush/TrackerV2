@@ -31,7 +31,7 @@ import kotlin.system.measureTimeMillis
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Preview
 @Composable
-fun VideoPlayer(video: Video, width: MutableState<Dp>) {
+fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boolean>) {
     val playVideo = remember { mutableStateOf(false) }
     val pauseSyncing = remember { mutableStateOf(false) }
     val threadCreated = remember { mutableStateOf(false) }
@@ -64,7 +64,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>) {
                     // Create the thread
                     Thread {
                         while (true) {
-                            if (!pauseSyncing.value && video.hasNext()) {
+                            if (!pauseSyncing.value && syncing.value && video.hasNext()) {
                                 try {
                                     val ms = measureTimeMillis {
                                         if (!playVideo.value) video.seek(video.currentFrame)
@@ -81,6 +81,8 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>) {
 
                                     errorMessage.value = exception.toString()
                                     errorDialog.value = true
+
+                                    syncing.value = false
                                 }
                             } else Thread.sleep(100)
                         }

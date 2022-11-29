@@ -41,7 +41,13 @@ data class Page(val name: String, val content: @Composable () -> Unit)
 @OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
-fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<Dp>, onUpdate: MutableState<Int>) {
+fun NodesPane(
+    video: Video,
+    windowWidth: MutableState<Dp>,
+    width: MutableState<Dp>,
+    onUpdate: MutableState<Int>,
+    syncing: MutableState<Boolean>
+) {
     val preprocessor = video.preprocesser
     val postprocessors = video.postprocessors
 
@@ -187,7 +193,7 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
         }
     )
 
-    val icons = listOf(Icons.Filled.FilterAlt, Icons.Filled.SquareFoot, Icons.Filled.ShowChart, Icons.Filled.Settings)
+    val icons = listOf(Icons.Filled.FilterAlt, Icons.Filled.SquareFoot, Icons.Filled.Error)
     Box {
         Row(
             modifier = Modifier.align(Alignment.BottomEnd).fillMaxWidth(),
@@ -229,15 +235,28 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
             }
         }
 
-        FloatingActionButton(
-            backgroundColor = MaterialTheme.colors.primary,
-            contentColor = Color.White,
-            modifier = Modifier.width(55.dp).height(55.dp).padding(7.dp).align(Alignment.BottomEnd),
-            onClick = {
-                expanded.value = true
-            },
-        ) {
-            Icon(Icons.Filled.Add, "")
+        Column(modifier = Modifier.align(Alignment.BottomEnd)) {
+            FloatingActionButton(
+                backgroundColor = Color.White,
+                contentColor = MaterialTheme.colors.primary,
+                modifier = Modifier.width(55.dp).height(55.dp).padding(7.dp),
+                onClick = {
+                    syncing.value = !syncing.value
+                },
+            ) {
+                Icon(if (syncing.value) Icons.Filled.Sync else Icons.Filled.SyncDisabled, "")
+            }
+
+            FloatingActionButton(
+                backgroundColor = MaterialTheme.colors.primary,
+                contentColor = Color.White,
+                modifier = Modifier.width(55.dp).height(55.dp).padding(7.dp),
+                onClick = {
+                    expanded.value = true
+                },
+            ) {
+                Icon(Icons.Filled.Add, "")
+            }
         }
     }
 }

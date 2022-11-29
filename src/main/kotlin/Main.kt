@@ -54,6 +54,8 @@ fun main() {
 
         val aboutDialog = remember { mutableStateOf(false) }
 
+        val syncing = remember { mutableStateOf(false) }
+
         Window(
             onCloseRequest = ::exitApplication,
             title = "Tracker 2.0",
@@ -143,7 +145,7 @@ fun main() {
 
             MaterialTheme {
                 Row(modifier = Modifier.padding(10.dp)) {
-                    VideoPlayer(video, width)
+                    VideoPlayer(video, width, syncing)
 
                     Button(
                         modifier = Modifier.fillMaxHeight()
@@ -165,7 +167,7 @@ fun main() {
                     }
 
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        NodesPane(video, windowWidth, width, onUpdate)
+                        NodesPane(video, windowWidth, width, onUpdate, syncing)
                     }
                 }
             }
