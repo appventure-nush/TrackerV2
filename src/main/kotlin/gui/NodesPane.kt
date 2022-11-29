@@ -74,6 +74,15 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
         onUpdate.value = Random.nextInt(100)
     }
 
+    fun saveData(it: Int) = run {
+        val dialog = FileDialog(ComposeWindow(), "Save Data", FileDialog.SAVE)
+        dialog.file = "*.csv"
+        dialog.isVisible = true
+
+        if (dialog.file != null)
+            postprocessors[it].export(File(dialog.directory + "/" + dialog.file))
+    }
+
     val selectedItem = remember { mutableStateOf(0) }
     val pages = listOf(
         Page("Preprocessing") {
@@ -126,7 +135,6 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
                 val state = rememberLazyListState()
 
                 LazyColumn(modifier = Modifier.width(windowWidth.value - 95.dp - width.value).padding(end = 12.dp), state) {
-                    // TODO Auto-refresh when node is deleted
                     items(postprocessors.size) {
                         Row(modifier = Modifier.animateItemPlacement()) {
                             when (val node = postprocessors[it].node) {
@@ -134,40 +142,19 @@ fun NodesPane(video: Video, windowWidth: MutableState<Dp>, width: MutableState<D
                                     node,
                                     { deleteNode(node) },
                                     { postprocessors[it].clear() },
-                                    {
-                                        val dialog = FileDialog(ComposeWindow(), "Save Data", FileDialog.SAVE)
-                                        dialog.file = "*.csv"
-                                        dialog.isVisible = true
-
-                                        if (dialog.file != null)
-                                            postprocessors[it].export(File(dialog.directory + "/" + dialog.file))
-                                    }
+                                    { saveData(it) }
                                 )
                                 is CircleFittingNode -> CircleFittingPane(
                                     node,
                                     { deleteNode(node) },
                                     { postprocessors[it].clear() },
-                                    {
-                                        val dialog = FileDialog(ComposeWindow(), "Save Data", FileDialog.SAVE)
-                                        dialog.file = "*.csv"
-                                        dialog.isVisible = true
-
-                                        if (dialog.file != null)
-                                            postprocessors[it].export(File(dialog.directory + "/" + dialog.file))
-                                    }
+                                    { saveData(it) }
                                 )
                                 is ContourFittingNode -> ContourFittingPane(
                                     node,
                                     { deleteNode(node) },
                                     { postprocessors[it].clear() },
-                                    {
-                                        val dialog = FileDialog(ComposeWindow(), "Save Data", FileDialog.SAVE)
-                                        dialog.file = "*.csv"
-                                        dialog.isVisible = true
-
-                                        if (dialog.file != null)
-                                            postprocessors[it].export(File(dialog.directory + "/" + dialog.file))
-                                    }
+                                    { saveData(it) }
                                 )
                             }
                         }
