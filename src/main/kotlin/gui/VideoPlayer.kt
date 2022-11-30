@@ -56,6 +56,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
             IconButton(onClick = {
                 // Switch between play and pause
                 playVideo.value = !playVideo.value
+                syncing.value = true
 
                 // Check if the thread has been created
                 if (!threadCreated.value) {
