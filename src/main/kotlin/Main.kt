@@ -33,7 +33,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun main() {
-    val video = Video("video.mov")
+    val video = Video("video0.mov")
     video.hasNext()
     video.next().write("test.bmp")
 
@@ -67,7 +67,7 @@ fun main() {
                     .launchIn(this)
             }
 
-            MenuBar { // TODO Add actual functionality to menu bar
+            MenuBar {
                 Menu("File", mnemonic = 'F') {
                     Item(
                         "Open Video",
