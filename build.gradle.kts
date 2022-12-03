@@ -1,5 +1,6 @@
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.com.intellij.openapi.vfs.StandardFileSystems.jar
 
 plugins {
     kotlin("jvm") version "1.7.20"
