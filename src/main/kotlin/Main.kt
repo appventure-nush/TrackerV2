@@ -77,7 +77,9 @@ fun main() {
                             dialog.isVisible = true
 
                             if (dialog.file != null) {
+                                syncing.value = false
                                 video.videoCapture = VideoCapture(dialog.directory + "/" + dialog.file)
+                                syncing.value = true
                             }
                         }
                     )

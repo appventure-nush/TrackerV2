@@ -23,7 +23,7 @@ class Video(videoCapture: VideoCapture) : Iterator<Image> {
      */
     var videoCapture: VideoCapture = videoCapture
         set(video) {
-            field = VideoCapture(video)
+            field = video
             currentFrame = 0
             totalFrames = field.get(CAP_PROP_FRAME_COUNT).toInt()
             frameRate = field.get(CAP_PROP_FPS)
