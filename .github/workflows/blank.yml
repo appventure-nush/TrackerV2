@@ -24,7 +24,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build Executable
-      run: ./gradlew createReleaseDistributable
+      run: ./gradlew createDistributable
     - name: Build JAR
       run: ./gradlew packageReleaseUberJarForCurrentOS
     - shell: bash
@@ -55,7 +55,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build Executable
-      run: ./gradlew createReleaseDistributable
+      run: ./gradlew createDistributable
     - name: Build JAR
       run: ./gradlew packageReleaseUberJarForCurrentOS
     - shell: bash
@@ -86,7 +86,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build Executable
-      run: ./gradlew createReleaseDistributable
+      run: ./gradlew createDistributable
     - name: Build JAR
       run: ./gradlew packageReleaseUberJarForCurrentOS
     - shell: bash
