@@ -75,8 +75,7 @@ fun ColorPreviewInfo(currentColor: Color) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier.padding(16.dp),
-            text = "a: ${currentColor.alpha} \n" +
-                    "r: ${currentColor.red} \n" +
+            text =  "r: ${currentColor.red} \n" +
                     "g: ${currentColor.green} \n" +
                     "b: ${currentColor.blue}"
         )

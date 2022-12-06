@@ -20,6 +20,7 @@ fun ClassicColorPickerScreen() {
         }
         ColorPreviewInfo(currentColor = currentColor.toColor())
         ClassicColorPicker(
+            showAlphaBar = false,
             modifier = Modifier
                 .height(300.dp)
                 .padding(16.dp),
