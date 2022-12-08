@@ -1,9 +1,12 @@
 package gui
 
+import ClassicColorPickerScreen
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipArea
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -19,16 +22,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Window
 import backend.image_processing.Processing
 import backend.image_processing.postprocess.CircleFittingNode
 import backend.image_processing.postprocess.ContourFittingNode
 import backend.image_processing.postprocess.EllipseFittingNode
-import backend.image_processing.preprocess.Blurring
-import backend.image_processing.preprocess.BlurringNode
-import backend.image_processing.preprocess.CannyEdgeNode
-import backend.image_processing.preprocess.ThresholdingNode
-import backend.image_processing.preprocess.Morphological
-import backend.image_processing.preprocess.MorphologicalNode
+import backend.image_processing.preprocess.*
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Preview
@@ -739,5 +738,52 @@ fun ContourFittingPane(node: ContourFittingNode, onDelete: () -> Unit, startColl
                 }
             )
         }
+    }
+}
+
+//TODO make this nice lol
+
+@Preview
+@Composable
+fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
+
+    ProcessingPane(node, false, onDelete, shift, {}, {}) {
+        Column {
+            MaterialTheme {
+                Surface(color = MaterialTheme.colors.background) {
+                    ClassicColorPickerScreen()
+                }
+            }
+            MaterialTheme {
+                Surface(color = MaterialTheme.colors.background) {
+                    ClassicColorPickerScreen()
+                }
+            }
+        }
+    }
+
+
+
+}
+
+@Composable
+fun ColorPreviewInfo(currentColor: Color) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            modifier = Modifier.padding(16.dp),
+            text =  "r: ${currentColor.red} \n" +
+                    "g: ${currentColor.green} \n" +
+                    "b: ${currentColor.blue}"
+        )
+        Spacer(
+            modifier = Modifier
+                .background(
+                    currentColor,
+                    shape = CircleShape
+                )
+                .size(48.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+        Spacer(Modifier.height(16.dp))
     }
 }

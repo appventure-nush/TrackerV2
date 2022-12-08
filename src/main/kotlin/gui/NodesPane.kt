@@ -108,6 +108,7 @@ fun NodesPane(
                                 is MorphologicalNode -> MorphologicalPane(node, { deleteNode(node) }, { j -> shift(j, node) })
                                 is ThresholdingNode -> ThresholdingPane(node, { deleteNode(node) }, { j -> shift(j, node) })
                                 is CannyEdgeNode -> CannyEdgePane(node, { deleteNode(node) }, { j -> shift(j, node) })
+                                is ColourRangeNode -> ColorRangePane(node, { deleteNode(node) }, { j -> shift(j, node) })
                                 else -> println()
                             }
                         }
