@@ -29,42 +29,7 @@ fun main() = application {
     Window(onCloseRequest = ::exitApplication, title = "Compose Color Pickers") {
         MaterialTheme {
             Surface(color = MaterialTheme.colors.background) {
-                Column {
-                    TopAppBar(title = {
-                        Text("Compose Desktop Color Pickers")
-                    })
-                    // Here is how to add a Color Picker to your compose tree:
-
-                    var currentColorPicker by remember { mutableStateOf(ColorPicker.CLASSIC) }
-                    TabRow(
-                        currentColorPicker.ordinal,
-                        tabs = {
-                            Text(
-                                "Classic Picker",
-                                modifier =
-                                Modifier.clickable {
-                                    currentColorPicker = ColorPicker.CLASSIC
-                                }.padding(16.dp),
-                                textAlign = TextAlign.Center
-                            )
-                            Text(
-                                "Harmony Picker",
-                                modifier = Modifier.clickable {
-                                    currentColorPicker = ColorPicker.HARMONY
-                                }.padding(16.dp),
-                                textAlign = TextAlign.Center
-                            )
-                        },
-                        contentColor = Color.White
-                    )
-                    when (currentColorPicker) {
-                        ColorPicker.HARMONY -> {
-                            ClassicColorPickerScreen()
-                        }
-
-                        else -> {}
-                    }
-                }
+                ClassicColorPickerScreen()
             }
         }
     }
@@ -92,7 +57,3 @@ fun ColorPreviewInfo(currentColor: Color) {
     }
 }
 
-enum class ColorPicker {
-    CLASSIC,
-    HARMONY;
-}
