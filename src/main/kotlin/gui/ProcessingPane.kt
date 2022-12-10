@@ -1,6 +1,7 @@
 package gui
 
 import ClassicColorPickerScreen
+import ClassicColorPickerScreen1
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipArea
@@ -756,34 +757,9 @@ fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> 
             }
             MaterialTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    ClassicColorPickerScreen()
+                    ClassicColorPickerScreen1()
                 }
             }
         }
-    }
-
-
-
-}
-
-@Composable
-fun ColorPreviewInfo(currentColor: Color) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            modifier = Modifier.padding(16.dp),
-            text =  "r: ${currentColor.red} \n" +
-                    "g: ${currentColor.green} \n" +
-                    "b: ${currentColor.blue}"
-        )
-        Spacer(
-            modifier = Modifier
-                .background(
-                    currentColor,
-                    shape = CircleShape
-                )
-                .size(48.dp)
-                .align(Alignment.CenterHorizontally)
-        )
-        Spacer(Modifier.height(16.dp))
     }
 }

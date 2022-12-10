@@ -1,9 +1,15 @@
 package backend.image_processing.preprocess
 
+import b1
+import b2
 import backend.Colourspace
 import backend.Image
 import com.github.ajalt.colormath.model.RGB
+import g1
+import g2
 import kotlinx.serialization.Serializable
+import r1
+import r2
 
 /**
  * The node for filter colours within the specified colour ranges
@@ -20,7 +26,7 @@ data class ColourRangeNode(var colours: ArrayList<Int>, var binarise: Boolean = 
     override val inputColourspaces: List<Colourspace> = listOf(Colourspace.RGB, Colourspace.HSV)
     override val outputColourspace: Colourspace get() = inputColourspace
 
-    override fun process(img: Image): Image = img.clone().apply { colourFilter(arrayListOf(Pair(RGB(colours[0],colours[1],colours[2]),RGB(colours[0],colours[1],colours[2]))), binarise) }
+    override fun process(img: Image): Image = img.clone().apply { colourFilter(arrayListOf(Pair(RGB(r1,g1,b1),RGB(r2,g2,b2))), binarise) }
 
     override fun clone(): PreprocessingNode = ColourRangeNode(colours, binarise)
 }

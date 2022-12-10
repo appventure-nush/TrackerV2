@@ -12,6 +12,13 @@ import androidx.compose.ui.unit.dp
 import com.godaddy.android.colorpicker.ClassicColorPicker
 import com.godaddy.android.colorpicker.HsvColor
 
+var r1 = 0.0;
+var g1 = 0.0;
+var b1 = 0.0;
+var r2 = 0.0;
+var g2 = 0.0;
+var b2 = 0.0;
+
 @Composable
 fun ClassicColorPickerScreen() {
     Column {
@@ -19,6 +26,27 @@ fun ClassicColorPickerScreen() {
             mutableStateOf(HsvColor.from(Color.Red))
         }
         ColorPreviewInfo(currentColor = currentColor.toColor())
+        ClassicColorPicker(
+            showAlphaBar = false,
+            modifier = Modifier
+                .height(300.dp)
+                .padding(16.dp),
+            color = currentColor.toColor() ,
+            onColorChanged = { hsvColor: HsvColor ->
+                // Triggered when the color changes, do something with the newly picked color here!
+                currentColor = hsvColor
+            }
+        )
+    }
+}
+
+@Composable
+fun ClassicColorPickerScreen1() {
+    Column {
+        var currentColor by remember {
+            mutableStateOf(HsvColor.from(Color.Red))
+        }
+        ColorPreviewInfo1(currentColor = currentColor.toColor())
         ClassicColorPicker(
             showAlphaBar = false,
             modifier = Modifier
