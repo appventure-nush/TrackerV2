@@ -16,3 +16,7 @@ To build the binaries, run
 ```
 ./gradlew createReleaseDistributable
 ```
+
+## How to use?
+
+

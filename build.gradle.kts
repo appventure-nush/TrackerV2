@@ -29,6 +29,10 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
+
+            windows {
+                iconFile.set(File("src/main/resources/trackerv2.ico"))
+            }
         }
     }
 }

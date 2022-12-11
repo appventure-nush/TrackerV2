@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import backend.Video
@@ -33,7 +34,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun main() {
-    val video = Video("IMG_3782.mov")
+    val video = Video("video0.mov")
     video.hasNext()
     video.next().write("test.bmp")
 
@@ -56,10 +57,13 @@ fun main() {
 
         val syncing = remember { mutableStateOf(false) }
 
+        val icon = painterResource("trackerv2.ico")
+
         Window(
             onCloseRequest = ::exitApplication,
             title = "Tracker 2.0",
-            state = windowState
+            state = windowState,
+            icon = icon
         ) {
             LaunchedEffect(windowState) {
                 snapshotFlow { windowState.size }
