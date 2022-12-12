@@ -53,9 +53,7 @@ fun NodesPane(
     val preprocessor = video.preprocesser
     val postprocessors = video.postprocessors
 
-    val preprocessingItems = listOf(BlurringNode(), MorphologicalNode(), ThresholdingNode(), CannyEdgeNode(), ColourRangeNode(
-        arrayListOf<Int>(0,0,0)
-    ))
+    val preprocessingItems = listOf(BlurringNode(), MorphologicalNode(), ThresholdingNode(), CannyEdgeNode(), ColourRangeNode())
     val postprocessingItems = listOf(  // -1 is needed because Kotlin is being funny and refusing to compile
         EllipseFittingNode(-1),
         CircleFittingNode(index=-1),

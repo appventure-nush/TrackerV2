@@ -1,12 +1,12 @@
 package gui
 
-import ClassicColorPickerScreen
-import ClassicColorPickerScreen1
+import ColorPreviewInfo
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipArea
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.onClick
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -23,12 +23,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Window
 import backend.image_processing.Processing
 import backend.image_processing.postprocess.CircleFittingNode
 import backend.image_processing.postprocess.ContourFittingNode
 import backend.image_processing.postprocess.EllipseFittingNode
 import backend.image_processing.preprocess.*
+import com.github.ajalt.colormath.model.RGB
+import com.godaddy.android.colorpicker.ClassicColorPicker
+import com.godaddy.android.colorpicker.HsvColor
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Preview
@@ -742,23 +744,70 @@ fun ContourFittingPane(node: ContourFittingNode, onDelete: () -> Unit, startColl
     }
 }
 
-//TODO make this nice lol
-
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
+    val viewMin = remember { mutableStateOf(false) }
+
+    val minColour = remember { mutableStateOf(HsvColor.from(Color.Black)) }
+    val maxColour = remember { mutableStateOf(HsvColor.from(Color.White)) }
+
+    node.colours = arrayListOf(
+        Pair(
+            RGB(minColour.value.toColor().red, minColour.value.toColor().blue, minColour.value.toColor().green),
+            RGB(maxColour.value.toColor().red, maxColour.value.toColor().blue, maxColour.value.toColor().green)
+        )
+    )
 
     ProcessingPane(node, false, onDelete, shift, {}, {}) {
         Column {
-            MaterialTheme {
-                Surface(color = MaterialTheme.colors.background) {
-                    ClassicColorPickerScreen()
-                }
+            Row(modifier=Modifier.align(Alignment.CenterHorizontally)) {
+                Spacer(
+                    modifier = Modifier
+                        .background(
+                            minColour.value.toColor(),
+                            shape = CircleShape
+                        )
+                        .onClick { viewMin.value = true }
+                        .size(48.dp)
+                )
+
+                Spacer(modifier=Modifier.size(10.dp))
+
+                Spacer(
+                    modifier = Modifier
+                        .background(
+                            maxColour.value.toColor(),
+                            shape = CircleShape
+                        )
+                        .onClick { viewMin.value = false }
+                        .size(48.dp)
+                )
             }
-            MaterialTheme {
-                Surface(color = MaterialTheme.colors.background) {
-                    ClassicColorPickerScreen1()
-                }
+
+            if (viewMin.value) {
+                ClassicColorPicker(
+                    showAlphaBar = false,
+                    modifier = Modifier
+                        .height(300.dp)
+                        .padding(16.dp),
+                    color = minColour.value.toColor(),
+                    onColorChanged = { hsvColor: HsvColor ->
+                        minColour.value = hsvColor
+                    }
+                )
+            } else {
+                ClassicColorPicker(
+                    showAlphaBar = false,
+                    modifier = Modifier
+                        .height(300.dp)
+                        .padding(16.dp),
+                    color = maxColour.value.toColor(),
+                    onColorChanged = { hsvColor: HsvColor ->
+                        maxColour.value = hsvColor
+                    }
+                )
             }
         }
     }
