@@ -748,10 +748,36 @@ fun ContourFittingPane(node: ContourFittingNode, onDelete: () -> Unit, startColl
 @Preview
 @Composable
 fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
+    if (node.colours.isEmpty()) {
+        node.colours = arrayListOf(
+            Pair(RGB(0, 0, 0), RGB(1, 1, 1))
+        )
+    }
+
     val viewMin = remember { mutableStateOf(false) }
 
-    val minColour = remember { mutableStateOf(HsvColor.from(Color.Black)) }
-    val maxColour = remember { mutableStateOf(HsvColor.from(Color.White)) }
+    val minColour = remember {
+        mutableStateOf(
+            HsvColor.from(
+                Color(
+                    node.colours[0].first.toSRGB().redInt,
+                    node.colours[0].first.toSRGB().blueInt,
+                    node.colours[0].first.toSRGB().greenInt
+                )
+            )
+        )
+    }
+    val maxColour = remember {
+        mutableStateOf(
+            HsvColor.from(
+                Color(
+                    node.colours[0].second.toSRGB().redInt,
+                    node.colours[0].second.toSRGB().blueInt,
+                    node.colours[0].second.toSRGB().greenInt
+                )
+            )
+        )
+    }
 
     node.colours = arrayListOf(
         Pair(
@@ -763,27 +789,65 @@ fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> 
     ProcessingPane(node, false, onDelete, shift, {}, {}) {
         Column {
             Row(modifier=Modifier.align(Alignment.CenterHorizontally)) {
-                Spacer(
-                    modifier = Modifier
-                        .background(
-                            minColour.value.toColor(),
-                            shape = CircleShape
-                        )
-                        .onClick { viewMin.value = true }
-                        .size(48.dp)
-                )
+                TooltipArea(
+                    tooltip = {
+                        Surface(
+                            modifier = Modifier.shadow(4.dp),
+                            color = Color(50, 50, 50, 255),
+                            shape = RoundedCornerShape(4.dp)
+                        ) {
+                            Text(
+                                text = "Click to select minimum colour",
+                                fontSize = 8.sp,
+                                modifier = Modifier.padding(5.dp),
+                                color = Color(255, 255, 255)
+                            )
+                        }
+                    },
+                    modifier = Modifier.padding(start = 0.dp),
+                    delayMillis = 600
+                ) {
+                    Spacer(
+                        modifier = Modifier
+                            .background(
+                                minColour.value.toColor(),
+                                shape = CircleShape
+                            )
+                            .onClick { viewMin.value = true }
+                            .size(48.dp)
+                    )
+                }
 
                 Spacer(modifier=Modifier.size(10.dp))
 
-                Spacer(
-                    modifier = Modifier
-                        .background(
-                            maxColour.value.toColor(),
-                            shape = CircleShape
-                        )
-                        .onClick { viewMin.value = false }
-                        .size(48.dp)
-                )
+                TooltipArea(
+                    tooltip = {
+                        Surface(
+                            modifier = Modifier.shadow(4.dp),
+                            color = Color(50, 50, 50, 255),
+                            shape = RoundedCornerShape(4.dp)
+                        ) {
+                            Text(
+                                text = "Click to select maximum colour",
+                                fontSize = 8.sp,
+                                modifier = Modifier.padding(5.dp),
+                                color = Color(255, 255, 255)
+                            )
+                        }
+                    },
+                    modifier = Modifier.padding(start = 0.dp),
+                    delayMillis = 600
+                ) {
+                    Spacer(
+                        modifier = Modifier
+                            .background(
+                                maxColour.value.toColor(),
+                                shape = CircleShape
+                            )
+                            .onClick { viewMin.value = false }
+                            .size(48.dp)
+                    )
+                }
             }
 
             if (viewMin.value) {
