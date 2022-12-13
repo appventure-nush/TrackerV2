@@ -2,11 +2,8 @@ package gui
 
 import ColorPreviewInfo
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.TooltipArea
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.onClick
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -786,8 +783,35 @@ fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> 
         )
     )
 
+    val binarise = remember { mutableStateOf(node.binarise) }
+
     ProcessingPane(node, false, onDelete, shift, {}, {}) {
         Column {
+            // Checkbox for binarisation
+            Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
+                Text(
+                    "Binarise",
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+
+                Checkbox(
+                    checked = binarise.value,
+                    onCheckedChange = {
+                        binarise.value = it
+                        node.binarise = it
+                    },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = MaterialTheme.colors.primary,
+                        uncheckedColor = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
+                        checkmarkColor = MaterialTheme.colors.surface,
+                        disabledColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled),
+                        disabledIndeterminateColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.disabled)
+                    )
+                )
+            }
+
+            // The colour picker
             Row(modifier=Modifier.align(Alignment.CenterHorizontally)) {
                 TooltipArea(
                     tooltip = {
@@ -814,6 +838,7 @@ fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> 
                                 shape = CircleShape
                             )
                             .onClick { viewMin.value = true }
+                            .border(BorderStroke(2.dp, Color.Black), shape = CircleShape)
                             .size(48.dp)
                     )
                 }
@@ -845,6 +870,7 @@ fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> 
                                 shape = CircleShape
                             )
                             .onClick { viewMin.value = false }
+                            .border(BorderStroke(2.dp, Color.Black), shape = CircleShape)
                             .size(48.dp)
                     )
                 }
