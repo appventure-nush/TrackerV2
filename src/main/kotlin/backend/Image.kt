@@ -14,6 +14,7 @@ import org.bytedeco.opencv.global.opencv_imgcodecs.*
 import org.bytedeco.opencv.global.opencv_imgproc.*
 import org.bytedeco.opencv.opencv_core.*
 import org.bytedeco.opencv.opencv_imgproc.Vec3fVector
+import java.lang.Float.NaN
 import org.bytedeco.opencv.global.opencv_imgproc.circle as cvCircle
 import org.bytedeco.opencv.global.opencv_imgproc.ellipse as cvEllipse
 import org.bytedeco.opencv.opencv_core.Point as cvPoint
@@ -255,11 +256,20 @@ class Image(colourspace: Colourspace, img: Mat) {
         var newImg = img.clone()
         colours.forEach { (start, end) ->
             when (colourspace) {
-                Colourspace.RGB -> inRange(newImg, Mat(start.toSRGB().r * 255, start.toSRGB().g * 255, start.toSRGB().b * 255),
-                    Mat(end.toSRGB().r * 255, end.toSRGB().g * 255, end.toSRGB().b * 255), mask)
+                Colourspace.RGB -> inRange(
+                    newImg,
+                    Mat(start.toSRGB().r * 255, start.toSRGB().g * 255, start.toSRGB().b * 255),
+                    Mat(end.toSRGB().r * 255, end.toSRGB().g * 255, end.toSRGB().b * 255), mask
+                )
                 Colourspace.HSV -> {
-                    inRange(newImg, Mat(start.toHSV().h / 360 * 255, start.toHSV().s * 255, start.toHSV().v * 255),
-                        Mat(end.toHSV().h / 360 * 255, end.toHSV().s / 360 * 255, end.toHSV().v / 360 * 255), mask)
+                    val startHue = if (start.toHSV().h.isNaN()) 0F else start.toHSV().h
+                    val endHue = if (end.toHSV().h.isNaN()) 1F else end.toHSV().h
+
+                    inRange(
+                        newImg,
+                        Mat(startHue * 255, start.toHSV().s * 255, start.toHSV().v * 255),
+                        Mat(endHue * 255, end.toHSV().s * 255, end.toHSV().v * 255), mask
+                    )
                 }
                 else -> {}
             }
