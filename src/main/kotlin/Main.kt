@@ -57,7 +57,7 @@ fun main() {
 
         val syncing = remember { mutableStateOf(false) }
 
-        val icon = painterResource("trackerv2.ico")
+        val icon = painterResource("trackerv2.png")
 
         Window(
             onCloseRequest = ::exitApplication,
