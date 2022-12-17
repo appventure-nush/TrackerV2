@@ -32,7 +32,7 @@ import kotlin.concurrent.timer
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
 
-val temp = Random.nextInt(20) == 1
+val temp = Random.nextInt(20) != 1
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Preview
@@ -86,7 +86,9 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                                 catch (exception: Exception) {
                                     playVideo.value = false
 
-                                    errorMessage.value = exception.toString()
+                                    errorMessage.value = (
+                                            if (Random.nextInt(1000) != 1) "" else "Skill Issue\n"
+                                            ) + exception.toString()
                                     errorDialog = true
 
                                     syncing.value = false
