@@ -37,6 +37,8 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
     val threadCreated = remember { mutableStateOf(false) }
     val imageBitmap = remember { mutableStateOf(loadImageBitmap(File("test.bmp").inputStream())) }
 
+    val sliderValue = remember { mutableStateOf(0) }
+
     val openFrameNumDialog = remember { mutableStateOf(false) }
     val frameNumberText = remember { mutableStateOf("") }
 
@@ -122,7 +124,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                     Thread.sleep(100)
 
                     // Seek to the appropiate location
-                    video.seek(video.currentFrame)
+                    video.seek(it.toInt()) //video.currentFrame)
                     video.hasNext()
 
                     val bytes = video.next().encode(".bmp")
