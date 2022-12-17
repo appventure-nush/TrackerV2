@@ -1,5 +1,8 @@
 package gui
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.animation.*
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -37,12 +40,10 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
     val threadCreated = remember { mutableStateOf(false) }
     val imageBitmap = remember { mutableStateOf(loadImageBitmap(File("test.bmp").inputStream())) }
 
-    val sliderValue = remember { mutableStateOf(0) }
-
-    val openFrameNumDialog = remember { mutableStateOf(false) }
+    var openFrameNumDialog by remember { mutableStateOf(false) }
     val frameNumberText = remember { mutableStateOf("") }
 
-    val errorDialog = remember { mutableStateOf(false) }
+    var errorDialog by remember { mutableStateOf(false) }
     val errorMessage = remember { mutableStateOf("") }
 
     val focusRequester = remember { FocusRequester() }
@@ -83,7 +84,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                                     playVideo.value = false
 
                                     errorMessage.value = exception.toString()
-                                    errorDialog.value = true
+                                    errorDialog = true
 
                                     syncing.value = false
                                 }
@@ -105,7 +106,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                 video.currentFrame.toString(),
                 fontSize = 12.sp,
                 modifier = Modifier.align(Alignment.CenterVertically).clickable {
-                    openFrameNumDialog.value = true
+                    openFrameNumDialog = true
                     frameNumberText.value = video.currentFrame.toString()
 
                     // TODO Automatically focus on text field when dialog opens
@@ -138,7 +139,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
     }
 
     fun f() {
-        openFrameNumDialog.value = false
+        openFrameNumDialog = false
 
         if (frameNumberText.value.toIntOrNull() != null) {
             if (frameNumberText.value.toInt() < video.totalFrames) {
@@ -164,10 +165,12 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
         }
     }
 
-    if (openFrameNumDialog.value) {
+    AnimatedVisibility(
+        openFrameNumDialog
+    ) {
         AlertDialog(
             onDismissRequest = {
-                openFrameNumDialog.value = false
+                openFrameNumDialog = false
             },
             text = {
                 OutlinedTextField(
@@ -183,18 +186,20 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                 )
             },
             confirmButton = { TextButton({ f() }) { Text("Confirm") } },
-            dismissButton = { TextButton({ openFrameNumDialog.value = false }) { Text("Cancel") } },
+            dismissButton = { TextButton({ openFrameNumDialog = false }) { Text("Cancel") } },
         )
     }
 
-    if (errorDialog.value) {
+    AnimatedVisibility(
+        visible = errorDialog
+    ) {
         AlertDialog(
             title = { Text("Error") },
             text = { Text(errorMessage.value) },
             confirmButton = {
-                TextButton({ errorDialog.value = false }) { Text("Ok") }
+                TextButton({ errorDialog = false }) { Text("Ok") }
             },
-            onDismissRequest = { errorDialog.value = false },
+            onDismissRequest = { errorDialog = false },
             modifier = Modifier.padding(10.dp)
         )
     }
