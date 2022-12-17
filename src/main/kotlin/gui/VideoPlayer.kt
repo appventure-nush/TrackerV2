@@ -29,7 +29,10 @@ import androidx.compose.ui.unit.sp
 import backend.Video
 import java.io.File
 import kotlin.concurrent.timer
+import kotlin.random.Random
 import kotlin.system.measureTimeMillis
+
+val temp = Random.nextInt(20) == 1
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Preview
@@ -93,12 +96,21 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                     }.start()
                 }
             }) {
-                Icon(
-                    if (playVideo.value) painterResource("pause_black_24dp.svg")
-                    else painterResource("play_arrow_black_24dp.svg"),
-                    contentDescription = "",
-                    tint = if (playVideo.value) Color.Black else Color.Green
-                )
+                if (temp) {
+                    Icon(
+                        if (playVideo.value) painterResource("pause_black_24dp.svg")
+                        else painterResource("play_arrow_black_24dp.svg"),
+                        contentDescription = "",
+                        tint = if (playVideo.value) Color.Black else Color.Green
+                    )
+                } else {
+                    Icon(
+                        if (playVideo.value) painterResource("cd_2.png")
+                        else painterResource("cd.png"),
+                        contentDescription = "",
+                        tint = Color.Unspecified
+                    )
+                }
             }
 
             // Show the frame number
