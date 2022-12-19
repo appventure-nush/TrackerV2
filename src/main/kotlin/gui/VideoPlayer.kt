@@ -145,7 +145,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
 
                 Thread.sleep(100)
 
-                // Seek to the appropiate location
+                // Seek to the appropriate location
                 video.seek(frameNumberText.value.toInt())
                 video.hasNext()
 

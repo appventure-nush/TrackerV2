@@ -9,6 +9,8 @@ import org.bytedeco.javacpp.BytePointer
 import org.bytedeco.javacpp.indexer.IntIndexer
 import org.bytedeco.javacpp.indexer.IntRawIndexer
 import org.bytedeco.javacpp.indexer.UByteIndexer
+import org.bytedeco.javacv.Frame
+import org.bytedeco.javacv.OpenCVFrameConverter
 import org.bytedeco.opencv.global.opencv_core.*
 import org.bytedeco.opencv.global.opencv_imgcodecs.*
 import org.bytedeco.opencv.global.opencv_imgproc.*
@@ -507,6 +509,15 @@ class Image(colourspace: Colourspace, img: Mat) {
     }
 
     /* Misc */
+
+
+    fun convertToFrame(): Frame {
+        val converterToMat = OpenCVFrameConverter.ToMat()
+        val newImg = Mat()
+        cvtColor(img, newImg, COLOR_RGB2BGR)
+
+        return converterToMat.convert(newImg);
+    }
 
     /**
      * Writes the image to the given [path]

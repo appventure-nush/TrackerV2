@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import backend.Video
+import backend.clearAndAddAll
 import backend.image_processing.postprocess.PostprocessingNode
 import backend.image_processing.postprocess.Postprocessor
 import backend.image_processing.preprocess.Preprocessor
@@ -27,14 +28,17 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.bytedeco.javacv.FFmpegFrameRecorder
+import org.bytedeco.javacv.OpenCVFrameConverter.ToMat
 import org.bytedeco.opencv.opencv_videoio.VideoCapture
 import java.awt.FileDialog
 import java.io.File
 import kotlin.random.Random
 
+
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun main() {
-    val video = Video("video0.mov")
+    val video = Video("IMG_3782.mov")
     video.hasNext()
     video.next().write("test.bmp")
 
@@ -139,9 +143,56 @@ fun main() {
                         }
                     )
                 }
-                Menu("About", mnemonic = 'B') {
+                Menu("Batch", mnemonic = 'B') {
                     Item(
-                        "About this",
+                        "Batch Current Configuration",
+                        onClick = {
+                            val dialog = FileDialog(ComposeWindow(), "Open Files", FileDialog.LOAD).apply {
+                                file = "*.mp4;*.mov;*avi"
+                                isVisible = true
+                                isMultipleMode = true
+                            }
+
+                            if(dialog.files != null && dialog.files.isNotEmpty()) {
+                                // The Configuration has been decided...
+                                val files = dialog.files.copyOf()
+
+                                for(file in dialog.files) {
+                                    val converterToMat = ToMat()
+                                    val tmpVideo = Video(file.absolutePath).apply {
+                                        preprocesser.nodes.clearAndAddAll(video.preprocesser.nodes)
+                                        postprocessors.clearAndAddAll(video.postprocessors)
+                                    }
+
+                                    var tmpImage = video.next()
+
+                                    val newFile = file.absolutePath.split(".")[0]+"_processed.mp4"
+
+                                    val recorder = FFmpegFrameRecorder(newFile, tmpImage.img.cols(), tmpImage.img.rows())
+                                    recorder.frameRate = video.frameRate
+                                    recorder.start()
+                                    while(tmpVideo.hasNext()) {
+                                        recorder.record(tmpImage.convertToFrame())
+                                        tmpImage = video.next()
+                                    }
+                                    recorder.stop()
+                                    recorder.close()
+
+                                }
+                            }
+
+
+                        }
+                    )
+                    Item(
+                        "Batch Another Configuration...",
+                        onClick = {
+                        }
+                    )
+                }
+                Menu("About", mnemonic = 'A') {
+                    Item(
+                        "About TrackerV2",
                         onClick = {
                             aboutDialog.value = true
                         }
