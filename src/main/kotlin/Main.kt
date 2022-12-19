@@ -150,43 +150,33 @@ fun main() {
                         onClick = {
                             val dialog = FileDialog(ComposeWindow(), "Open Files", FileDialog.LOAD).apply {
                                 file = "*.mp4;*.mov;*avi"
-                                isVisible = true
                                 isMultipleMode = true
+                                isVisible = true
                             }
 
                             if(dialog.files != null && dialog.files.isNotEmpty()) {
                                 // The Configuration has been decided.
                                 for(file in dialog.files) {
+                                    val filename = file.absolutePath.split(".")[0]
                                     val tmpVideo = Video(file.absolutePath).apply {
                                         preprocesser.nodes.clearAndAddAll(video.preprocesser.nodes)
                                         postprocessors.clearAndAddAll(video.postprocessors)
+                                        process()
+                                        postprocessors.mapIndexed { index, postprocessor ->
+                                            postprocessor.export(File("${filename}_processed${index}.csv"))
+                                        }
                                     }
-
-                                    var tmpImage = video.next()
-
-                                    val newFile = file.absolutePath.split(".")[0]+"_processed.mp4"
-
-                                    val recorder = FFmpegFrameRecorder(newFile, tmpImage.img.cols(), tmpImage.img.rows())
-                                    recorder.frameRate = video.frameRate
-                                    recorder.start()
-                                    while(tmpVideo.hasNext()) {
-                                        recorder.record(tmpImage.convertToFrame())
-                                        tmpImage = video.next()
-                                    }
-                                    recorder.stop()
-                                    recorder.close()
-
                                 }
                             }
 
 
                         }
                     )
-                    Item(
-                        "Batch Another Configuration...",
-                        onClick = {
-                        }
-                    )
+//                    Item(
+//                        "Batch Another Configuration...",
+//                        onClick = {
+//                        }
+//                    )
                 }
                 Menu("About", mnemonic = 'A') {
                     Item(

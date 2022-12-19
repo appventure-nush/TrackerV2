@@ -106,4 +106,8 @@ class Video(videoCapture: VideoCapture) : Iterator<Image> {
         postprocessors.map { currentImage = it.process(currentImage, currentFrame / frameRate) }
         return currentImage
     }
+
+    fun process() {
+        while(hasNext()) next()
+    }
 }
