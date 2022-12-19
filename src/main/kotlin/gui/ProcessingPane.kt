@@ -747,7 +747,7 @@ fun ContourFittingPane(node: ContourFittingNode, onDelete: () -> Unit, startColl
 fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
     if (node.colours.isEmpty()) {
         node.colours = arrayListOf(
-            Pair(RGB(0, 0, 0), RGB(1, 1, 1))
+            Pair(backend.RGB(0.0f, 0.0f, 0.0f), backend.RGB(1.0f, 1.0f, 1.0f))
         )
     }
 
@@ -757,9 +757,9 @@ fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> 
         mutableStateOf(
             HsvColor.from(
                 Color(
-                    node.colours[0].first.toSRGB().redInt,
-                    node.colours[0].first.toSRGB().blueInt,
-                    node.colours[0].first.toSRGB().greenInt
+                    node.colours[0].first.red,
+                    node.colours[0].first.blue,
+                    node.colours[0].first.green
                 )
             )
         )
@@ -768,9 +768,9 @@ fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> 
         mutableStateOf(
             HsvColor.from(
                 Color(
-                    node.colours[0].second.toSRGB().redInt,
-                    node.colours[0].second.toSRGB().blueInt,
-                    node.colours[0].second.toSRGB().greenInt
+                    node.colours[0].first.red,
+                    node.colours[0].first.blue,
+                    node.colours[0].first.green
                 )
             )
         )
@@ -778,8 +778,8 @@ fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> 
 
     node.colours = arrayListOf(
         Pair(
-            RGB(minColour.value.toColor().red, minColour.value.toColor().blue, minColour.value.toColor().green),
-            RGB(maxColour.value.toColor().red, maxColour.value.toColor().blue, maxColour.value.toColor().green)
+            backend.RGB(minColour.value.toColor().red, minColour.value.toColor().blue, minColour.value.toColor().green),
+            backend.RGB(maxColour.value.toColor().red, maxColour.value.toColor().blue, maxColour.value.toColor().green)
         )
     )
 

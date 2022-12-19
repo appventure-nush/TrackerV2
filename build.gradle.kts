@@ -33,6 +33,12 @@ compose.desktop {
             windows {
                 iconFile.set(File("src/main/resources/trackerv2.ico"))
             }
+            macOS {
+                iconFile.set(File("src/main/resources/trackerv2.icns"))
+            }
+            linux {
+                iconFile.set(File("src/main/resources/trackerv2.png"))
+            }
         }
     }
 }

@@ -1,5 +1,8 @@
 package gui
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.animation.*
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -26,7 +29,10 @@ import androidx.compose.ui.unit.sp
 import backend.Video
 import java.io.File
 import kotlin.concurrent.timer
+import kotlin.random.Random
 import kotlin.system.measureTimeMillis
+
+val temp = Random.nextInt(20) != 1
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Preview
@@ -37,10 +43,10 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
     val threadCreated = remember { mutableStateOf(false) }
     val imageBitmap = remember { mutableStateOf(loadImageBitmap(File("test.bmp").inputStream())) }
 
-    val openFrameNumDialog = remember { mutableStateOf(false) }
+    var openFrameNumDialog by remember { mutableStateOf(false) }
     val frameNumberText = remember { mutableStateOf("") }
 
-    val errorDialog = remember { mutableStateOf(false) }
+    var errorDialog by remember { mutableStateOf(false) }
     val errorMessage = remember { mutableStateOf("") }
 
     val focusRequester = remember { FocusRequester() }
@@ -80,8 +86,10 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                                 catch (exception: Exception) {
                                     playVideo.value = false
 
-                                    errorMessage.value = exception.toString()
-                                    errorDialog.value = true
+                                    errorMessage.value = (
+                                            if (Random.nextInt(1000) != 1) "" else "Skill Issue\n"
+                                            ) + exception.toString()
+                                    errorDialog = true
 
                                     syncing.value = false
                                 }
@@ -90,12 +98,21 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                     }.start()
                 }
             }) {
-                Icon(
-                    if (playVideo.value) painterResource("pause_black_24dp.svg")
-                    else painterResource("play_arrow_black_24dp.svg"),
-                    contentDescription = "",
-                    tint = if (playVideo.value) Color.Black else Color.Green
-                )
+                if (temp) {
+                    Icon(
+                        if (playVideo.value) painterResource("pause_black_24dp.svg")
+                        else painterResource("play_arrow_black_24dp.svg"),
+                        contentDescription = "",
+                        tint = if (playVideo.value) Color.Black else Color.Green
+                    )
+                } else {
+                    Icon(
+                        if (playVideo.value) painterResource("cd_2.png")
+                        else painterResource("cd.png"),
+                        contentDescription = "",
+                        tint = Color.Unspecified
+                    )
+                }
             }
 
             // Show the frame number
@@ -103,7 +120,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                 video.currentFrame.toString(),
                 fontSize = 12.sp,
                 modifier = Modifier.align(Alignment.CenterVertically).clickable {
-                    openFrameNumDialog.value = true
+                    openFrameNumDialog = true
                     frameNumberText.value = video.currentFrame.toString()
 
                     // TODO Automatically focus on text field when dialog opens
@@ -122,7 +139,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                     Thread.sleep(100)
 
                     // Seek to the appropiate location
-                    video.seek(video.currentFrame)
+                    video.seek(it.toInt()) //video.currentFrame)
                     video.hasNext()
 
                     val bytes = video.next().encode(".bmp")
@@ -136,7 +153,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
     }
 
     fun f() {
-        openFrameNumDialog.value = false
+        openFrameNumDialog = false
 
         if (frameNumberText.value.toIntOrNull() != null) {
             if (frameNumberText.value.toInt() < video.totalFrames) {
@@ -162,10 +179,12 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
         }
     }
 
-    if (openFrameNumDialog.value) {
+    AnimatedVisibility(
+        openFrameNumDialog
+    ) {
         AlertDialog(
             onDismissRequest = {
-                openFrameNumDialog.value = false
+                openFrameNumDialog = false
             },
             text = {
                 OutlinedTextField(
@@ -181,18 +200,20 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                 )
             },
             confirmButton = { TextButton({ f() }) { Text("Confirm") } },
-            dismissButton = { TextButton({ openFrameNumDialog.value = false }) { Text("Cancel") } },
+            dismissButton = { TextButton({ openFrameNumDialog = false }) { Text("Cancel") } },
         )
     }
 
-    if (errorDialog.value) {
+    AnimatedVisibility(
+        visible = errorDialog
+    ) {
         AlertDialog(
             title = { Text("Error") },
             text = { Text(errorMessage.value) },
             confirmButton = {
-                TextButton({ errorDialog.value = false }) { Text("Ok") }
+                TextButton({ errorDialog = false }) { Text("Ok") }
             },
-            onDismissRequest = { errorDialog.value = false },
+            onDismissRequest = { errorDialog = false },
             modifier = Modifier.padding(10.dp)
         )
     }

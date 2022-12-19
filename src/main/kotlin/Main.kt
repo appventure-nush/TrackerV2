@@ -58,10 +58,11 @@ fun main() {
         video.originY = originY
 
         val aboutDialog = remember { mutableStateOf(false) }
+        val aboutTimes = remember { mutableStateOf(0) }
 
         val syncing = remember { mutableStateOf(false) }
 
-        val icon = painterResource("trackerv2.ico")
+        val icon = painterResource("trackerv2.png")
 
         Window(
             onCloseRequest = ::exitApplication,
@@ -229,22 +230,130 @@ fun main() {
             if (isAxesVisible.value) Axes(originX, originY)
 
             if (aboutDialog.value) {
-                AlertDialog(
-                    title = { Text("About") },
-                    text = {
-                        Text("""
+                if (aboutTimes.value <= 5) {
+                    AlertDialog(
+                        title = { Text("About") },
+                        text = {
+                            Text("""
                         Tracker but better! This application is brought to you by AppVenture, the CS Interest Group
                         as well as your SYPT / IYPT alumni.
                         It was created and is maintained by Jed, with the help of Luc, Kabir and Prannaya.
                         """.trimIndent().replace("\n", " "))
-                    },
-                    confirmButton = {
-                        TextButton({ aboutDialog.value = false }) { Text("Ok") }
-                    },
-                    onDismissRequest = { aboutDialog.value = false },
-                    modifier = Modifier.size(300.dp, 300.dp).padding(10.dp)
-                )
+                        },
+                        confirmButton = {
+                            TextButton({
+                                aboutDialog.value = false
+                                aboutTimes.value++
+                            }) { Text("Ok") }
+                        },
+                        onDismissRequest = {
+                            aboutDialog.value = false
+                            aboutTimes.value++
+                        },
+                        modifier = Modifier.size(300.dp, 300.dp).padding(10.dp)
+                    )
+                } else {
+                    AlertDialog(
+                        title = { Text(problems[index].first) },
+                        text = { Text(problems[index].second) },
+                        confirmButton = {
+                            TextButton({ aboutDialog.value = false }) { Text("Ok") }
+                            index = Random.nextInt(problems.size)
+                        },
+                        onDismissRequest = {
+                            aboutDialog.value = false
+                            index = Random.nextInt(problems.size)
+                        },
+                        modifier = Modifier.size(300.dp, 300.dp).padding(10.dp)
+                    )
+                }
             }
         }
     }
 }
+
+val problems = mapOf(
+    "1. Fractal Fingers" to """
+        The effect of fractal fingering can be observed if a droplet of an ink-alcohol mixture is deposited onto diluted acrylic paint. 
+        How are the geometry and dynamics of the fingers influenced by relevant parameters?
+    """.trimIndent().replace("\n", ""),
+    "2. Oscillating Sphere" to """
+        A light sphere with a conducting surface is suspended from a thin wire. 
+        When the sphere is rotated about its vertical axis (thereby twisting the wire) and then released, 
+        it starts to oscillate. Investigate how the presence of a magnetic field affects the motion.
+    """.trimIndent().replace("\n", ""),
+    "3. Siren" to """
+        If you direct an air flow onto a rotating disk with holes, a sound may be heard. 
+        Explain this phenomenon and investigate how the sound characteristics depend on the relevant parameters.
+    """.trimIndent().replace("\n", ""),
+    "4. Coloured Line" to """
+        When a compact disc or DVD is illuminated with light coming from a filament lamp in such a way that only rays 
+        with large angles of incidence are selected, a clear green line can be observed. The colour varies upon 
+        slightly changing the angle of the disc. Explain and investigate this phenomenon.
+    """.trimIndent().replace("\n", ""),
+    "5. Whistling Mesh" to """
+        When a stream of water hits a rigid metal mesh within a range of angles, a whistling tone may be heard. 
+        Investigate how the properties of the mesh, stream and angle affect the characteristics of the sound produced.
+    """.trimIndent().replace("\n", ""),
+    "6. Magnetic-Mechanical Oscillator" to """
+        Secure the lower ends of two identical leaf springs to a non-magnetic base and attach magnets to the upper 
+        ends such that they repel and are free to move. Investigate how the movement of the springs depends 
+        on relevant parameters.
+    """.trimIndent().replace("\n", ""),
+    "7. Faraday Waves" to """
+        A droplet of less viscous liquid floating in a bath of a more viscous liquid develops surprising wave-like 
+        patterns when the entire system is set into vertical oscillation. Investigate this phenomenon and the 
+        parameters relevant to the production of stable patterns.
+    """.trimIndent().replace("\n", ""),
+    "8. Euler's Pendulum" to """
+        Take a thick plate of non-magnetic material and fix a neodymium magnet on top of it. Suspend a 
+        magnetic rod (which can be assembled from cylindrical neodymium magnets) underneath it. Deflect the 
+        rod so that it touches the plate only with highest edge and release it. Study the motion of such a pendulum 
+        under various conditions.
+    """.trimIndent().replace("\n", ""),
+    "9. Oscillating Screw" to """
+        When placed on its side on a ramp and released, a screw may experience growing oscillations as it travels down 
+        the ramp. Investigate how the motion of the screw, as well as the growth of these oscillations 
+        depend on the relevant parameters.
+    """.trimIndent().replace("\n", ""),
+    "10. Upstream Flow" to """
+        Sprinkle light particles on a water surface. Then allow a water stream to be incident on the surface from a 
+        small height. Under certain conditions, the particles may begin to move up the stream. Investigate and explain 
+        this phenomenon.
+    """.trimIndent().replace("\n", ""),
+    "11. Ball on Ferrite Rod" to """
+        A ferrite rod is placed at the bottom end of a vertical tube. Apply an ac voltage, of a frequency of the 
+        same order as the natural frequency of the rod, to a fine wire coil wrapped around its lower end. 
+        When a ball is placed on top of the rod, it will start to bounce. Explain and investigate this phenomenon.
+    """.trimIndent().replace("\n", ""),
+    "12. Rice Kettlebells" to """
+        Take a vessel and pour some granular material into it, for example, rice. If you dip e.g. a spoon into it, 
+        then at a certain depth of immersion, you can lift the vessel and contents by holding the spoon. 
+        Explain this phenomenon and explore the relevant parameters of the system.
+    """.trimIndent().replace("\n", ""),
+    "13. Ponyo’s Heat Tube" to """
+        A glass tube with a sealed top is filled with water and mounted vertically. The bottom end of the tube is 
+        immersed in a beaker of water and a short segment of the tube is heated. Investigate and explain the 
+        periodic motion of the water and any vapour bubbles observed.
+    """.trimIndent().replace("\n", ""),
+    "14. Jet Refraction" to """
+        A vertical jet can be refracted when passing through an inclined sieve with a fine mesh. 
+        Propose a law for such refraction and investigate relevant parameters.
+    """.trimIndent().replace("\n", ""),
+    "15. Pancake Rotation" to """
+        Place a few balls in a round container. If you move the container around a vertical axis, the balls can move 
+        co-directionally with the movement of the container, or they can move in the opposite direction. 
+        Explain this phenomenon and investigate how the direction of movement depends on relevant parameters.
+    """.trimIndent().replace("\n", ""),
+    "16. Thermoasoutic Engine" to """
+        A piston placed in the open end of a horizontal test tube which has its other end partially filled with steel 
+        wool may oscillate when the closed end is heated up. Investigate the phenomenon and determine the 
+        efficiency of this engine.
+    """.trimIndent().replace("\n", ""),
+    "17. Arrester Bed" to """
+        A sand-filled lane results in the dissipation of the kinetic energy of a moving vehicle. What length is 
+        necessary for such an arrester bed to entirely stop a passively moving object (e.g. a ball)? 
+        What parameters does the length depend on?
+    """.trimIndent().replace("\n", "")
+).toList()
+var index = Random.nextInt(problems.size)
