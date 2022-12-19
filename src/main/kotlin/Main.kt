@@ -154,11 +154,8 @@ fun main() {
                             }
 
                             if(dialog.files != null && dialog.files.isNotEmpty()) {
-                                // The Configuration has been decided...
-                                val files = dialog.files.copyOf()
-
+                                // The Configuration has been decided.
                                 for(file in dialog.files) {
-                                    val converterToMat = ToMat()
                                     val tmpVideo = Video(file.absolutePath).apply {
                                         preprocesser.nodes.clearAndAddAll(video.preprocesser.nodes)
                                         postprocessors.clearAndAddAll(video.postprocessors)
