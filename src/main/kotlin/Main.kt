@@ -38,7 +38,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun main() {
-    val video = Video("IMG_3782.mov")
+    val video = Video("video0.mov")
     video.hasNext()
     video.next().write("test.bmp")
 
@@ -154,9 +154,9 @@ fun main() {
                                 isVisible = true
                             }
 
-                            if(dialog.files != null && dialog.files.isNotEmpty()) {
+                            if (dialog.files != null && dialog.files.isNotEmpty()) {
                                 // The Configuration has been decided.
-                                for(file in dialog.files) {
+                                for (file in dialog.files) {
                                     val filename = file.absolutePath.split(".")[0]
                                     val tmpVideo = Video(file.absolutePath).apply {
                                         preprocesser.nodes.clearAndAddAll(video.preprocesser.nodes)
@@ -168,8 +168,6 @@ fun main() {
                                     }
                                 }
                             }
-
-
                         }
                     )
 //                    Item(

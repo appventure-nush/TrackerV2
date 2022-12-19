@@ -723,7 +723,6 @@ fun CircleFittingPane(node: CircleFittingNode, onDelete: () -> Unit, startCollec
     }
 }
 
-
 @Preview
 @Composable
 fun ContourFittingPane(node: ContourFittingNode, onDelete: () -> Unit, startCollecting: () -> Unit, save: () -> Unit) {
@@ -768,9 +767,9 @@ fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> 
         mutableStateOf(
             HsvColor.from(
                 Color(
-                    node.colours[0].first.red,
-                    node.colours[0].first.blue,
-                    node.colours[0].first.green
+                    node.colours[0].second.red,
+                    node.colours[0].second.blue,
+                    node.colours[0].second.green
                 )
             )
         )

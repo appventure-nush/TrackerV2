@@ -108,6 +108,6 @@ class Video(videoCapture: VideoCapture) : Iterator<Image> {
     }
 
     fun process() {
-        while(hasNext()) next()
+        while (hasNext()) next()
     }
 }
