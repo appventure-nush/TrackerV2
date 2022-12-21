@@ -1,6 +1,5 @@
 package gui
 
-import ColorPreviewInfo
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -25,7 +24,6 @@ import backend.image_processing.postprocess.CircleFittingNode
 import backend.image_processing.postprocess.ContourFittingNode
 import backend.image_processing.postprocess.EllipseFittingNode
 import backend.image_processing.preprocess.*
-import com.github.ajalt.colormath.model.RGB
 import com.godaddy.android.colorpicker.ClassicColorPicker
 import com.godaddy.android.colorpicker.HsvColor
 

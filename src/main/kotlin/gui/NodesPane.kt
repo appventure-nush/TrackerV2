@@ -1,5 +1,6 @@
 package gui
 
+//import com.github.ajalt.colormath.Color
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipArea
@@ -21,18 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-//import com.github.ajalt.colormath.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.Video
 import backend.image_processing.postprocess.*
-import backend.image_processing.preprocess.PreprocessingNode
-import backend.image_processing.preprocess.BlurringNode
-import backend.image_processing.preprocess.CannyEdgeNode
-import backend.image_processing.preprocess.ColourRangeNode
-import backend.image_processing.preprocess.ThresholdingNode
-import backend.image_processing.preprocess.MorphologicalNode
+import backend.image_processing.preprocess.*
 import java.awt.FileDialog
 import java.io.File
 import kotlin.random.Random

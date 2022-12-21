@@ -28,11 +28,11 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.bytedeco.javacv.FFmpegFrameRecorder
-import org.bytedeco.javacv.OpenCVFrameConverter.ToMat
 import org.bytedeco.opencv.opencv_videoio.VideoCapture
 import java.awt.FileDialog
 import java.io.File
+import java.util.*
+import kotlin.concurrent.thread
 import kotlin.random.Random
 
 
@@ -59,6 +59,12 @@ fun main() {
 
         val aboutDialog = remember { mutableStateOf(false) }
         val aboutTimes = remember { mutableStateOf(0) }
+
+        val batchDialog = remember { mutableStateOf(false) }
+        val batchFile = remember { mutableStateOf("") }
+        val batchTask = remember { mutableStateOf("") }
+        val batchProgress = remember { mutableStateOf(0.0F) }
+        val batchStartTime = remember { mutableStateOf(0L) }
 
         val syncing = remember { mutableStateOf(false) }
 
@@ -155,17 +161,33 @@ fun main() {
                             }
 
                             if (dialog.files != null && dialog.files.isNotEmpty()) {
-                                // The Configuration has been decided.
-                                for (file in dialog.files) {
-                                    val filename = file.absolutePath.split(".")[0]
-                                    val tmpVideo = Video(file.absolutePath).apply {
-                                        preprocesser.nodes.clearAndAddAll(video.preprocesser.nodes)
-                                        postprocessors.clearAndAddAll(video.postprocessors)
-                                        process()
-                                        postprocessors.mapIndexed { index, postprocessor ->
-                                            postprocessor.export(File("${filename}_processed${index}.csv"))
+                                batchDialog.value = true
+                                batchStartTime.value = System.currentTimeMillis() / 1000
+                                batchFile.value = dialog.files[0].absolutePath
+                                batchProgress.value = 0F
+                                val numFiles = dialog.files.size
+                                val perFileProgress = 1F / numFiles
+                                thread(start = true) {
+                                    dialog.files.map { file ->
+                                        val filename = file.absolutePath.split(".")[0]
+                                        batchFile.value = file.absolutePath.split(Regex("\\|/")).last()
+                                        Video(file.absolutePath).apply {
+                                            preprocesser.nodes.clearAndAddAll(video.preprocesser.nodes)
+                                            postprocessors.clearAndAddAll(video.postprocessors)
+                                            batchTask.value = "Running through Video"
+                                            process()
+                                            val numProcessors = postprocessors.size
+                                            val perProcessorProgress = perFileProgress / numProcessors
+                                            postprocessors.map { postprocessor ->
+                                                batchTask.value = "Exporting for " + postprocessor.node.name
+                                                val task = postprocessor.node.name.lowercase(Locale.getDefault()).replace(" ", "_")
+                                                postprocessor.export(File("${filename}_processed_${task}.csv"))
+                                                batchProgress.value += perProcessorProgress
+                                            }
                                         }
                                     }
+
+                                    batchDialog.value = false
                                 }
                             }
                         }
@@ -255,6 +277,39 @@ fun main() {
                         modifier = Modifier.size(300.dp, 300.dp).padding(10.dp)
                     )
                 }
+            }
+
+            if(batchDialog.value) {
+                AlertDialog(
+                    title = { Text("Batch Process Underway...") },
+                    text = {
+                        Text("Processing file ${batchFile.value}.\n${batchTask.value}...")
+                        LinearProgressIndicator(progress = batchProgress.value)
+                        val remainingTime = (1 - batchProgress.value) / batchProgress.value * (System.currentTimeMillis() / 1000 - batchStartTime.value)
+                        val hours = (remainingTime / 3600).toInt()
+                        val mins = ((remainingTime % 3600) / 60).toInt()
+                        val secs = remainingTime % 60
+                        val timeIndication: String = if(hours == 0) {
+                            if(mins == 0) "$secs s"
+                            else "$mins m $secs s"
+                        } else {
+                            if(mins == 0) "$hours h $secs s"
+                            else "$hours h $mins m $secs s"
+                        }
+                        Text("ETA: $timeIndication")
+                    },
+                    confirmButton = {
+                        TextButton({
+                            aboutDialog.value = false
+                            aboutTimes.value++
+                        }) { Text("Ok") }
+                    },
+                    onDismissRequest = {
+                        aboutDialog.value = false
+                        aboutTimes.value++
+                    },
+                    modifier = Modifier.size(300.dp, 300.dp).padding(10.dp)
+                )
             }
         }
     }

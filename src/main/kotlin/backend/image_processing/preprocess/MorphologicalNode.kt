@@ -3,7 +3,6 @@ package backend.image_processing.preprocess
 import backend.ALL_SPACES
 import backend.Colourspace
 import backend.Image
-import backend.image_processing.preprocess.PreprocessingNode
 import kotlinx.serialization.Serializable
 
 /**

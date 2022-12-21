@@ -14,9 +14,11 @@ import org.bytedeco.javacv.OpenCVFrameConverter
 import org.bytedeco.opencv.global.opencv_core.*
 import org.bytedeco.opencv.global.opencv_imgcodecs.*
 import org.bytedeco.opencv.global.opencv_imgproc.*
-import org.bytedeco.opencv.opencv_core.*
+import org.bytedeco.opencv.opencv_core.Mat
+import org.bytedeco.opencv.opencv_core.MatVector
+import org.bytedeco.opencv.opencv_core.Scalar
+import org.bytedeco.opencv.opencv_core.Size
 import org.bytedeco.opencv.opencv_imgproc.Vec3fVector
-import java.lang.Float.NaN
 import org.bytedeco.opencv.global.opencv_imgproc.circle as cvCircle
 import org.bytedeco.opencv.global.opencv_imgproc.ellipse as cvEllipse
 import org.bytedeco.opencv.opencv_core.Point as cvPoint

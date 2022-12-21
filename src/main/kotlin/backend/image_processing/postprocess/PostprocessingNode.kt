@@ -3,9 +3,7 @@ package backend.image_processing.postprocess
 import backend.Image
 import backend.Point
 import backend.image_processing.Processing
-import backend.image_processing.preprocess.PreprocessingNode
 import kotlinx.serialization.Serializable
-import org.bytedeco.opencv.opencv_core.Mat
 
 /**
  * The base class for all post-processing nodes

@@ -3,8 +3,8 @@ package backend.image_processing.preprocess
 import backend.Colourspace
 import backend.Image
 import backend.RGB
-import com.github.ajalt.colormath.model.RGB as sRGB
 import kotlinx.serialization.Serializable
+import com.github.ajalt.colormath.model.RGB as sRGB
 
 /**
  * The node for filter colours within the specified colour ranges
