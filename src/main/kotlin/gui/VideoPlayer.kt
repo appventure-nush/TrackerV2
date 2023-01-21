@@ -65,12 +65,10 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                     // Create the thread
                     Thread {
                         while (true) {
-                            if (!pauseSyncing.value && syncing.value && video.hasNext()) {
+                            if (!pauseSyncing.value && syncing.value && (!playVideo.value || video.hasNext())) {
                                 try {
                                     val ms = measureTimeMillis {
-                                        if (!playVideo.value) video.seek(video.currentFrame)
-
-                                        val bytes = video.next().encode(".bmp")
+                                        val bytes = video.next(playVideo.value).encode(".bmp")
                                         imageBitmap.value = loadImageBitmap(bytes.inputStream())
                                     }
 

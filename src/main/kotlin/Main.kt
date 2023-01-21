@@ -23,15 +23,16 @@ import backend.image_processing.preprocess.Preprocessor
 import gui.Axes
 import gui.NodesPane
 import gui.VideoPlayer
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.bytedeco.opencv.opencv_videoio.VideoCapture
 import java.awt.FileDialog
 import java.io.File
-import java.util.*
 import kotlin.concurrent.thread
 import kotlin.random.Random
 
@@ -67,6 +68,7 @@ fun main() {
         val batchStartTime = remember { mutableStateOf(0L) }
 
         val syncing = remember { mutableStateOf(false) }
+        video.syncing = syncing
 
         val icon = painterResource("trackerv2.png")
 
@@ -92,9 +94,14 @@ fun main() {
                             dialog.isVisible = true
 
                             if (dialog.file != null) {
+                                println("Stop syncing")
                                 syncing.value = false
+                                // runBlocking { delay(10000) }
                                 video.videoCapture = VideoCapture(dialog.directory + "/" + dialog.file)
+                                video.videoFile = dialog.directory + "/" + dialog.file
+                                // runBlocking { delay(500) }
                                 syncing.value = true
+                                println("Syncing again")
                             }
                         }
                     )
@@ -306,7 +313,6 @@ fun main() {
 
                             Text("ETA: $timeIndication")
                         }
-
                     },
                     confirmButton = {},
                     onDismissRequest = {},
