@@ -21,13 +21,12 @@ import backend.image_processing.postprocess.PostprocessingNode
 import backend.image_processing.postprocess.Postprocessor
 import backend.image_processing.preprocess.Preprocessor
 import gui.Axes
+import gui.CroppingRectangle
 import gui.NodesPane
 import gui.Tape
 import gui.VideoPlayer
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -53,6 +52,7 @@ fun main() {
         val onUpdate = remember { mutableStateOf(0) }
 
         val isAxesVisible = remember { mutableStateOf(false) }
+        val croppingRectangleVisible = remember { mutableStateOf(false) }
 
         val originX = remember { mutableStateOf(0.0f) }
         val originY = remember { mutableStateOf(0.0f) }
@@ -66,6 +66,11 @@ fun main() {
         val calibrationX2 = remember { mutableStateOf(100.0f) }
         val calibrationY2 = remember { mutableStateOf(100.0f) }
         val cmValue = remember { mutableStateOf(1.0f) }
+
+        val cropX1 = remember { mutableStateOf(0.0f) }
+        val cropY1 = remember { mutableStateOf(0.0f) }
+        val cropX2 = remember { mutableStateOf(100.0f) }
+        val cropY2 = remember { mutableStateOf(100.0f) }
 
         val aboutDialog = remember { mutableStateOf(false) }
         val aboutTimes = remember { mutableStateOf(0) }
@@ -166,6 +171,12 @@ fun main() {
                         }
                     )
                     Item(
+                        "Toggle Cropping Rectangle",
+                        onClick = {
+                            croppingRectangleVisible.value = !croppingRectangleVisible.value
+                        }
+                    )
+                    Item(
                         "Toggle Calibration Stick",
                         onClick = {
                             isCalibrationVisible.value = !isCalibrationVisible.value
@@ -263,6 +274,8 @@ fun main() {
 
             if (isAxesVisible.value) Axes(originX, originY)
 
+            if (croppingRectangleVisible.value) CroppingRectangle(cropX1, cropX2, cropY1, cropY2)
+
             if (isCalibrationVisible.value) Tape(calibrationX1, calibrationY1, calibrationX2, calibrationY2, cmValue)
 
             if (aboutDialog.value) {
@@ -273,7 +286,7 @@ fun main() {
                             Text("""
                         Tracker but better! This application is brought to you by AppVenture, the CS Interest Group
                         as well as your SYPT / IYPT alumni.
-                        It was created and is maintained by Jed, with the help of Luc, Kabir and Prannaya.
+                        It was created and is maintained by Jed, with the help of Luc, Kabir, Josher and Prannaya.
                         """.trimIndent().replace("\n", " "))
                         },
                         confirmButton = {
