@@ -21,12 +21,11 @@ import backend.image_processing.postprocess.PostprocessingNode
 import backend.image_processing.postprocess.Postprocessor
 import backend.image_processing.preprocess.Preprocessor
 import gui.Axes
+import gui.CroppingRectangle
 import gui.NodesPane
 import gui.VideoPlayer
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -52,11 +51,17 @@ fun main() {
         val onUpdate = remember { mutableStateOf(0) }
 
         val isAxesVisible = remember { mutableStateOf(false) }
+        val croppingRectangleVisible = remember { mutableStateOf(false) }
 
         val originX = remember { mutableStateOf(0.0f) }
         val originY = remember { mutableStateOf(0.0f) }
         video.originX = originX
         video.originY = originY
+
+        val cropX1 = remember { mutableStateOf(0.0f) }
+        val cropY1 = remember { mutableStateOf(0.0f) }
+        val cropX2 = remember { mutableStateOf(100.0f) }
+        val cropY2 = remember { mutableStateOf(100.0f) }
 
         val aboutDialog = remember { mutableStateOf(false) }
         val aboutTimes = remember { mutableStateOf(0) }
@@ -156,6 +161,12 @@ fun main() {
                             isAxesVisible.value = !isAxesVisible.value
                         }
                     )
+                    Item(
+                        "Toggle Cropping Rectangle",
+                        onClick = {
+                            croppingRectangleVisible.value = !croppingRectangleVisible.value
+                        }
+                    )
                 }
                 Menu("Batch", mnemonic = 'B') {
                     Item(
@@ -248,6 +259,8 @@ fun main() {
 
             if (isAxesVisible.value) Axes(originX, originY)
 
+            if (croppingRectangleVisible.value) CroppingRectangle(cropX1, cropX2, cropY1, cropY2)
+
             if (aboutDialog.value) {
                 if (aboutTimes.value <= 5) {
                     AlertDialog(
@@ -256,7 +269,7 @@ fun main() {
                             Text("""
                         Tracker but better! This application is brought to you by AppVenture, the CS Interest Group
                         as well as your SYPT / IYPT alumni.
-                        It was created and is maintained by Jed, with the help of Luc, Kabir and Prannaya.
+                        It was created and is maintained by Jed, with the help of Luc, Kabir, Josher and Prannaya.
                         """.trimIndent().replace("\n", " "))
                         },
                         confirmButton = {
