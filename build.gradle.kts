@@ -1,4 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.7.20"
@@ -21,6 +22,7 @@ dependencies {
     implementation("com.github.holgerbrandl:krangl:0.18")
     implementation("com.godaddy.android.colorpicker:compose-color-picker-jvm:0.5.1")
     testImplementation(kotlin("test"))
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 compose.desktop {
@@ -41,4 +43,12 @@ compose.desktop {
             }
         }
     }
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "1.8"
 }

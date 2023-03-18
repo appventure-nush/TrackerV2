@@ -22,6 +22,7 @@ import backend.image_processing.postprocess.Postprocessor
 import backend.image_processing.preprocess.Preprocessor
 import gui.Axes
 import gui.NodesPane
+import gui.Tape
 import gui.VideoPlayer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -39,7 +40,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun main() {
-    val video = Video("video0.mov")
+    val video = Video("C0197 - Trim cropped.mp4")
     video.hasNext()
     video.next().write("test.bmp")
 
@@ -57,6 +58,14 @@ fun main() {
         val originY = remember { mutableStateOf(0.0f) }
         video.originX = originX
         video.originY = originY
+
+        val isCalibrationVisible = remember { mutableStateOf(false) }
+
+        val calibrationX1 = remember { mutableStateOf(0.0f) }
+        val calibrationY1 = remember { mutableStateOf(0.0f) }
+        val calibrationX2 = remember { mutableStateOf(100.0f) }
+        val calibrationY2 = remember { mutableStateOf(100.0f) }
+        val cmValue = remember { mutableStateOf(1.0f) }
 
         val aboutDialog = remember { mutableStateOf(false) }
         val aboutTimes = remember { mutableStateOf(0) }
@@ -156,6 +165,12 @@ fun main() {
                             isAxesVisible.value = !isAxesVisible.value
                         }
                     )
+                    Item(
+                        "Toggle Calibration Stick",
+                        onClick = {
+                            isCalibrationVisible.value = !isCalibrationVisible.value
+                        }
+                    )
                 }
                 Menu("Batch", mnemonic = 'B') {
                     Item(
@@ -247,6 +262,8 @@ fun main() {
             }
 
             if (isAxesVisible.value) Axes(originX, originY)
+
+            if (isCalibrationVisible.value) Tape(calibrationX1, calibrationY1, calibrationX2, calibrationY2, cmValue)
 
             if (aboutDialog.value) {
                 if (aboutTimes.value <= 5) {
