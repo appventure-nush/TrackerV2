@@ -82,6 +82,11 @@ class Video(videoCapture: VideoCapture) : Iterator<Image> {
     var originY: MutableState<Float> = mutableStateOf(0.0f)
 
     /**
+     * The scale of the video
+     */
+    var scale: MutableState<Double> = mutableStateOf(1.0)
+
+    /**
      * The current frame number of the video
      */
     var currentFrame: Int = 0
@@ -124,6 +129,8 @@ class Video(videoCapture: VideoCapture) : Iterator<Image> {
         cvtColor(nextImage, nextImage, COLOR_BGR2RGB)
         currentImage = Image(Colourspace.RGB, nextImage)
         currentImage.origin = Point(originX.value.toDouble(), originY.value.toDouble())
+        currentImage.scale = scale.value.toDouble()
+
         currentImage = preprocesser.process(currentImage)
 
         nextImage = nextImage2

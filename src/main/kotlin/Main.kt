@@ -33,7 +33,9 @@ import kotlinx.serialization.json.Json
 import org.bytedeco.opencv.opencv_videoio.VideoCapture
 import java.awt.FileDialog
 import java.io.File
+import java.lang.Math.pow
 import kotlin.concurrent.thread
+import kotlin.math.pow
 import kotlin.random.Random
 
 
@@ -276,7 +278,7 @@ fun main() {
 
             if (croppingRectangleVisible.value) CroppingRectangle(cropX1, cropX2, cropY1, cropY2)
 
-            if (isCalibrationVisible.value) Tape(calibrationX1, calibrationY1, calibrationX2, calibrationY2, cmValue)
+            if (isCalibrationVisible.value) Tape(calibrationX1, calibrationY1, calibrationX2, calibrationY2, cmValue, video.scale)
 
             if (aboutDialog.value) {
                 if (aboutTimes.value <= 5) {

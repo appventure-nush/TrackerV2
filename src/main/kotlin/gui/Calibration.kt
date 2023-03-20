@@ -4,26 +4,22 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Divider
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import jetbrains.datalore.base.math.toDegrees
-import kotlin.math.atan2
+import kotlin.math.pow
 import kotlin.math.roundToInt
-import kotlin.math.sqrt
 
 @Composable
 fun Axes(dx: MutableState<Float>, dy: MutableState<Float>) {
@@ -87,8 +83,17 @@ fun TapeEnd(x: MutableState<Float>, y: MutableState<Float>) {
 }
 
 @Composable
-fun Tape(x1: MutableState<Float>, y1: MutableState<Float>, x2: MutableState<Float>, y2: MutableState<Float>, cmValue: MutableState<Float>) {
+fun Tape(
+    x1: MutableState<Float>,
+    y1: MutableState<Float>,
+    x2: MutableState<Float>,
+    y2: MutableState<Float>,
+    cmValue: MutableState<Float>,
+    scale: MutableState<Double>
+) {
     val constant = with(LocalDensity.current) { 1.dp.toPx() }
+    val cmTextValue = remember { mutableStateOf("1.0") }
+
     Box {
         TapeEnd(x1, y1)
         TapeEnd(x2, y2)
@@ -122,22 +127,32 @@ fun Tape(x1: MutableState<Float>, y1: MutableState<Float>, x2: MutableState<Floa
         )
         */
 
-        /*
         OutlinedTextField(
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Decimal
-            ),
-            value = String.format("%.5f", cmValue.value),
-            onValueChange = { cmValue.value = it.toFloat() },
+            value = cmTextValue.value,
+            onValueChange = {
+                try {
+                    cmTextValue.value = it
+                    cmValue.value = it.toFloat()
+                    scale.value = (cmValue.value / 100) / (
+                        (x2.value - x1.value).toDouble().pow(2.0) + (y2.value - y1.value).toDouble().pow(2.0)
+                    ).pow(0.5)
+                } catch (ignored: Exception) {
+
+                }
+            },
             modifier = Modifier
-                .height(40.dp)
+                .height(50.dp)
                 .width(100.dp)
                 .offset { IntOffset(
-                    (constant * 20).roundToInt() + ((x1.value + x2.value - width + 50) / 2 / constant).roundToInt(),
-                    (constant * 20).roundToInt() + ((y1.value + y2.value + 20) / 2 / constant).roundToInt()
-                ) }
+                    (constant * 20).roundToInt() + ((x1.value + x2.value) / 2 / constant).roundToInt(),
+                    (constant * 20).roundToInt() + ((y1.value + y2.value) / 2 / constant).roundToInt()
+                ) },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                textColor = Color.Green
+            )
         )
-         */
     }
 
 }
