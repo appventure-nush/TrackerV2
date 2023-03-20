@@ -1,5 +1,6 @@
 package gui
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
@@ -7,13 +8,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Divider
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -21,7 +21,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import jetbrains.datalore.base.math.toDegrees
-import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -75,7 +74,7 @@ fun TapeEnd(x: MutableState<Float>, y: MutableState<Float>) {
                 (constant * 20).roundToInt() + (y.value / constant).roundToInt()
             ) }
             .size(5.dp)
-            .clip(CircleShape)
+            //.clip(CircleShape)
             .background(Color.Green)
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
@@ -90,12 +89,26 @@ fun TapeEnd(x: MutableState<Float>, y: MutableState<Float>) {
 @Composable
 fun Tape(x1: MutableState<Float>, y1: MutableState<Float>, x2: MutableState<Float>, y2: MutableState<Float>, cmValue: MutableState<Float>) {
     val constant = with(LocalDensity.current) { 1.dp.toPx() }
-    val width = sqrt((x1.value - x2.value) * (x1.value - x2.value) + (y1.value - y2.value) * (y1.value - y2.value))
-
     Box {
         TapeEnd(x1, y1)
         TapeEnd(x2, y2)
 
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawLine(
+                start = Offset(
+                    x = (constant * 20).roundToInt() + x1.value / constant + 2.5f,
+                    y = (constant * 20).roundToInt() + y1.value / constant + 2.5f
+                ),
+                end = Offset(
+                    x = (constant * 20).roundToInt() + x2.value / constant + 2.5f,
+                    y = (constant * 20).roundToInt() + y2.value / constant + 2.5f
+                ),
+                color = Color.Green,
+                strokeWidth = 2.5f
+            )
+        }
+        
+        /*
         Divider(
             color = Color.Green,
             thickness = 2.dp,
@@ -107,7 +120,9 @@ fun Tape(x1: MutableState<Float>, y1: MutableState<Float>, x2: MutableState<Floa
                 .width((width / constant).dp)
                 .rotate(toDegrees(atan2(y1.value - y2.value, x1.value - x2.value).toDouble()).toFloat())
         )
+        */
 
+        /*
         OutlinedTextField(
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal
@@ -122,6 +137,7 @@ fun Tape(x1: MutableState<Float>, y1: MutableState<Float>, x2: MutableState<Floa
                     (constant * 20).roundToInt() + ((y1.value + y2.value + 20) / 2 / constant).roundToInt()
                 ) }
         )
+         */
     }
 
 }
