@@ -512,7 +512,6 @@ class Image(colourspace: Colourspace, img: Mat) {
 
     /* Misc */
 
-
     fun convertToFrame(): Frame {
         val converterToMat = OpenCVFrameConverter.ToMat()
         val newImg = Mat()

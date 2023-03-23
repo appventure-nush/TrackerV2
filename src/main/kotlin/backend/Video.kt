@@ -129,7 +129,7 @@ class Video(videoCapture: VideoCapture) : Iterator<Image> {
         cvtColor(nextImage, nextImage, COLOR_BGR2RGB)
         currentImage = Image(Colourspace.RGB, nextImage)
         currentImage.origin = Point(originX.value.toDouble(), originY.value.toDouble())
-        currentImage.scale = scale.value.toDouble()
+        currentImage.scale = scale.value
 
         currentImage = preprocesser.process(currentImage)
 

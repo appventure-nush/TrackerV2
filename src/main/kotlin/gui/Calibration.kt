@@ -94,6 +94,10 @@ fun Tape(
     val constant = with(LocalDensity.current) { 1.dp.toPx() }
     val cmTextValue = remember { mutableStateOf("1.0") }
 
+    scale.value = (cmValue.value / 100) / (
+        (x2.value - x1.value).toDouble().pow(2.0) + (y2.value - y1.value).toDouble().pow(2.0)
+    ).pow(0.5)
+
     Box {
         TapeEnd(x1, y1)
         TapeEnd(x2, y2)
@@ -133,12 +137,7 @@ fun Tape(
                 try {
                     cmTextValue.value = it
                     cmValue.value = it.toFloat()
-                    scale.value = (cmValue.value / 100) / (
-                        (x2.value - x1.value).toDouble().pow(2.0) + (y2.value - y1.value).toDouble().pow(2.0)
-                    ).pow(0.5)
-                } catch (ignored: Exception) {
-
-                }
+                } catch (ignored: Exception) { }
             },
             modifier = Modifier
                 .height(50.dp)
