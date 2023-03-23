@@ -84,6 +84,8 @@ fun NodesPane(
 
         if (dialog.file != null)
             postprocessors[it].export(File(dialog.directory + "/" + dialog.file))
+
+        dialog.isVisible = false
     }
 
     val selectedItem = remember { mutableStateOf(0) }
