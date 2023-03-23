@@ -1,6 +1,7 @@
 package gui
 
 //import com.github.ajalt.colormath.Color
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipArea
@@ -35,7 +36,7 @@ import kotlin.random.Random
 
 data class Page(val name: String, val content: @Composable () -> Unit)
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Preview
 @Composable
 fun NodesPane(
@@ -55,6 +56,9 @@ fun NodesPane(
         ContourFittingNode(-1)
     )
     val expanded = remember { mutableStateOf(false) }
+
+    val errorDialog = remember { mutableStateOf(false) }
+    val errorMessage = remember { mutableStateOf("") }
 
     fun deleteNode(it: PreprocessingNode) = run {
         preprocessor.nodes.remove(it)
@@ -78,14 +82,17 @@ fun NodesPane(
     }
 
     fun saveData(it: Int) = run {
-        val dialog = FileDialog(ComposeWindow(), "Save Data", FileDialog.SAVE)
-        dialog.file = "*.csv"
-        dialog.isVisible = true
+        try {
+            val dialog = FileDialog(ComposeWindow(), "Save Data", FileDialog.SAVE)
+            dialog.file = "*.csv"
+            dialog.isVisible = true
 
-        if (dialog.file != null)
-            postprocessors[it].export(File(dialog.directory + "/" + dialog.file))
-
-        dialog.isVisible = false
+            if (dialog.file != null)
+                postprocessors[it].export(File(dialog.directory + "/" + dialog.file))
+        } catch (exception: Exception) {
+            errorDialog.value = true
+            errorMessage.value = exception.toString()
+        }
     }
 
     val selectedItem = remember { mutableStateOf(0) }
@@ -259,5 +266,19 @@ fun NodesPane(
                 Icon(Icons.Filled.Add, "")
             }
         }
+    }
+
+    AnimatedVisibility(
+        visible = errorDialog.value
+    ) {
+        AlertDialog(
+            title = { Text("Error") },
+            text = { Text(errorMessage.value) },
+            confirmButton = {
+                TextButton({ errorDialog.value = false }) { Text("Ok") }
+            },
+            onDismissRequest = { errorDialog.value = false },
+            modifier = Modifier.padding(10.dp)
+        )
     }
 }
