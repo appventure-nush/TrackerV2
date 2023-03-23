@@ -12,8 +12,7 @@ enum class Morphological {
     ERODE,
     DILATE,
     OPENING,
-    CLOSING,
-    GRADIENT
+    CLOSING
 }
 
 /**
@@ -40,7 +39,14 @@ class MorphologicalNode(var operationType: Morphological = Morphological.ERODE,
         when (operationType) {
             Morphological.ERODE -> erode(kernelSize, iterations)
             Morphological.DILATE -> dilate(kernelSize, iterations)
-            else -> boxFilter(kernelSize)
+            Morphological.OPENING -> {  // Useful for removing noise
+                erode(kernelSize, iterations)
+                dilate(kernelSize, iterations)
+            }
+            Morphological.CLOSING -> {  // Useful for patching up holes
+                dilate(kernelSize, iterations)
+                erode(kernelSize, iterations)
+            }
         }
     }
 

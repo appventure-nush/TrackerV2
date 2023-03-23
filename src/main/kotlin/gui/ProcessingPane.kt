@@ -513,7 +513,12 @@ fun MorphologicalPane(node: MorphologicalNode, onDelete: () -> Unit, shift: (Int
             Row(modifier = Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
                 Combobox(
                     "Operation Type", operationType,
-                    listOf(Morphological.ERODE, Morphological.DILATE),
+                    listOf(
+                        Morphological.ERODE,
+                        Morphological.DILATE,
+                        Morphological.OPENING,
+                        Morphological.CLOSING
+                    ),
                     modifier = Modifier.height(53.dp),
                     onValueChanged = { node.operationType = operationType.value }
                 )
