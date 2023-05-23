@@ -102,3 +102,34 @@ jobs:
       with:
         name: TrackerV2-MacOS-JAR
         path: ./build/compose/jars
+
+  macOS-m1:
+    name: Build on MacOS
+    runs-on: macos-latest-xl
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 16
+        uses: actions/setup-java@v1
+        with:
+          java-version: 16
+          java-package: jdk
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build Executable
+        run: ./gradlew createDistributable
+      - name: Build JAR
+        run: ./gradlew packageReleaseUberJarForCurrentOS
+      - shell: bash
+        run: |
+          ls -R
+      - name: Upload the Executable
+        uses: actions/upload-artifact@v2
+        with:
+          name: TrackerV2-MacOS-M1
+          path: ./build/compose/binaries/main/app
+      - name: Upload the Executable
+        uses: actions/upload-artifact@v2
+        with:
+          name: TrackerV2-MacOS-M1-JAR
+          path: ./build/compose/jars
