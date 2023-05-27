@@ -169,7 +169,6 @@ fun NodesPane(
                                     { postprocessors[it].clear() },
                                     { saveData(it) }
                                 )
-                                else -> null
                             }
                         }
                     }

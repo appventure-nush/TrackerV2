@@ -78,9 +78,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                                 catch (exception: Exception) {
                                     playVideo.value = false
 
-                                    errorMessage.value = (
-                                            if (Random.nextInt(1000) != 1) "" else "Skill Issue\n"
-                                            ) + exception.toString()
+                                    errorMessage.value = exception.toString()
                                     errorDialog = true
 
                                     syncing.value = false
@@ -200,7 +198,7 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
         visible = errorDialog
     ) {
         AlertDialog(
-            title = { Text("Error") },
+            title = { Text(if (Random.nextInt(50) != 1) "Error" else "Skill Issue") },
             text = { Text(errorMessage.value) },
             confirmButton = {
                 TextButton({ errorDialog = false }) { Text("Ok") }

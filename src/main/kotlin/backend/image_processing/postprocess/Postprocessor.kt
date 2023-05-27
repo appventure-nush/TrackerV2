@@ -32,9 +32,12 @@ class Postprocessor(val node: PostprocessingNode) {
         val (rows, newerImg) = node.process(newImg)
 
         // Adding to dataframe
-        rows.forEach {
-            val rowWithTime = listOf(time) + it
-            data = data?.addRow(rowWithTime) ?: (dataFrameOf(entries)(rowWithTime))
+        val prevTime = data?.rows?.last()?.get(entries[0]) ?: -1
+        if (time != prevTime) {
+            rows.forEach {
+                val rowWithTime = listOf(time) + it
+                data = data?.addRow(rowWithTime) ?: (dataFrameOf(entries)(rowWithTime))
+            }
         }
 
         return newerImg

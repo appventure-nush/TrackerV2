@@ -38,7 +38,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun main() {
-    val video = Video("video8.mov")
+    val video = Video("video0.mov")
     video.hasNext()
     video.next().write("test.bmp")
 
@@ -235,11 +235,6 @@ fun main() {
                             }
                         }
                     )
-//                    Item(
-//                        "Batch Another Configuration...",
-//                        onClick = {
-//                        }
-//                    )
                 }
                 Menu("About", mnemonic = 'A') {
                     Item(
