@@ -1,3 +1,6 @@
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -20,11 +23,7 @@ import backend.clearAndAddAll
 import backend.image_processing.postprocess.PostprocessingNode
 import backend.image_processing.postprocess.Postprocessor
 import backend.image_processing.preprocess.Preprocessor
-import gui.Axes
-import gui.CroppingRectangle
-import gui.NodesPane
-import gui.Tape
-import gui.VideoPlayer
+import gui.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.decodeFromString
@@ -33,15 +32,13 @@ import kotlinx.serialization.json.Json
 import org.bytedeco.opencv.opencv_videoio.VideoCapture
 import java.awt.FileDialog
 import java.io.File
-import java.lang.Math.pow
 import kotlin.concurrent.thread
-import kotlin.math.pow
 import kotlin.random.Random
 
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun main() {
-    val video = Video("video0.mov")
+    val video = Video("video8.mov")
     video.hasNext()
     video.next().write("test.bmp")
 
@@ -77,6 +74,9 @@ fun main() {
         val aboutDialog = remember { mutableStateOf(false) }
         val aboutTimes = remember { mutableStateOf(0) }
 
+        val fpsDialog = remember { mutableStateOf(false) }
+        val fps = remember { mutableStateOf(video.frameRate.toString()) }
+
         val batchDialog = remember { mutableStateOf(false) }
         val batchFile = remember { mutableStateOf("") }
         val batchTask = remember { mutableStateOf("") }
@@ -110,14 +110,12 @@ fun main() {
                             dialog.isVisible = true
 
                             if (dialog.file != null) {
-                                println("Stop syncing")
                                 syncing.value = false
-                                // runBlocking { delay(10000) }
                                 video.videoCapture = VideoCapture(dialog.directory + "/" + dialog.file)
                                 video.videoFile = dialog.directory + "/" + dialog.file
-                                // runBlocking { delay(500) }
                                 syncing.value = true
-                                println("Syncing again")
+
+                                fps.value = video.frameRate.toString()
                             }
                         }
                     )
@@ -182,6 +180,14 @@ fun main() {
                         "Toggle Calibration Stick",
                         onClick = {
                             isCalibrationVisible.value = !isCalibrationVisible.value
+                        }
+                    )
+                }
+                Menu("Track", mnemonic = 'T') {
+                    Item(
+                        "Set FPS",
+                        onClick = {
+                            fpsDialog.value = true
                         }
                     )
                 }
@@ -349,6 +355,32 @@ fun main() {
                     confirmButton = {},
                     onDismissRequest = {},
                     modifier = Modifier.size(500.dp, 200.dp).padding(10.dp)
+                )
+            }
+
+            AnimatedVisibility(
+                visible = fpsDialog.value,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                AlertDialog(
+                    onDismissRequest = {
+                        fpsDialog.value = false
+                    },
+                    text = {
+                        OutlinedTextField(
+                            label = { Text("Enter FPS") },
+                            value = fps.value,
+                            onValueChange = { fps.value = it }
+                        )
+                    },
+                    confirmButton = { TextButton({
+                        try {
+                            video.frameRate = fps.value.toDouble()
+                        } catch (ignored: NumberFormatException) { }
+                        fpsDialog.value = false
+                    }) { Text("Confirm") } },
+                    dismissButton = { TextButton({ fpsDialog.value = false }) { Text("Cancel") } },
                 )
             }
         }

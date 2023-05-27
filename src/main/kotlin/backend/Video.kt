@@ -4,8 +4,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import backend.image_processing.postprocess.Postprocessor
 import backend.image_processing.preprocess.Preprocessor
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import org.bytedeco.opencv.global.opencv_imgproc.COLOR_BGR2RGB
 import org.bytedeco.opencv.global.opencv_imgproc.cvtColor
 import org.bytedeco.opencv.global.opencv_videoio.CAP_PROP_FPS
@@ -64,7 +62,6 @@ class Video(videoCapture: VideoCapture) : Iterator<Image> {
      * The frame rate of the video
      */
     var frameRate: Double = videoCapture.get(CAP_PROP_FPS)
-        private set
 
     /**
      * The postprocessors that convert the information in the video frames to data
