@@ -1,15 +1,23 @@
 package gui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.*
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.TooltipArea
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -28,7 +36,25 @@ import kotlin.system.measureTimeMillis
 
 val temp = Random.nextInt(20) != 1
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
+@Composable
+fun Pulsating(pulseFraction: Float = 1.2f, modifier: Modifier, content: @Composable () -> Unit) {
+    val infiniteTransition = rememberInfiniteTransition()
+
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = pulseFraction,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    Box(modifier = modifier.scale(scale)) {
+        content()
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boolean>) {
@@ -46,10 +72,41 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
     val focusRequester = remember { FocusRequester() }
 
     Column(modifier = Modifier.width(width.value).padding(10.dp), Arrangement.spacedBy(5.dp)) {
-        Image(
-            imageBitmap.value,
-            contentDescription = ""
-        )
+        Box {
+            Image(
+                imageBitmap.value,
+                contentDescription = ""
+            )
+
+            if (video.postprocessors.size > 0 && playVideo.value) {
+                Pulsating(modifier = Modifier.align(Alignment.TopEnd).padding(10.dp)) {
+                    TooltipArea(
+                        tooltip = {
+                            Surface(
+                                modifier = Modifier.shadow(4.dp),
+                                color = Color(50, 50, 50, 255),
+                                shape = RoundedCornerShape(4.dp)
+                            ) {
+                                Text(
+                                    text = "Data is being recorded now!",
+                                    fontSize = 8.sp,
+                                    modifier = Modifier.padding(5.dp),
+                                    color = Color(255, 255, 255)
+                                )
+                            }
+                        },
+                        modifier = Modifier.padding(start = 0.dp),
+                        delayMillis = 600
+                    ) {
+                        Icon(
+                            Icons.Filled.RadioButtonChecked,
+                            tint = Color.Red,
+                            contentDescription = "Data is being recorded now!",
+                        )
+                    }
+                }
+            }
+        }
 
         Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
             // The play button

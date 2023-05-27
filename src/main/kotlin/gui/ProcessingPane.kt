@@ -43,7 +43,6 @@ fun ProcessingPane(
     val deleteDialog = remember { mutableStateOf(false) }
 
     val count = remember { mutableStateOf(0) }
-    val collecting = remember { mutableStateOf(false) }
 
     // Store the pane in a card
     Card(
@@ -201,7 +200,7 @@ fun ProcessingPane(
                             modifier = Modifier.size(23.dp)
                         ) {
                             Icon(
-                                Icons.Filled.ClearAll,
+                                painterResource("eraser.svg"),
                                 contentDescription = "",
                                 tint = MaterialTheme.colors.primary
                             )
