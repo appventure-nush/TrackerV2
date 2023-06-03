@@ -14,7 +14,8 @@ class Postprocessor(val node: PostprocessingNode) {
     /**
      * The data will be eventually be outputted to a csv
      */
-    private var data: DataFrame? = null
+    var data: DataFrame? = null
+        private set
 
     /**
      * The entries of the post-processing node, including time

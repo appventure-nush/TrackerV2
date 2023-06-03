@@ -277,7 +277,7 @@ fun main() {
 
             if (isAxesVisible.value) Axes(originX, originY)
 
-            if (croppingRectangleVisible.value) CroppingRectangle(cropX1, cropX2, cropY1, cropY2)
+            if (croppingRectangleVisible.value) CroppingRectangle(cropX1, cropY1, cropX2, cropY2)
 
             if (isCalibrationVisible.value) Tape(calibrationX1, calibrationY1, calibrationX2, calibrationY2, cmValue, video.scale)
 

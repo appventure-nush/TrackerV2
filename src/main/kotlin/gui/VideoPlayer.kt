@@ -37,7 +37,7 @@ import kotlin.system.measureTimeMillis
 val temp = Random.nextInt(20) != 1
 
 @Composable
-fun Pulsating(pulseFraction: Float = 1.2f, modifier: Modifier, content: @Composable () -> Unit) {
+fun Pulsating(pulseFraction: Float = 1.2f, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     val infiniteTransition = rememberInfiniteTransition()
 
     val scale by infiniteTransition.animateFloat(
@@ -79,30 +79,38 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
             )
 
             if (video.postprocessors.size > 0 && playVideo.value) {
-                Pulsating(modifier = Modifier.align(Alignment.TopEnd).padding(10.dp)) {
-                    TooltipArea(
-                        tooltip = {
-                            Surface(
-                                modifier = Modifier.shadow(4.dp),
-                                color = Color(50, 50, 50, 255),
-                                shape = RoundedCornerShape(4.dp)
+                Box(modifier = Modifier.align(Alignment.TopEnd).padding(10.dp)) {
+                    Column {
+                        Pulsating(modifier = Modifier.align(Alignment.End)) {
+                            TooltipArea(
+                                tooltip = {
+                                    Surface(
+                                        modifier = Modifier.shadow(4.dp),
+                                        color = Color(50, 50, 50, 255),
+                                        shape = RoundedCornerShape(4.dp)
+                                    ) {
+                                        Text(
+                                            text = "Data is being recorded now! ${
+                                                video.postprocessors.map {
+                                                    it.data?.rows?.toList()?.size ?: 0
+                                                }.sum()
+                                            } rows have been recorded.",
+                                            fontSize = 8.sp,
+                                            modifier = Modifier.padding(5.dp),
+                                            color = Color(255, 255, 255)
+                                        )
+                                    }
+                                },
+                                modifier = Modifier.padding(start = 0.dp),
+                                delayMillis = 600
                             ) {
-                                Text(
-                                    text = "Data is being recorded now!",
-                                    fontSize = 8.sp,
-                                    modifier = Modifier.padding(5.dp),
-                                    color = Color(255, 255, 255)
+                                Icon(
+                                    Icons.Filled.RadioButtonChecked,
+                                    tint = Color.Red,
+                                    contentDescription = "Data is being recorded now!",
                                 )
                             }
-                        },
-                        modifier = Modifier.padding(start = 0.dp),
-                        delayMillis = 600
-                    ) {
-                        Icon(
-                            Icons.Filled.RadioButtonChecked,
-                            tint = Color.Red,
-                            contentDescription = "Data is being recorded now!",
-                        )
+                        }
                     }
                 }
             }
