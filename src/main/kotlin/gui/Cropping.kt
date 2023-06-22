@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import backend.Video
+import org.bytedeco.opencv.global.opencv_videoio
 import kotlin.math.roundToInt
 
 @Composable
@@ -46,8 +47,18 @@ fun CroppingRectangle(
                 .pointerInput(Unit) {
                     detectDragGestures { change, dragAmount ->
                         change.consume()
-                        video.cropX1.value += constant * dragAmount.x / scalingConstant.value
-                        video.cropY1.value += constant * dragAmount.y / scalingConstant.value
+
+                        val dx = constant * dragAmount.x / scalingConstant.value
+                        if ((video.cropX2.value - video.cropX1.value - dx > 10) &&
+                            (video.cropX1.value + dx > 0)) {
+                            video.cropX1.value += dx
+                        }
+
+                        val dy = constant * dragAmount.y / scalingConstant.value
+                        if ((video.cropY2.value - video.cropY1.value - dy > 10) &&
+                            (video.cropY1.value + dy > 0)) {
+                            video.cropY1.value += dy
+                        }
                     }
                 }
         )
@@ -66,8 +77,18 @@ fun CroppingRectangle(
                 .pointerInput(Unit) {
                     detectDragGestures { change, dragAmount ->
                         change.consume()
-                        video.cropX2.value += constant * dragAmount.x / scalingConstant.value
-                        video.cropY2.value += constant * dragAmount.y / scalingConstant.value
+
+                        val dx = constant * dragAmount.x / scalingConstant.value
+                        if ((video.cropX2.value + dx < video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_WIDTH)) &&
+                            (video.cropX2.value + dx - video.cropX1.value > 10)) {
+                            video.cropX2.value += dx
+                        }
+
+                        val dy = constant * dragAmount.y / scalingConstant.value
+                        if ((video.cropY2.value + dy < video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_HEIGHT)) &&
+                            (video.cropY2.value + dy - video.cropY1.value > 10)) {
+                            video.cropY2.value += dy
+                        }
                     }
                 }
         )
@@ -75,7 +96,7 @@ fun CroppingRectangle(
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawRect(
                 color = Color.Red,
-                style = Stroke(1f),
+                style = Stroke(5f),
                 topLeft = Offset(
                     x = (constant * 20).roundToInt() + dx.value.toFloat() / constant,
                     y = (constant * 20).roundToInt() + dy.value.toFloat() / constant
