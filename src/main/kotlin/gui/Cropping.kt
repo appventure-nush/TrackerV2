@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -15,14 +16,17 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import backend.Video
 import kotlin.math.roundToInt
 
 @Composable
 fun CroppingRectangle(
-    dx: MutableState<Double>,
-    dy: MutableState<Double>,
-    dx2: MutableState<Double>,
-    dy2: MutableState<Double>
+    dx: State<Double>,
+    dy: State<Double>,
+    dx2: State<Double>,
+    dy2: State<Double>,
+    scalingConstant: State<Double>,
+    video: Video
 ) {
     val constant = with(LocalDensity.current) { 1.dp.toPx() }
 
@@ -42,8 +46,8 @@ fun CroppingRectangle(
                 .pointerInput(Unit) {
                     detectDragGestures { change, dragAmount ->
                         change.consume()
-                        dx.value += constant * dragAmount.x
-                        dy.value += constant * dragAmount.y
+                        video.cropX1.value += constant * dragAmount.x / scalingConstant.value
+                        video.cropY1.value += constant * dragAmount.y / scalingConstant.value
                     }
                 }
         )
@@ -62,8 +66,8 @@ fun CroppingRectangle(
                 .pointerInput(Unit) {
                     detectDragGestures { change, dragAmount ->
                         change.consume()
-                        dx2.value += constant * dragAmount.x
-                        dy2.value += constant * dragAmount.y
+                        video.cropX2.value += constant * dragAmount.x / scalingConstant.value
+                        video.cropY2.value += constant * dragAmount.y / scalingConstant.value
                     }
                 }
         )
@@ -71,7 +75,7 @@ fun CroppingRectangle(
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawRect(
                 color = Color.Red,
-                style = Stroke(5f),
+                style = Stroke(1f),
                 topLeft = Offset(
                     x = (constant * 20).roundToInt() + dx.value.toFloat() / constant,
                     y = (constant * 20).roundToInt() + dy.value.toFloat() / constant

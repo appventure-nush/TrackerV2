@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
@@ -46,7 +47,16 @@ fun main() {
         val width = remember { mutableStateOf(900.dp) }
         val windowWidth = remember { mutableStateOf(windowState.size.width) }
 
+        val videoWidth = remember { mutableStateOf(video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_WIDTH)) }
+
         val onUpdate = remember { mutableStateOf(0) }
+
+        val constant = with(LocalDensity.current) { 1.dp.toPx() }
+        val scalingConstant = remember {
+            derivedStateOf {
+                ((width.value.value - 20) * constant / videoWidth.value).coerceAtMost(1.0) * 3/2
+            }
+        }
 
         val isAxesVisible = remember { mutableStateOf(false) }
         val croppingRectangleVisible = remember { mutableStateOf(false) }
@@ -62,12 +72,13 @@ fun main() {
         val calibrationY1 = remember { mutableStateOf(0.0f) }
         val calibrationX2 = remember { mutableStateOf(100.0f) }
         val calibrationY2 = remember { mutableStateOf(100.0f) }
+
         val cmValue = remember { mutableStateOf(1.0f) }
 
-        val cropX1 = video.cropX1
-        val cropY1 = video.cropY1
-        val cropX2 = video.cropX2
-        val cropY2 = video.cropY2
+        val cropX1 = remember { derivedStateOf { video.cropX1.value * scalingConstant.value } }
+        val cropY1 = remember { derivedStateOf { video.cropY1.value * scalingConstant.value } }
+        val cropX2 = remember { derivedStateOf { video.cropX2.value * scalingConstant.value } }
+        val cropY2 = remember { derivedStateOf { video.cropY2.value * scalingConstant.value } }
 
         val aboutDialog = remember { mutableStateOf(false) }
         val aboutTimes = remember { mutableStateOf(0) }
@@ -122,6 +133,8 @@ fun main() {
                                 video.cropY1.value = 0.0
                                 video.cropX2.value = video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_WIDTH)
                                 video.cropY2.value = video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_HEIGHT)
+
+                                videoWidth.value = video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_WIDTH)
 
                                 syncing.value = true
 
@@ -287,7 +300,7 @@ fun main() {
 
             if (isAxesVisible.value) Axes(originX, originY)
 
-            if (croppingRectangleVisible.value) CroppingRectangle(cropX1, cropY1, cropX2, cropY2)
+            if (croppingRectangleVisible.value) CroppingRectangle(cropX1, cropY1, cropX2, cropY2, scalingConstant, video)
 
             if (isCalibrationVisible.value) Tape(calibrationX1, calibrationY1, calibrationX2, calibrationY2, cmValue, video.scale)
 
