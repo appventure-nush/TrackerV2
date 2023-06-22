@@ -70,12 +70,12 @@ class Video(videoCapture: VideoCapture) : Iterator<Image> {
     /**
      * The x coordinate of the origin point
      */
-    var originX: MutableState<Float> = mutableStateOf(0.0f)
+    var originX: MutableState<Double> = mutableStateOf(0.0)
 
     /**
      * The y coordinate of the origin point
      */
-    var originY: MutableState<Float> = mutableStateOf(0.0f)
+    var originY: MutableState<Double> = mutableStateOf(0.0)
 
     /**
      * The scale of the video
