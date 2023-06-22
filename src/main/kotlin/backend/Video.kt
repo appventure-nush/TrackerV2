@@ -6,8 +6,7 @@ import backend.image_processing.postprocess.Postprocessor
 import backend.image_processing.preprocess.Preprocessor
 import org.bytedeco.opencv.global.opencv_imgproc.COLOR_BGR2RGB
 import org.bytedeco.opencv.global.opencv_imgproc.cvtColor
-import org.bytedeco.opencv.global.opencv_videoio.CAP_PROP_FPS
-import org.bytedeco.opencv.global.opencv_videoio.CAP_PROP_FRAME_COUNT
+import org.bytedeco.opencv.global.opencv_videoio.*
 import org.bytedeco.opencv.opencv_core.Mat
 import org.bytedeco.opencv.opencv_videoio.VideoCapture
 
@@ -84,6 +83,26 @@ class Video(videoCapture: VideoCapture) : Iterator<Image> {
     var scale: MutableState<Double> = mutableStateOf(1.0)
 
     /**
+     * The first x-coordinate of the bounding rectangle of the video
+     */
+    var cropX1: MutableState<Double> = mutableStateOf(0.0)
+
+    /**
+     * The first y-coordinate of the bounding rectangle of the video
+     */
+    var cropY1: MutableState<Double> = mutableStateOf(0.0)
+
+    /**
+     * The second x-coordinate of the bounding rectangle of the video
+     */
+    var cropX2: MutableState<Double> = mutableStateOf(videoCapture.get(CAP_PROP_FRAME_WIDTH))
+
+    /**
+     * The second y-coordinate of the bounding rectangle of the video
+     */
+    var cropY2: MutableState<Double> = mutableStateOf(videoCapture.get(CAP_PROP_FRAME_HEIGHT))
+
+    /**
      * The current frame number of the video
      */
     var currentFrame: Int = 0
@@ -127,6 +146,8 @@ class Video(videoCapture: VideoCapture) : Iterator<Image> {
         currentImage = Image(Colourspace.RGB, nextImage)
         currentImage.origin = Point(originX.value.toDouble(), originY.value.toDouble())
         currentImage.scale = scale.value
+
+        currentImage.crop(cropX1.value, cropY1.value, cropX2.value, cropY2.value)
 
         currentImage = preprocesser.process(currentImage)
 

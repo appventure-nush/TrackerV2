@@ -19,10 +19,10 @@ import kotlin.math.roundToInt
 
 @Composable
 fun CroppingRectangle(
-    dx: MutableState<Float>,
-    dy: MutableState<Float>,
-    dx2: MutableState<Float>,
-    dy2: MutableState<Float>
+    dx: MutableState<Double>,
+    dy: MutableState<Double>,
+    dx2: MutableState<Double>,
+    dy2: MutableState<Double>
 ) {
     val constant = with(LocalDensity.current) { 1.dp.toPx() }
 
@@ -31,8 +31,8 @@ fun CroppingRectangle(
             color = Color.Blue,
             thickness = 2.dp,
             modifier = Modifier
-                .width(10.dp)
-                .height(10.dp)
+                .width(5.dp)
+                .height(5.dp)
                 .offset {
                     IntOffset(
                         (constant * 20).roundToInt() + (dx.value / constant).roundToInt(),
@@ -51,8 +51,8 @@ fun CroppingRectangle(
         Divider(
             color = Color.Blue,
             modifier = Modifier
-                .height(10.dp)
-                .width(10.dp)
+                .height(5.dp)
+                .width(5.dp)
                 .offset {
                     IntOffset(
                         (constant * 20).roundToInt() + (dx2.value / constant).roundToInt(),
@@ -73,12 +73,12 @@ fun CroppingRectangle(
                 color = Color.Red,
                 style = Stroke(5f),
                 topLeft = Offset(
-                    x = (constant * 20).roundToInt() + dx.value / constant + 7.5f,
-                    y = (constant * 20).roundToInt() + dy.value / constant + 7.5f
+                    x = (constant * 20).roundToInt() + dx.value.toFloat() / constant,
+                    y = (constant * 20).roundToInt() + dy.value.toFloat() / constant
                 ),
                 size = Size(
-                    dx2.value / constant - dx.value / constant,
-                    dy2.value / constant - dy.value / constant
+                    dx2.value.toFloat() / constant - dx.value.toFloat() / constant,
+                    dy2.value.toFloat() / constant - dy.value.toFloat() / constant
                 )
             )
         }

@@ -4,10 +4,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
@@ -29,6 +26,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.bytedeco.opencv.global.opencv_videoio
 import org.bytedeco.opencv.opencv_videoio.VideoCapture
 import java.awt.FileDialog
 import java.io.File
@@ -66,10 +64,10 @@ fun main() {
         val calibrationY2 = remember { mutableStateOf(100.0f) }
         val cmValue = remember { mutableStateOf(1.0f) }
 
-        val cropX1 = remember { mutableStateOf(0.0f) }
-        val cropY1 = remember { mutableStateOf(0.0f) }
-        val cropX2 = remember { mutableStateOf(100.0f) }
-        val cropY2 = remember { mutableStateOf(100.0f) }
+        val cropX1 = video.cropX1
+        val cropY1 = video.cropY1
+        val cropX2 = video.cropX2
+        val cropY2 = video.cropY2
 
         val aboutDialog = remember { mutableStateOf(false) }
         val aboutTimes = remember { mutableStateOf(0) }
@@ -111,8 +109,20 @@ fun main() {
 
                             if (dialog.file != null) {
                                 syncing.value = false
+
+                                video.cropX1.value = 0.0
+                                video.cropY1.value = 0.0
+                                video.cropX2.value = 1.0
+                                video.cropY2.value = 1.0
+
                                 video.videoCapture = VideoCapture(dialog.directory + "/" + dialog.file)
                                 video.videoFile = dialog.directory + "/" + dialog.file
+
+                                video.cropX1.value = 0.0
+                                video.cropY1.value = 0.0
+                                video.cropX2.value = video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_WIDTH)
+                                video.cropY2.value = video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_HEIGHT)
+
                                 syncing.value = true
 
                                 fps.value = video.frameRate.toString()

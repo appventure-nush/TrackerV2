@@ -14,10 +14,7 @@ import org.bytedeco.javacv.OpenCVFrameConverter
 import org.bytedeco.opencv.global.opencv_core.*
 import org.bytedeco.opencv.global.opencv_imgcodecs.*
 import org.bytedeco.opencv.global.opencv_imgproc.*
-import org.bytedeco.opencv.opencv_core.Mat
-import org.bytedeco.opencv.opencv_core.MatVector
-import org.bytedeco.opencv.opencv_core.Scalar
-import org.bytedeco.opencv.opencv_core.Size
+import org.bytedeco.opencv.opencv_core.*
 import org.bytedeco.opencv.opencv_imgproc.Vec3fVector
 import org.bytedeco.opencv.global.opencv_imgproc.circle as cvCircle
 import org.bytedeco.opencv.global.opencv_imgproc.ellipse as cvEllipse
@@ -153,6 +150,25 @@ class Image(colourspace: Colourspace, img: Mat) {
         this[Point(x, y)] = colour
     }
 
+    /* Cropping */
+    /**
+     * Only shows the image within the box with the corners ([x1], [y1]) and ([x2], [y2])
+     * @return The "cropped" image
+     */
+    fun crop(x1: Double, y1: Double, x2: Double, y2: Double) {
+        val roi = Rect(x1.toInt(), y1.toInt(), (x2 - x1).toInt(), (y2 - y1).toInt())
+        val cropped = Mat(img, roi)
+
+        val dst = Mat.zeros(img.size(), CV_8UC3).asMat()
+        val dstROI = Mat(dst, roi)
+
+        cropped.copyTo(dstROI, cropped)
+
+        img = dst
+
+        indexer = img.createIndexer()
+    }
+
     /* Blurring */
 
     /**
@@ -181,7 +197,7 @@ class Image(colourspace: Colourspace, img: Mat) {
     }
 
     /**
-     * Performs a median blur on the image
+     * Performs a median blur on the image of the given [kernelSize]
      */
     fun medianBlur(kernelSize: Int): Image {
         medianBlur(img, img, kernelSize)
