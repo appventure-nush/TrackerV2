@@ -155,10 +155,13 @@ class Image(colourspace: Colourspace, img: Mat) {
      * Only shows the image within the box with the corners ([x1], [y1]) and ([x2], [y2])
      * @return The "cropped" image
      */
-    fun crop(x1: Double, y1: Double, x2: Double, y2: Double) {
+    fun crop(x1: Double, y1: Double, x2: Double, y2: Double): Image {
         val roi = Rect(x1.toInt(), y1.toInt(), (x2 - x1).toInt(), (y2 - y1).toInt())
         val cropped = Mat(img, roi)
 
+        return Image(Colourspace.RGB, cropped)
+
+        /*
         val dst = Mat.zeros(img.size(), CV_8UC3).asMat()
         val dstROI = Mat(dst, roi)
 
@@ -167,6 +170,18 @@ class Image(colourspace: Colourspace, img: Mat) {
         img = dst
 
         indexer = img.createIndexer()
+         */
+    }
+
+    // todo document what this does
+    fun expand(x1: Double, y1: Double, x2: Double, y2: Double, cropped: Image): Image {
+        val roi = Rect(x1.toInt(), y1.toInt(), (x2 - x1).toInt(), (y2 - y1).toInt())
+
+        val dst = Mat.zeros(img.size(), CV_8UC3).asMat()
+        val dstROI = Mat(dst, roi)
+
+        cropped.img.copyTo(dstROI, cropped.img)
+        return Image(Colourspace.RGB, dst)
     }
 
     /* Blurring */

@@ -147,15 +147,14 @@ class Video(videoCapture: VideoCapture) : Iterator<Image> {
         currentImage.origin = Point(originX.value.toDouble(), originY.value.toDouble())
         currentImage.scale = scale.value
 
-        currentImage.crop(cropX1.value, cropY1.value, cropX2.value, cropY2.value)
-
-        currentImage = preprocesser.process(currentImage)
+        var cropped = currentImage.crop(cropX1.value, cropY1.value, cropX2.value, cropY2.value)
+        cropped = preprocesser.process(cropped)
 
         nextImage = nextImage2
 
         // Perform post-processing
-        postprocessors.map { currentImage = it.process(currentImage, currentFrame / frameRate) }
-        return currentImage
+        postprocessors.map { cropped = it.process(cropped, currentFrame / frameRate) }
+        return currentImage.expand(cropX1.value, cropY1.value, cropX2.value, cropY2.value, cropped)
     }
 
     override fun next(): Image = next(true)
