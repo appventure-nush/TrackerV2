@@ -435,7 +435,7 @@ fun ThresholdingPane(node: ThresholdingNode, onDelete: () -> Unit, shift: (Int) 
                 )
 
                 RangeSlider(
-                    values = thresholdRange.value,
+                    value = thresholdRange.value,
                     valueRange = 0.0f .. 255.0f,
                     onValueChange = {
                         thresholdRange.value = it
@@ -702,7 +702,7 @@ fun CircleFittingPane(node: CircleFittingNode, onDelete: () -> Unit, startCollec
                 )
 
                 RangeSlider(
-                    values = radiusRange.value,
+                    value = radiusRange.value,
                     valueRange = 0.0f .. 100.0f,
                     onValueChange = {
                         radiusRange.value = it
