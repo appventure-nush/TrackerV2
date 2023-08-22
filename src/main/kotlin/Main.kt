@@ -414,87 +414,85 @@ fun main() {
 }
 
 val problems = mapOf(
-    "1. Fractal Fingers" to """
-        The effect of fractal fingering can be observed if a droplet of an ink-alcohol mixture is deposited onto diluted acrylic paint. 
-        How are the geometry and dynamics of the fingers influenced by relevant parameters?
+    "1. Invent Yourself" to """
+        Take a box (e.g. a matchbox), filled with identical objects (e.g. matches, balls, …). 
+        Find a method to determine the number of objects in the box solely by the sound produced while shaking the box. 
+        How does the accuracy depend on the properties of the objects, the box, and the packing density?
     """.trimIndent().replace("\n", ""),
-    "2. Oscillating Sphere" to """
-        A light sphere with a conducting surface is suspended from a thin wire. 
-        When the sphere is rotated about its vertical axis (thereby twisting the wire) and then released, 
-        it starts to oscillate. Investigate how the presence of a magnetic field affects the motion.
+    "2. Droplet Microscope" to """
+        By looking through a single water droplet placed on a glass surface, one can observe that the droplet acts as an imaging system. 
+        Investigate the magnification and resolution of such a lens.
     """.trimIndent().replace("\n", ""),
-    "3. Siren" to """
-        If you direct an air flow onto a rotating disk with holes, a sound may be heard. 
-        Explain this phenomenon and investigate how the sound characteristics depend on the relevant parameters.
+    "3. Rigid Ramp Walker" to """
+        Construct a rigid ramp walker with four legs (e.g. in the form of a ladder). 
+        The construction may begin to ‘walk’ down a rough ramp. 
+        Investigate how the geometry of the walker and relevant parameters affect its terminal velocity of walking.
     """.trimIndent().replace("\n", ""),
-    "4. Coloured Line" to """
-        When a compact disc or DVD is illuminated with light coming from a filament lamp in such a way that only rays 
-        with large angles of incidence are selected, a clear green line can be observed. The colour varies upon 
-        slightly changing the angle of the disc. Explain and investigate this phenomenon.
+    "4. Shooting Rubber Band" to """
+        A rubber band may fly a longer distance if it is non-uniformly stretched when shot, giving it spin. 
+        Optimise the distance that a rubber band with spin can reach.
     """.trimIndent().replace("\n", ""),
-    "5. Whistling Mesh" to """
-        When a stream of water hits a rigid metal mesh within a range of angles, a whistling tone may be heard. 
-        Investigate how the properties of the mesh, stream and angle affect the characteristics of the sound produced.
+    "5. Ping Pong Rocket" to """
+        A ping pong ball is placed in a container of water. 
+        When the container is dropped, the ping pong ball will get launched to a great height. 
+        What maximum height can you reach with up to 2 liters of water?
     """.trimIndent().replace("\n", ""),
-    "6. Magnetic-Mechanical Oscillator" to """
-        Secure the lower ends of two identical leaf springs to a non-magnetic base and attach magnets to the upper 
-        ends such that they repel and are free to move. Investigate how the movement of the springs depends 
-        on relevant parameters.
+    "6. Non-contact Resistance" to """
+        The responses of a LRC circuit driven by an AC source can be changed by inserting either a non-magnetic metal 
+        rod or a ferromagnetic rod into the inductor coil. How can we obtain the magnetic and 
+        electric properties of the inserted rod from the circuit’s responses?
     """.trimIndent().replace("\n", ""),
-    "7. Faraday Waves" to """
-        A droplet of less viscous liquid floating in a bath of a more viscous liquid develops surprising wave-like 
-        patterns when the entire system is set into vertical oscillation. Investigate this phenomenon and the 
-        parameters relevant to the production of stable patterns.
+    "7. Giant Sounding Plate" to """
+        When a large, thin and flexible plate (e.g. plastic, metal or plexiglass) is bent, 
+        it may produce a loud and unusual howling sound. Explain and investigate this phenomenon.
     """.trimIndent().replace("\n", ""),
-    "8. Euler's Pendulum" to """
-        Take a thick plate of non-magnetic material and fix a neodymium magnet on top of it. Suspend a 
-        magnetic rod (which can be assembled from cylindrical neodymium magnets) underneath it. Deflect the 
-        rod so that it touches the plate only with highest edge and release it. Study the motion of such a pendulum 
-        under various conditions.
+    "8. Another Magnetic Levitation" to """
+        Place a large disk-shaped magnet on a non-magnetic conductive plate. 
+        When a smaller magnet is moved under the plate, the magnet on top may levitate under certain conditions. 
+        Investigate the levitation and the possible motion of the magnet on top.
     """.trimIndent().replace("\n", ""),
-    "9. Oscillating Screw" to """
-        When placed on its side on a ramp and released, a screw may experience growing oscillations as it travels down 
-        the ramp. Investigate how the motion of the screw, as well as the growth of these oscillations 
-        depend on the relevant parameters.
+    "9. Juicy Solar Cell" to """
+        A functional solar cell can be created using conducting glass slides, iodine, juice (eg. blackberry) and 
+        titanium dioxide. This type of cell is called a Grätzel cell. Make such a cell and 
+        investigate the necessary parameters to obtain maximum efficiency.
     """.trimIndent().replace("\n", ""),
-    "10. Upstream Flow" to """
-        Sprinkle light particles on a water surface. Then allow a water stream to be incident on the surface from a 
-        small height. Under certain conditions, the particles may begin to move up the stream. Investigate and explain 
-        this phenomenon.
+    "10. Magnetic Gear" to """
+        Take several identical fidget spinners and attach neodymium magnets to their ends. 
+        If you place them side by side on a plane and rotate one of them, the remaining ones start to rotate only 
+        due to the magnetic field. Investigate and explain the phenomenon.
     """.trimIndent().replace("\n", ""),
-    "11. Ball on Ferrite Rod" to """
-        A ferrite rod is placed at the bottom end of a vertical tube. Apply an ac voltage, of a frequency of the 
-        same order as the natural frequency of the rod, to a fine wire coil wrapped around its lower end. 
-        When a ball is placed on top of the rod, it will start to bounce. Explain and investigate this phenomenon.
+    "11. Pumping Straw" to """
+        A simple water pump can be made using a straw shaped into a triangle and cut open at the vertices. 
+        When such a triangle is partially immersed in water with one of its vertices and rotated around its vertical 
+        axis, water may flow up through the straw. Investigate how the geometry and other relevant parameters 
+        affect the pumping speed.
     """.trimIndent().replace("\n", ""),
-    "12. Rice Kettlebells" to """
-        Take a vessel and pour some granular material into it, for example, rice. If you dip e.g. a spoon into it, 
-        then at a certain depth of immersion, you can lift the vessel and contents by holding the spoon. 
-        Explain this phenomenon and explore the relevant parameters of the system.
+    "12. The Soap Spiral" to """
+        Lower a compressed slinky into a soap solution, pull it out and straighten it. A soap film is formed between 
+        the turns of the slinky. If you break the integrity of the film, the front of the film will begin to move. 
+        Explain this phenomenon and investigate the movement of the front of the soap film.
     """.trimIndent().replace("\n", ""),
-    "13. Ponyo’s Heat Tube" to """
-        A glass tube with a sealed top is filled with water and mounted vertically. The bottom end of the tube is 
-        immersed in a beaker of water and a short segment of the tube is heated. Investigate and explain the 
-        periodic motion of the water and any vapour bubbles observed.
+    "13. Charge Meter" to """
+        A lightweight ball is suspended from a thread in the area between two charged plates. If the ball is also 
+        charged it will be deflected to one side at a certain angle. What is the accuracy of such a device for 
+        measuring the amount of charge on the ball? Optimise your device to measure the smallest possible charge on the ball.
     """.trimIndent().replace("\n", ""),
-    "14. Jet Refraction" to """
-        A vertical jet can be refracted when passing through an inclined sieve with a fine mesh. 
-        Propose a law for such refraction and investigate relevant parameters.
+    "14. Ruler Trick" to """
+        Place a ruler on the edge of a table, and throw a ball at its free end. The ruler will fall. 
+        However, if you cover a part of the ruler with a piece of paper and repeat the throw, then the ruler will 
+        remain on the table while the ball will bounce off it. Explain this phenomenon, and investigate the relevant parameters.
     """.trimIndent().replace("\n", ""),
-    "15. Pancake Rotation" to """
-        Place a few balls in a round container. If you move the container around a vertical axis, the balls can move 
-        co-directionally with the movement of the container, or they can move in the opposite direction. 
-        Explain this phenomenon and investigate how the direction of movement depends on relevant parameters.
+    "15. Wet Scroll" to """
+        Gently place a piece of tracing paper on the surface of water. It rapidly curls into a scroll and then slowly uncurls. 
+        Explain and investigate this phenomenon.
     """.trimIndent().replace("\n", ""),
-    "16. Thermoasoutic Engine" to """
-        A piston placed in the open end of a horizontal test tube which has its other end partially filled with steel 
-        wool may oscillate when the closed end is heated up. Investigate the phenomenon and determine the 
-        efficiency of this engine.
+    "16. Cushion Catapult" to """
+        Place an object on a large air cushion and drop several other objects in such a way that the first object is catapulted away. 
+        Investigate how the exit velocity depends on relevant parameters.
     """.trimIndent().replace("\n", ""),
-    "17. Arrester Bed" to """
-        A sand-filled lane results in the dissipation of the kinetic energy of a moving vehicle. What length is 
-        necessary for such an arrester bed to entirely stop a passively moving object (e.g. a ball)? 
-        What parameters does the length depend on?
+    "17. Quantum Light Dimmer" to """
+        If you put a flame with table salt added in front of a vapour sodium lamp, the flame casts a shadow. 
+        The shadow can become lighter, if the flame is put into a strong magnetic field. Investigate and explain the phenomenon.
     """.trimIndent().replace("\n", "")
 ).toList()
 var index = Random.nextInt(problems.size)
