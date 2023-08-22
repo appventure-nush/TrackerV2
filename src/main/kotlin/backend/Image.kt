@@ -177,11 +177,13 @@ class Image(colourspace: Colourspace, img: Mat) {
     fun expand(x1: Double, y1: Double, x2: Double, y2: Double, cropped: Image): Image {
         val roi = Rect(x1.toInt(), y1.toInt(), (x2 - x1).toInt(), (y2 - y1).toInt())
 
-        val dst = Mat.zeros(img.size(), CV_8UC3).asMat()
+        val dst = if (cropped.colourspace == Colourspace.GRAYSCALE) {
+            Mat.zeros(img.size(), CV_8UC1).asMat()
+        } else Mat.zeros(img.size(), CV_8UC3).asMat()
         val dstROI = Mat(dst, roi)
 
         cropped.img.copyTo(dstROI, cropped.img)
-        return Image(Colourspace.RGB, dst)
+        return Image(cropped.colourspace, dst)
     }
 
     /* Blurring */

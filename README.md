@@ -29,8 +29,7 @@ The latter on the right is where you adjust the configuration of the tracking pr
 
 ### Using the Video Player
 
-It's a normal video player. Use it as you would a normal video player. The seeking is not very smooth though and for now
-it is possible to crash the application if you seek too far back in the video. Hopefully, this will be fixed in the near future.
+It's a normal video player. Use it as you would a normal video player.
 
 ### Using the Node Editor
 
@@ -60,3 +59,8 @@ The save button can be used to save the data that has been collected.
 
 Click File -> Save / Open Configuration. Configurations include the pre and postprocessing nodes but not the videos or the data.
 Also they are stored in *.trk2 files.
+
+## Batching Configurations
+
+It is also possible to use TrackerV2 to batch process a large number of videos. To do this, go to click Batch -> Batch Current Configuration.
+With this, you will be able to select which files you want to use and the program will run on those files.

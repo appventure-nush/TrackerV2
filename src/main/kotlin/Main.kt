@@ -242,6 +242,7 @@ fun main() {
                                             preprocesser.nodes.clearAndAddAll(video.preprocesser.nodes)
                                             postprocessors.clearAndAddAll(video.postprocessors)
                                             batchTask.value = "Running through Video"
+
                                             process()
 
                                             val numProcessors = postprocessors.size
