@@ -14,7 +14,6 @@ import gui.charts.line.LineChart
 import gui.charts.line.LineChartData
 import gui.charts.line.render.SolidLineDrawer
 import gui.charts.line.render.point.FilledCircularPointDrawer
-import gui.charts.simpleChartAnimation
 
 
 abstract class GraphData
