@@ -22,6 +22,7 @@ interface IXAxisDrawer {
         drawScope: DrawScope,
         canvas: Canvas,
         drawableArea: Rect,
-        labels: List<*>
+        minValue: Float,
+        maxValue: Float
     )
 }

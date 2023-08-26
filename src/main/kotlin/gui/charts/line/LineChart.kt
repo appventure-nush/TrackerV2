@@ -2,6 +2,7 @@ package gui.charts.line
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -34,22 +35,27 @@ import gui.charts.simpleChartAnimation
 fun LineChart(
     lineChartData: LineChartData,
     modifier: Modifier = Modifier,
-    animation: AnimationSpec<Float> = simpleChartAnimation(),
+    animation: AnimationSpec<Float>? = simpleChartAnimation(),
     pointDrawer: IPointDrawer = FilledCircularPointDrawer(),
     lineDrawer: ILineDrawer = SolidLineDrawer(),
     lineShader: ILineShader = EmptyLineShader,
     xAxisDrawer: IXAxisDrawer = SimpleXAxisDrawer(),
     yAxisDrawer: IYAxisDrawer = SimpleYAxisDrawer(),
-    horizontalOffset: Float = 5F,
+    horizontalOffset: Float = 0F,
 ) {
     check(horizontalOffset in 0F..25F) {
         "Horizontal Offset is the percentage offset from side, and must be between 0 and 25, included."
     }
-    val transitionAnimation = remember(lineChartData.points) { Animatable(initialValue = 0F) }
 
-    LaunchedEffect(lineChartData.points) {
-        transitionAnimation.snapTo(0F)
-        transitionAnimation.animateTo(1F, animationSpec = animation)
+    val transitionAnimation: Animatable<Float, AnimationVector1D>?
+    if (animation != null) {
+        transitionAnimation = remember(lineChartData.points) { Animatable(initialValue = 0F) }
+        LaunchedEffect(lineChartData.points) {
+            transitionAnimation.snapTo(0F)
+            transitionAnimation.animateTo(1F, animationSpec = animation)
+        }
+    } else {
+        transitionAnimation = null
     }
 
     Canvas(modifier = modifier.fillMaxSize()) {
@@ -81,7 +87,7 @@ fun LineChart(
                 linePath = computeLinePath(
                     drawableArea = chartDrawableArea,
                     lineChartData = lineChartData,
-                    transitionProgress = transitionAnimation.value
+                    transitionProgress = transitionAnimation?.value ?: 1.0f
                 )
             )
             lineShader.fillLine(
@@ -90,14 +96,14 @@ fun LineChart(
                 fillPath = computeFillPath(
                     drawableArea = chartDrawableArea,
                     lineChartData = lineChartData,
-                    transitionProgress = transitionAnimation.value
+                    transitionProgress = transitionAnimation?.value ?: 1.0f
                 )
             )
             lineChartData.points.forEachIndexed { index, point ->
                 withProgress(
                     index = index,
                     lineChartData = lineChartData,
-                    transitionProgress = transitionAnimation.value
+                    transitionProgress = transitionAnimation?.value ?: 1.0f
                 ) {
                     pointDrawer.drawPoint(
                         drawScope = this,
@@ -121,7 +127,9 @@ fun LineChart(
                 drawScope = this,
                 canvas = canvas,
                 drawableArea = xAxisLabelsDrawableArea,
-                labels = lineChartData.points.map { it.label })
+                minValue = lineChartData.minX,
+                maxValue = lineChartData.maxX
+            )
             yAxisDrawer.drawAxisLine(
                 drawScope = this,
                 drawableArea = yAxisDrawableArea,

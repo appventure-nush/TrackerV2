@@ -8,8 +8,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import gui.charts.AxisLabelFormatter
+import gui.charts.LabelFormatter
 import org.jetbrains.skia.TextLine
+import kotlin.math.abs
+import kotlin.math.roundToInt
+
+
+val NICE_NUMBERS = listOf(1.0, 2.0, 2.5, 4.0, 5.0).map { x ->
+    listOf(1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1.0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6).map { y -> x * y }
+}.flatten()
 
 /**
  * @Author bytebeats
@@ -26,7 +33,7 @@ class SimpleXAxisDrawer(
     val drawLabelEvery: Int = 1,// draw label text every $drawLabelEvery, like 1, 2, 3 and so on.
     val axisLineThickness: Dp = 1.dp,
     val axisLineColor: Color = Color.Black,
-    val axisLabelFormatter: AxisLabelFormatter = { value -> "$value" }
+    val labelValueFormatter: LabelFormatter = { value -> "%.1f".format(value) },
 ) : IXAxisDrawer {
     private val mAxisLinePaint by lazy {
         Paint().apply {
@@ -67,22 +74,34 @@ class SimpleXAxisDrawer(
         drawScope: DrawScope,
         canvas: Canvas,
         drawableArea: Rect,
-        labels: List<*>
+        minValue: Float,
+        maxValue: Float
     ) {
         with(drawScope) {
             val labelPaint = mTextPaint
             val labelFont = mTextFont.apply {
                 size = labelTextSize.toPx()
             }
-            val labelIncrements = drawableArea.width / (labels.size - 1)
-            labels.forEachIndexed { index, label ->
-                if (index.rem(drawLabelEvery) == 0) {
-                    val labelValue = axisLabelFormatter(label)
-                    val textLine = TextLine.make(labelValue, labelFont)
-                    val x = drawableArea.left + labelIncrements * index - textLine.width / 2
-                    val y = drawableArea.bottom
-                    canvas.nativeCanvas.drawTextLine(textLine, x, y, labelPaint)
-                }
+
+            val minLabelWidth = labelTextSize.toPx() * drawLabelEvery.toFloat() * 5
+            val totalWidth = drawableArea.width
+            val labelCount = (drawableArea.width / minLabelWidth).roundToInt().coerceAtLeast(2)
+
+            // Make them nice numbers
+            val spacing = gui.charts.line.render.yaxis.NICE_NUMBERS.mapIndexed { index, it ->
+                Pair(index, abs(it - (maxValue - minValue) / labelCount) )
+            }.minBy { (_, it) -> it }
+            val realMinValue = (minValue / NICE_NUMBERS[spacing.first]).roundToInt() * NICE_NUMBERS[spacing.first]
+
+            for (i in 0..labelCount) {
+                val value = realMinValue + i * NICE_NUMBERS[spacing.first]
+                val label = labelValueFormatter(value.toFloat())
+                val textLine = TextLine.make(label, labelFont)
+
+                val x = drawableArea.left + i * (totalWidth / labelCount)
+                val y = drawableArea.bottom
+
+                canvas.nativeCanvas.drawTextLine(textLine, x, y, labelPaint)
             }
         }
     }

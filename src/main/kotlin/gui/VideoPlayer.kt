@@ -57,7 +57,7 @@ fun Pulsating(pulseFraction: Float = 1.2f, modifier: Modifier = Modifier, conten
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Preview
 @Composable
-fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boolean>) {
+fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boolean>, onUpdate: MutableState<Int>) {
     val playVideo = remember { mutableStateOf(false) }
     val pauseSyncing = remember { mutableStateOf(false) }
     val threadCreated = remember { mutableStateOf(false) }
@@ -136,6 +136,8 @@ fun VideoPlayer(video: Video, width: MutableState<Dp>, syncing: MutableState<Boo
                                         val bytes = video.next(playVideo.value).encode(".bmp")
                                         imageBitmap.value = loadImageBitmap(bytes.inputStream())
                                     }
+
+                                    onUpdate.value = Random.nextInt(100)
 
                                     if (ms < 10)
                                         Thread.sleep(10 - ms)

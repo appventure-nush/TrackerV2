@@ -11,7 +11,7 @@ package gui.charts.line
 
 data class LineChartData(
     val points: List<Point>,
-    val padBy: Float = 20F,//percentage we pad yValue by
+    val padBy: Float = 0F, // percentage we pad yValue by
     val startAtZero: Boolean = false
 ) {
     init {
@@ -20,20 +20,34 @@ data class LineChartData(
         }
     }
 
-    private val yMinMaxValues: Pair<Float, Float>
+    private val xMinMaxValues: Pair<Float, Float>
         get() {
-            val minValue = points.minOf { it.value }
-            val maxValue = points.maxOf { it.value }
+            val minValue = points.minOf { it.x }
+            val maxValue = points.maxOf { it.x }
             return minValue to maxValue
         }
+
+    private val yMinMaxValues: Pair<Float, Float>
+        get() {
+            val minValue = points.minOf { it.y }
+            val maxValue = points.maxOf { it.y }
+            return minValue to maxValue
+        }
+
+    internal val maxX: Float
+        get() = xMinMaxValues.second + (xMinMaxValues.second - xMinMaxValues.first) * padBy / 100F
+    internal val minX: Float
+        get() = if (startAtZero) 0F else xMinMaxValues.first - (xMinMaxValues.second - xMinMaxValues.first) * padBy / 100F
 
     internal val maxY: Float
         get() = yMinMaxValues.second + (yMinMaxValues.second - yMinMaxValues.first) * padBy / 100F
     internal val minY: Float
         get() = if (startAtZero) 0F else yMinMaxValues.first - (yMinMaxValues.second - yMinMaxValues.first) * padBy / 100F
 
+    internal val xRange: Float
+        get() = maxX - minX
     internal val yRange: Float
         get() = maxY - minY
 
-    data class Point(val value: Float, val label: String)
+    class Point(val x: Float, val y: Float)
 }

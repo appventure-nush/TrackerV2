@@ -11,7 +11,13 @@ import androidx.compose.ui.unit.sp
 import gui.charts.LabelFormatter
 import org.jetbrains.skia.Font
 import org.jetbrains.skia.TextLine
+import kotlin.math.abs
 import kotlin.math.roundToInt
+
+
+val NICE_NUMBERS = listOf(1.0, 2.0, 2.5, 4.0, 5.0).map { x ->
+    listOf(1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1.0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6).map { y -> x * y }
+}.flatten()
 
 /**
  * @Author bytebeats
@@ -73,16 +79,23 @@ class SimpleYAxisDrawer(
                 size = labelTextSize.toPx()
             }
 
-            val minLabelHeight = labelTextSize.toPx() * drawLabelEvery.toFloat()
+            val minLabelHeight = labelTextSize.toPx() * drawLabelEvery.toFloat() * 2
             val totalHeight = drawableArea.height
             val labelCount = (drawableArea.height / minLabelHeight).roundToInt().coerceAtLeast(2)
 
+            // Make them nice numbers
+            val spacing = NICE_NUMBERS.mapIndexed { index, it ->
+                Pair(index, abs(it - (maxValue - minValue) / labelCount) )
+            }.minBy { (_, it) -> it }
+            val realMinValue = (minValue / NICE_NUMBERS[spacing.first]).roundToInt() * NICE_NUMBERS[spacing.first]
+
             for (i in 0..labelCount) {
-                val value = minValue + i * (maxValue - minValue) / labelCount
-                val label = labelValueFormatter(value)
+                val value = realMinValue + i * NICE_NUMBERS[spacing.first]
+                val label = labelValueFormatter(value.toFloat())
                 val textLine = TextLine.make(label, labelFont)
+
                 val x = drawableArea.right - axisLineThickness.toPx() - textLine.width - labelTextSize.toPx() / 2
-                val y = drawableArea.bottom - i * (totalHeight / labelCount) - textLine.height / 2F
+                val y = drawableArea.bottom - i * (totalHeight / labelCount) - textLine.height / 2F  // todo do it legitly
                 canvas.nativeCanvas.drawTextLine(textLine, x, y, labelPaint)
             }
         }

@@ -83,6 +83,8 @@ fun main() {
         val cropX2 = remember { derivedStateOf { video.cropX2.value * scalingConstant.value } }
         val cropY2 = remember { derivedStateOf { video.cropY2.value * scalingConstant.value } }
 
+        val graphs = mutableListOf<GraphData>()
+
         val aboutDialog = remember { mutableStateOf(false) }
         val aboutTimes = remember { mutableStateOf(0) }
 
@@ -275,7 +277,7 @@ fun main() {
 
             MaterialTheme {
                 Row(modifier = Modifier.padding(10.dp)) {
-                    VideoPlayer(video, width, syncing)
+                    VideoPlayer(video, width, syncing, onUpdate)
 
                     Button(
                         modifier = Modifier.fillMaxHeight()
@@ -297,7 +299,7 @@ fun main() {
                     }
 
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        NodesPane(video, windowWidth, width, onUpdate, syncing)
+                        NodesPane(video, graphs, windowWidth, width, onUpdate, syncing)
                     }
                 }
             }

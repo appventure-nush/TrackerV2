@@ -41,6 +41,7 @@ data class Page(val name: String, val content: @Composable () -> Unit)
 @Composable
 fun NodesPane(
     video: Video,
+    graphs: MutableList<GraphData>,
     windowWidth: MutableState<Dp>,
     width: MutableState<Dp>,
     onUpdate: MutableState<Int>,
@@ -52,9 +53,11 @@ fun NodesPane(
     val preprocessingItems = listOf(BlurringNode(), MorphologicalNode(), ThresholdingNode(), CannyEdgeNode(), ColourRangeNode())
     val postprocessingItems = listOf(  // -1 is needed because Kotlin is being funny and refusing to compile
         EllipseFittingNode(-1),
-        CircleFittingNode(index=-1),
+        CircleFittingNode(-1),
         ContourFittingNode(-1)
     )
+    val graphsList = listOf(ScatterPlotData())
+
     val expanded = remember { mutableStateOf(false) }
 
     val errorDialog = remember { mutableStateOf(false) }
@@ -111,7 +114,6 @@ fun NodesPane(
                                 is ThresholdingNode -> ThresholdingPane(node, { deleteNode(node) }, { j -> shift(j, node) })
                                 is CannyEdgeNode -> CannyEdgePane(node, { deleteNode(node) }, { j -> shift(j, node) })
                                 is ColourRangeNode -> ColorRangePane(node, { deleteNode(node) }, { j -> shift(j, node) })
-                                else -> println()
                             }
                         }
                     }
@@ -197,10 +199,50 @@ fun NodesPane(
                     }
                 }
             }
+        },
+        Page("Graphs") {
+            Box {
+                onUpdate.value  // magic h0xs
+
+                val state = rememberLazyListState()
+
+                LazyColumn(modifier = Modifier.width(windowWidth.value - 95.dp - width.value).padding(end = 12.dp), state) {
+                    items(graphs.size) {
+                        Row(modifier = Modifier.animateItemPlacement()) {
+                            when (val graphData = graphs[it]) {
+                                is ScatterPlotData -> ScatterPlotPane(graphData, postprocessors)
+                            }
+                        }
+                    }
+                }
+
+                VerticalScrollbar(
+                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                    adapter = rememberScrollbarAdapter(
+                        scrollState = state
+                    )
+                )
+
+                Column(modifier = Modifier.align(Alignment.BottomEnd)) {
+                    DropdownMenu(
+                        expanded = expanded.value,
+                        onDismissRequest = { expanded.value = false }
+                    ) {
+                        graphsList.forEach {
+                            DropdownMenuItem(onClick = {
+                                expanded.value = false
+                                graphs.add(it)
+                            }) {
+                                Text(text = it.name, fontSize = 12.sp)
+                            }
+                        }
+                    }
+                }
+            }
         }
     )
 
-    val icons = listOf(Icons.Filled.FilterAlt, Icons.Filled.SquareFoot, Icons.Filled.Error)
+    val icons = listOf(Icons.Filled.FilterAlt, Icons.Filled.SquareFoot, Icons.Filled.Analytics)
     Box {
         Row(
             modifier = Modifier.align(Alignment.BottomEnd).fillMaxWidth(),

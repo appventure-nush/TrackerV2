@@ -57,8 +57,8 @@ fun computePointLocation(
     point: LineChartData.Point,
     index: Int
 ): Offset {
-    val dx = index.toFloat() / (lineChartData.points.size - 1)
-    val dy = (point.value - lineChartData.minY) / lineChartData.yRange
+    val dx = (point.x - lineChartData.minX) / lineChartData.xRange // index.toFloat() / (lineChartData.points.size - 1)
+    val dy = (point.y - lineChartData.minY) / lineChartData.yRange
     return Offset(
         x = dx * drawableArea.width + drawableArea.left,
         y = drawableArea.height - dy * drawableArea.height
@@ -125,16 +125,16 @@ fun computeFillPath(
                 lineTo(drawableArea.left, pointLocation.y)
                 lineTo(pointLocation.x, pointLocation.y)
             } else {
-                if (progress <= 1F) {
+                prePointX = if (progress <= 1F) {
                     val preX = prePointLocation?.x ?: 0F
                     val preY = prePointLocation?.y ?: 0F
                     val tx = (pointLocation.x - preX) * progress + preX
                     val ty = (pointLocation.y - preY) * progress + preY
                     lineTo(tx, ty)
-                    prePointX = tx
+                    tx
                 } else {
                     lineTo(pointLocation.x, pointLocation.y)
-                    prePointX = pointLocation.x
+                    pointLocation.x
                 }
             }
             prePointLocation = pointLocation
