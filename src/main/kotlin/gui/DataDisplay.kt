@@ -49,7 +49,7 @@ fun ScatterPlotPane(scatterPlotData: ScatterPlotData, postprocessors: List<Postp
                 x = (it[entry] as Double).toFloat(),
                 y = (it[entry2] as Double).toFloat()
             )
-        }.toList()
+        }.toList().takeLast(500)
     } catch (_: NullPointerException) {}
 
     Card(
@@ -74,7 +74,7 @@ fun ScatterPlotPane(scatterPlotData: ScatterPlotData, postprocessors: List<Postp
                             x = (it[entry] as Double).toFloat(),
                             y = (it[entry2] as Double).toFloat()
                         )
-                    }.toList()
+                    }.toList().takeLast(500)
                 } catch (_: NullPointerException) {}
             }
 
@@ -94,7 +94,7 @@ fun ScatterPlotPane(scatterPlotData: ScatterPlotData, postprocessors: List<Postp
                                 x = (it[entry] as Double).toFloat(),
                                 y = (it[entry2] as Double).toFloat()
                             )
-                        }.toList()
+                        }.toList().takeLast(500)
                     } catch (_: NullPointerException) {}
                 }
             )
