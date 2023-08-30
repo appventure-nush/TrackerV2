@@ -210,7 +210,10 @@ fun NodesPane(
                     items(graphs.size) {
                         Row(modifier = Modifier.animateItemPlacement()) {
                             when (val graphData = graphs[it]) {
-                                is ScatterPlotData -> ScatterPlotPane(graphData, postprocessors)
+                                is ScatterPlotData -> ScatterPlotPane(graphData, postprocessors) {
+                                    graphs.remove(graphData)
+                                    onUpdate.value = Random.nextInt(100)
+                                }
                             }
                         }
                     }
