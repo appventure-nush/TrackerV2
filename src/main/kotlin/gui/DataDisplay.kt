@@ -67,7 +67,9 @@ fun ScatterPlotPane(
                 y = (it[entry2] as Double).toFloat()
             )
         }.toList().takeLast(500)
-    } catch (_: NullPointerException) {}
+    } catch (e: Exception) {
+        println(e)
+    }
 
     Card(
         elevation = 10.dp,
@@ -92,7 +94,9 @@ fun ScatterPlotPane(
                             y = (it[entry2] as Double).toFloat()
                         )
                     }.toList().takeLast(500)
-                } catch (_: NullPointerException) {}
+                } catch (e: Exception) {
+                    println(e)
+                }
             }
 
             Combobox(
@@ -112,13 +116,20 @@ fun ScatterPlotPane(
                                 y = (it[entry2] as Double).toFloat()
                             )
                         }.toList().takeLast(500)
-                    } catch (_: NullPointerException) {}
+                    } catch (e: Exception) {
+                        println(e)
+                    }
                 }
             )
 
             LineChart(
                 lineChartData = LineChartData(
-                    points = points.value
+                    points=points.value.ifEmpty {
+                        listOf(
+                            LineChartData.Point(0.0f, 0.0f),
+                            LineChartData.Point(1.0f, 1.0f)
+                        )
+                    }
                 ),
                 animation = null, //simpleChartAnimation(),
                 pointDrawer = FilledCircularPointDrawer(color=MaterialTheme.colors.secondaryVariant),
