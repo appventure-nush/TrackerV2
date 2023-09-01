@@ -5,7 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
@@ -40,14 +40,14 @@ fun <T> Combobox(label: String, selectedItem: MutableState<T>, items: List<T>, m
                     // This value is used to assign to the Dropdown the same width
                     textfieldSize.value = coordinates.size.toSize()
                 },
-            label = { Text(label, fontSize = fontSize, color = MaterialTheme.colors.primary) },
+            label = { Text(label, fontSize = fontSize, color = AppTheme.colorScheme.primary) },
             trailingIcon = {
                 Icon(icon,"", Modifier.clickable { expanded.value = !expanded.value })
             },
             textStyle = TextStyle(fontSize = fontSize),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.primary,
-                unfocusedBorderColor = MaterialTheme.colors.primary
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = AppTheme.colorScheme.primary,
+                unfocusedBorderColor = AppTheme.colorScheme.primary,
             )
         )
 
@@ -61,13 +61,16 @@ fun <T> Combobox(label: String, selectedItem: MutableState<T>, items: List<T>, m
             )
         ) {
             items.forEach {
-                DropdownMenuItem(onClick = {
-                    selectedItem.value = it
-                    expanded.value = false
-                    onValueChanged()
-                }) {
-                    Text(text = it.toString(), fontSize = fontSize)
-                }
+                DropdownMenuItem(
+                    text = {
+                        Text(text = it.toString(), fontSize = fontSize)
+                    },
+                    onClick = {
+                        selectedItem.value = it
+                        expanded.value = false
+                        onValueChanged()
+                    }
+                )
             }
         }
     }

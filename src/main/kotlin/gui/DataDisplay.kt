@@ -4,19 +4,15 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipArea
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import backend.image_processing.postprocess.Postprocessor
@@ -34,7 +30,7 @@ data class ScatterPlotData(var xAxis: String = "", var yAxis: String = ""): Grap
 }
 
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScatterPlotPane(
     scatterPlotData: ScatterPlotData,
@@ -72,7 +68,7 @@ fun ScatterPlotPane(
     }
 
     Card(
-        elevation = 10.dp,
+        elevation = CardDefaults.cardElevation(5.dp),
         modifier = Modifier.padding(10.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
@@ -132,8 +128,8 @@ fun ScatterPlotPane(
                     }
                 ),
                 animation = null, //simpleChartAnimation(),
-                pointDrawer = FilledCircularPointDrawer(color=MaterialTheme.colors.secondaryVariant),
-                lineDrawer = SolidLineDrawer(color=MaterialTheme.colors.secondary),
+                pointDrawer = FilledCircularPointDrawer(color=AppTheme.colorScheme.tertiary),
+                lineDrawer = SolidLineDrawer(color=AppTheme.colorScheme.tertiary),
                 modifier = Modifier.padding(15.dp).height(300.dp)
             )
 

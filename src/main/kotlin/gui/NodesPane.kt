@@ -11,7 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
@@ -36,7 +36,7 @@ import kotlin.random.Random
 
 data class Page(val name: String, val content: @Composable () -> Unit)
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun NodesPane(
@@ -132,12 +132,14 @@ fun NodesPane(
                         onDismissRequest = { expanded.value = false }
                     ) {
                         preprocessingItems.forEach {
-                            DropdownMenuItem(onClick = {
-                                expanded.value = false
-                                preprocessor.nodes.add(it.clone())
-                            }) {
-                                Text(text = it.name, fontSize = 12.sp)
-                            }
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = it.name, fontSize = 12.sp)
+                                }, onClick = {
+                                    expanded.value = false
+                                    preprocessor.nodes.add(it.clone())
+                                }
+                            )
                         }
                     }
                 }
@@ -189,12 +191,15 @@ fun NodesPane(
                         onDismissRequest = { expanded.value = false }
                     ) {
                         postprocessingItems.forEach {
-                            DropdownMenuItem(onClick = {
-                                expanded.value = false
-                                postprocessors.add(Postprocessor(it.clone()))
-                            }) {
-                                Text(text = it.name, fontSize = 12.sp)
-                            }
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = it.name, fontSize = 12.sp)
+                                },
+                                onClick = {
+                                    expanded.value = false
+                                    postprocessors.add(Postprocessor(it.clone()))
+                                }
+                            )
                         }
                     }
                 }
@@ -232,12 +237,15 @@ fun NodesPane(
                         onDismissRequest = { expanded.value = false }
                     ) {
                         graphsList.forEach {
-                            DropdownMenuItem(onClick = {
-                                expanded.value = false
-                                graphs.add(it)
-                            }) {
-                                Text(text = it.name, fontSize = 12.sp)
-                            }
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = it.name, fontSize = 12.sp)
+                                },
+                                onClick = {
+                                    expanded.value = false
+                                    graphs.add(it)
+                                }
+                            )
                         }
                     }
                 }
@@ -289,8 +297,8 @@ fun NodesPane(
 
         Column(modifier = Modifier.align(Alignment.BottomEnd)) {
             FloatingActionButton(
-                backgroundColor = Color.White,
-                contentColor = MaterialTheme.colors.primary,
+                containerColor = AppTheme.colorScheme.surface,
+                contentColor = AppTheme.colorScheme.onSurface,
                 modifier = Modifier.width(55.dp).height(55.dp).padding(7.dp),
                 onClick = {
                     syncing.value = !syncing.value
@@ -300,8 +308,8 @@ fun NodesPane(
             }
 
             FloatingActionButton(
-                backgroundColor = MaterialTheme.colors.primary,
-                contentColor = Color.White,
+                containerColor = AppTheme.colorScheme.primary,
+                contentColor = AppTheme.colorScheme.onPrimary,
                 modifier = Modifier.width(55.dp).height(55.dp).padding(7.dp),
                 onClick = {
                     expanded.value = true

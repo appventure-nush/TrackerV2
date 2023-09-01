@@ -5,7 +5,8 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
@@ -27,7 +28,7 @@ import backend.image_processing.preprocess.*
 import com.godaddy.android.colorpicker.ClassicColorPicker
 import com.godaddy.android.colorpicker.HsvColor
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun ProcessingPane(
@@ -45,8 +46,9 @@ fun ProcessingPane(
     val count = remember { mutableStateOf(0) }
 
     // Store the pane in a card
-    Card(
-        elevation = 10.dp,
+    ElevatedCard(
+        elevation = CardDefaults.cardElevation(5.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
         modifier = Modifier.padding(10.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
@@ -79,7 +81,7 @@ fun ProcessingPane(
                         IconButton(onClick = { helpDialog.value = true }, modifier = Modifier.size(23.dp)) {
                             Icon(
                                 painterResource("help_black_24dp.svg"), contentDescription = "",
-                                tint = MaterialTheme.colors.primary
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -144,7 +146,7 @@ fun ProcessingPane(
                         IconButton(onClick = { shift(-1) }, modifier = Modifier.size(23.dp)) {
                             Icon(
                                 Icons.Filled.KeyboardArrowUp, contentDescription = "",
-                                tint = MaterialTheme.colors.primary
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -171,7 +173,7 @@ fun ProcessingPane(
                         IconButton(onClick = { shift(1) }, modifier = Modifier.size(23.dp)) {
                             Icon(
                                 Icons.Filled.KeyboardArrowDown, contentDescription = "",
-                                tint = MaterialTheme.colors.primary
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -202,7 +204,7 @@ fun ProcessingPane(
                             Icon(
                                 painterResource("eraser.svg"),
                                 contentDescription = "",
-                                tint = MaterialTheme.colors.primary
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -229,7 +231,7 @@ fun ProcessingPane(
                         IconButton(onClick = { save() }, modifier = Modifier.size(23.dp)) {
                             Icon(
                                 Icons.Filled.Save, contentDescription = "",
-                                tint = MaterialTheme.colors.primary
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -262,7 +264,7 @@ fun ProcessingPane(
                     ) {
                         Icon(
                             Icons.Filled.Delete, contentDescription = "",
-                            tint = Color.Red
+                            tint = AppTheme.extendedColorScheme.delete
                         )
                     }
                 }
@@ -279,7 +281,13 @@ fun ProcessingPane(
                 TextButton({ helpDialog.value = false }) { Text("Ok") }
             },
             onDismissRequest = { helpDialog.value = false },
-            modifier = Modifier.size(300.dp, 250.dp).padding(10.dp)
+            modifier = Modifier.size(
+                350.dp,
+                if (node.help.length > 150) 300.dp
+                else if (node.help.length > 80) 250.dp
+                else if (node.help.length > 40) 230.dp
+                else 210.dp
+            ).padding(10.dp)
         )
     }
 
@@ -342,7 +350,7 @@ fun BlurringPane(node: BlurringNode, onDelete: () -> Unit, shift: (Int) -> Unit)
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun ThresholdingPane(node: ThresholdingNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
@@ -418,11 +426,12 @@ fun ThresholdingPane(node: ThresholdingNode, onDelete: () -> Unit, shift: (Int) 
                         node.binarise = it
                     },
                     colors = CheckboxDefaults.colors(
-                        checkedColor = MaterialTheme.colors.primary,
-                        uncheckedColor = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
-                        checkmarkColor = MaterialTheme.colors.surface,
-                        disabledColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled),
-                        disabledIndeterminateColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.disabled)
+                        checkedColor = MaterialTheme.colorScheme.primary,
+                        uncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        checkmarkColor = MaterialTheme.colorScheme.surface,
+                        disabledCheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled),
+                        disabledUncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled),
+                        disabledIndeterminateColor = MaterialTheme.colorScheme.primary.copy(alpha = ContentAlpha.disabled)
                     )
                 )
             }
@@ -605,7 +614,7 @@ fun EllipseFittingPane(node: EllipseFittingNode, onDelete: () -> Unit, startColl
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun CircleFittingPane(node: CircleFittingNode, onDelete: () -> Unit, startCollecting: () -> Unit, save: () -> Unit) {
@@ -633,7 +642,7 @@ fun CircleFittingPane(node: CircleFittingNode, onDelete: () -> Unit, startCollec
                         param1.value = it
                         node.param1 = param1.value.toDouble()
                     },
-                    modifier = Modifier.width(125.dp)
+                    modifier = Modifier.width(120.dp)
                 )
 
                 Text(
@@ -658,7 +667,7 @@ fun CircleFittingPane(node: CircleFittingNode, onDelete: () -> Unit, startCollec
                         param2.value = it
                         node.param2 = param2.value.toDouble()
                     },
-                    modifier = Modifier.width(125.dp)
+                    modifier = Modifier.width(120.dp)
                 )
 
                 Text(
@@ -683,7 +692,7 @@ fun CircleFittingPane(node: CircleFittingNode, onDelete: () -> Unit, startCollec
                         minDist.value = it
                         node.minDist = minDist.value.toDouble()
                     },
-                    modifier = Modifier.width(125.dp)
+                    modifier = Modifier.width(80.dp)
                 )
 
                 Text(
@@ -742,7 +751,7 @@ fun ContourFittingPane(node: ContourFittingNode, onDelete: () -> Unit, startColl
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
@@ -803,11 +812,12 @@ fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> 
                         node.binarise = it
                     },
                     colors = CheckboxDefaults.colors(
-                        checkedColor = MaterialTheme.colors.primary,
-                        uncheckedColor = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
-                        checkmarkColor = MaterialTheme.colors.surface,
-                        disabledColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled),
-                        disabledIndeterminateColor = MaterialTheme.colors.primary.copy(alpha = ContentAlpha.disabled)
+                        checkedColor = MaterialTheme.colorScheme.primary,
+                        uncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        checkmarkColor = MaterialTheme.colorScheme.surface,
+                        disabledCheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled),
+                        disabledUncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled),
+                        disabledIndeterminateColor = MaterialTheme.colorScheme.primary.copy(alpha = ContentAlpha.disabled)
                     )
                 )
             }

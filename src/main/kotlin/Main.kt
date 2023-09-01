@@ -3,9 +3,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.graphics.Color
@@ -35,7 +34,6 @@ import kotlin.concurrent.thread
 import kotlin.random.Random
 
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun main() {
     val video = Video("video0.mov")
     video.hasNext()
@@ -102,314 +100,316 @@ fun main() {
 
         val icon = painterResource("trackerv2.png")
 
-        Window(
-            onCloseRequest = ::exitApplication,
-            title = "Tracker 2.0",
-            state = windowState,
-            icon = icon
-        ) {
-            LaunchedEffect(windowState) {
-                snapshotFlow { windowState.size }
-                    .onEach { windowWidth.value = it.width }
-                    .launchIn(this)
-            }
+        AppTheme {
+            Window(
+                onCloseRequest = ::exitApplication,
+                title = "Tracker 2.0",
+                state = windowState,
+                icon = icon,
+            ) {
+                LaunchedEffect(windowState) {
+                    snapshotFlow { windowState.size }
+                        .onEach { windowWidth.value = it.width }
+                        .launchIn(this)
+                }
 
-            MenuBar {
-                Menu("File", mnemonic = 'F') {
-                    Item(
-                        "Open Video",
-                        onClick = {
-                            val dialog = FileDialog(ComposeWindow(), "Open Configuration", FileDialog.LOAD)
-                            dialog.file = "*.mp4;*.mov;*avi"
-                            dialog.isVisible = true
+                Scaffold {
+                    MenuBar {
+                        Menu("File", mnemonic = 'F') {
+                            Item(
+                                "Open Video",
+                                onClick = {
+                                    val dialog = FileDialog(ComposeWindow(), "Open Configuration", FileDialog.LOAD)
+                                    dialog.file = "*.mp4;*.mov;*avi"
+                                    dialog.isVisible = true
 
-                            if (dialog.file != null) {
-                                syncing.value = false
+                                    if (dialog.file != null) {
+                                        syncing.value = false
 
-                                video.cropX1.value = 0.0
-                                video.cropY1.value = 0.0
-                                video.cropX2.value = 1.0
-                                video.cropY2.value = 1.0
+                                        video.cropX1.value = 0.0
+                                        video.cropY1.value = 0.0
+                                        video.cropX2.value = 1.0
+                                        video.cropY2.value = 1.0
 
-                                video.videoCapture = VideoCapture(dialog.directory + "/" + dialog.file)
-                                video.videoFile = dialog.directory + "/" + dialog.file
+                                        video.videoCapture = VideoCapture(dialog.directory + "/" + dialog.file)
+                                        video.videoFile = dialog.directory + "/" + dialog.file
 
-                                video.cropX1.value = 0.0
-                                video.cropY1.value = 0.0
-                                video.cropX2.value = video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_WIDTH)
-                                video.cropY2.value = video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_HEIGHT)
+                                        video.cropX1.value = 0.0
+                                        video.cropY1.value = 0.0
+                                        video.cropX2.value = video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_WIDTH)
+                                        video.cropY2.value = video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_HEIGHT)
 
-                                videoWidth.value = video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_WIDTH)
+                                        videoWidth.value = video.videoCapture.get(opencv_videoio.CAP_PROP_FRAME_WIDTH)
 
-                                syncing.value = true
+                                        syncing.value = true
 
-                                fps.value = video.frameRate.toString()
-                            }
-                        }
-                    )
-                    Separator()
-                    Item(
-                        "Open Configuration",
-                        onClick = {
-                            val dialog = FileDialog(ComposeWindow(), "Open Configuration", FileDialog.LOAD)
-                            dialog.file = "*.trk2"
-                            dialog.isVisible = true
-
-                            if (dialog.file != null) {
-                                val text = File(dialog.directory + "/" + dialog.file).readText().split("\n")
-                                val newPreprocessingNodes = Json.decodeFromString<Preprocessor>(text[0]).nodes
-                                val newPostprocessingNodes = Json.decodeFromString<List<PostprocessingNode>>(text[1])
-
-                                video.preprocesser.nodes.clear()
-                                video.preprocesser.nodes.addAll(newPreprocessingNodes)
-
-                                video.postprocessors.clear()
-                                newPostprocessingNodes.forEach {
-                                    video.postprocessors.add(Postprocessor(it))
+                                        fps.value = video.frameRate.toString()
+                                    }
                                 }
+                            )
+                            Separator()
+                            Item(
+                                "Open Configuration",
+                                onClick = {
+                                    val dialog = FileDialog(ComposeWindow(), "Open Configuration", FileDialog.LOAD)
+                                    dialog.file = "*.trk2"
+                                    dialog.isVisible = true
 
-                                onUpdate.value = Random.nextInt(100)
-                            }
-                        },
-                        shortcut = KeyShortcut(Key.O, ctrl = true)
-                    )
-                    Item(
-                        "Save Configuration",
-                        onClick = {
-                            val dialog = FileDialog(ComposeWindow(), "Save Configuration", FileDialog.SAVE)
-                            dialog.file = "*.trk2"
-                            dialog.isVisible = true
+                                    if (dialog.file != null) {
+                                        val text = File(dialog.directory + "/" + dialog.file).readText().split("\n")
+                                        val newPreprocessingNodes = Json.decodeFromString<Preprocessor>(text[0]).nodes
+                                        val newPostprocessingNodes = Json.decodeFromString<List<PostprocessingNode>>(text[1])
 
-                            if (dialog.file != null) {
-                                val serialisedPreprocessor = Json.encodeToString(video.preprocesser)
-                                val serialisedPostprocessor = Json.encodeToString(video.postprocessors.map { it.node })
-                                File(dialog.directory + "/" + dialog.file).writeText(
-                                    serialisedPreprocessor + "\n" + serialisedPostprocessor
-                                )
-                            }
-                        },
-                        shortcut = KeyShortcut(Key.S, ctrl = true)
-                    )
-                }
-                Menu("View", mnemonic = 'V') {
-                    Item(
-                        "Toggle Axes Visibility",
-                        onClick = {
-                            isAxesVisible.value = !isAxesVisible.value
-                        }
-                    )
-                    Item(
-                        "Toggle Cropping Rectangle",
-                        onClick = {
-                            croppingRectangleVisible.value = !croppingRectangleVisible.value
-                        }
-                    )
-                    Item(
-                        "Toggle Calibration Stick",
-                        onClick = {
-                            isCalibrationVisible.value = !isCalibrationVisible.value
-                        }
-                    )
-                }
-                Menu("Track", mnemonic = 'T') {
-                    Item(
-                        "Set FPS",
-                        onClick = {
-                            fpsDialog.value = true
-                        }
-                    )
-                }
-                Menu("Batch", mnemonic = 'B') {
-                    Item(
-                        "Batch Current Configuration",
-                        onClick = {
-                            val dialog = FileDialog(ComposeWindow(), "Open Files", FileDialog.LOAD).apply {
-                                file = "*.mp4;*.mov;*avi"
-                                isMultipleMode = true
-                                isVisible = true
-                            }
+                                        video.preprocesser.nodes.clear()
+                                        video.preprocesser.nodes.addAll(newPreprocessingNodes)
 
-                            if (dialog.files != null && dialog.files.isNotEmpty()) {
-                                batchDialog.value = true
-                                batchStartTime.value = System.currentTimeMillis() / 1000
-                                batchProgress.value = 0F
-
-                                val numFiles = dialog.files.size
-                                val perFileProgress = 1F / numFiles
-                                thread(start = true) {
-                                    dialog.files.map { file ->
-                                        val filename = file.absolutePath.split(".")[0]
-                                        batchFile.value = file.absolutePath
-                                        Video(file.absolutePath).apply {
-                                            preprocesser.nodes.clearAndAddAll(video.preprocesser.nodes)
-                                            postprocessors.clearAndAddAll(video.postprocessors)
-                                            batchTask.value = "Running through Video"
-
-                                            process()
-
-                                            val numProcessors = postprocessors.size
-                                            val perProcessorProgress = perFileProgress / numProcessors
-                                            postprocessors.map { postprocessor ->
-                                                batchTask.value = "Exporting for " + postprocessor.node.name
-                                                val task = postprocessor.node.name.lowercase().replace(" ", "_")
-                                                postprocessor.export(File("${filename}_processed_${task}.csv"))
-
-                                                batchProgress.value += perProcessorProgress
-                                            }
+                                        video.postprocessors.clear()
+                                        newPostprocessingNodes.forEach {
+                                            video.postprocessors.add(Postprocessor(it))
                                         }
+
+                                        onUpdate.value = Random.nextInt(100)
+                                    }
+                                },
+                                shortcut = KeyShortcut(Key.O, ctrl = true)
+                            )
+                            Item(
+                                "Save Configuration",
+                                onClick = {
+                                    val dialog = FileDialog(ComposeWindow(), "Save Configuration", FileDialog.SAVE)
+                                    dialog.file = "*.trk2"
+                                    dialog.isVisible = true
+
+                                    if (dialog.file != null) {
+                                        val serialisedPreprocessor = Json.encodeToString(video.preprocesser)
+                                        val serialisedPostprocessor = Json.encodeToString(video.postprocessors.map { it.node })
+                                        File(dialog.directory + "/" + dialog.file).writeText(
+                                            serialisedPreprocessor + "\n" + serialisedPostprocessor
+                                        )
+                                    }
+                                },
+                                shortcut = KeyShortcut(Key.S, ctrl = true)
+                            )
+                        }
+                        Menu("View", mnemonic = 'V') {
+                            Item(
+                                "Toggle Axes Visibility",
+                                onClick = {
+                                    isAxesVisible.value = !isAxesVisible.value
+                                }
+                            )
+                            Item(
+                                "Toggle Cropping Rectangle",
+                                onClick = {
+                                    croppingRectangleVisible.value = !croppingRectangleVisible.value
+                                }
+                            )
+                            Item(
+                                "Toggle Calibration Stick",
+                                onClick = {
+                                    isCalibrationVisible.value = !isCalibrationVisible.value
+                                }
+                            )
+                        }
+                        Menu("Track", mnemonic = 'T') {
+                            Item(
+                                "Set FPS",
+                                onClick = {
+                                    fpsDialog.value = true
+                                }
+                            )
+                        }
+                        Menu("Batch", mnemonic = 'B') {
+                            Item(
+                                "Batch Current Configuration",
+                                onClick = {
+                                    val dialog = FileDialog(ComposeWindow(), "Open Files", FileDialog.LOAD).apply {
+                                        file = "*.mp4;*.mov;*avi"
+                                        isMultipleMode = true
+                                        isVisible = true
                                     }
 
-                                    batchDialog.value = false
+                                    if (dialog.files != null && dialog.files.isNotEmpty()) {
+                                        batchDialog.value = true
+                                        batchStartTime.value = System.currentTimeMillis() / 1000
+                                        batchProgress.value = 0F
+
+                                        val numFiles = dialog.files.size
+                                        val perFileProgress = 1F / numFiles
+                                        thread(start = true) {
+                                            dialog.files.map { file ->
+                                                val filename = file.absolutePath.split(".")[0]
+                                                batchFile.value = file.absolutePath
+                                                Video(file.absolutePath).apply {
+                                                    preprocesser.nodes.clearAndAddAll(video.preprocesser.nodes)
+                                                    postprocessors.clearAndAddAll(video.postprocessors)
+                                                    batchTask.value = "Running through Video"
+
+                                                    process()
+
+                                                    val numProcessors = postprocessors.size
+                                                    val perProcessorProgress = perFileProgress / numProcessors
+                                                    postprocessors.map { postprocessor ->
+                                                        batchTask.value = "Exporting for " + postprocessor.node.name
+                                                        val task = postprocessor.node.name.lowercase().replace(" ", "_")
+                                                        postprocessor.export(File("${filename}_processed_${task}.csv"))
+
+                                                        batchProgress.value += perProcessorProgress
+                                                    }
+                                                }
+                                            }
+
+                                            batchDialog.value = false
+                                        }
+                                    }
                                 }
-                            }
+                            )
                         }
-                    )
-                }
-                Menu("About", mnemonic = 'A') {
-                    Item(
-                        "About TrackerV2",
-                        onClick = {
-                            aboutDialog.value = true
+                        Menu("About", mnemonic = 'A') {
+                            Item(
+                                "About TrackerV2",
+                                onClick = {
+                                    aboutDialog.value = true
+                                }
+                            )
                         }
+                    }
+
+                    Row(modifier = Modifier.padding(10.dp)) {
+                        VideoPlayer(video, width, syncing, onUpdate)
+
+                        Button(
+                            modifier = Modifier.fillMaxHeight()
+                                .width(1.dp)
+                                .pointerInput(Unit) {
+                                    detectDragGestures { change, dragAmount ->
+                                        change.consume()
+                                        width.value += dragAmount.x.toDp()
+                                    }
+                                },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
+                            elevation = ButtonDefaults.buttonElevation(0.dp, 0.dp, 0.dp, 0.dp, 0.dp),
+                            onClick = {}
+                        ) {
+                            Divider(
+                                color = Color.Red,
+                                modifier = Modifier.fillMaxHeight().width(1.dp)
+                            )
+                        }
+
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            NodesPane(video, graphs, windowWidth, width, onUpdate, syncing)
+                        }
+                    }
+
+                    if (isAxesVisible.value) Axes(originX, originY, scalingConstant, video)
+
+                    if (croppingRectangleVisible.value) CroppingRectangle(cropX1, cropY1, cropX2, cropY2, scalingConstant, video)
+
+                    if (isCalibrationVisible.value) Tape(
+                        calibrationX1, calibrationY1, calibrationX2, calibrationY2,
+                        videoCalibrationX1, videoCalibrationY1, videoCalibrationX2, videoCalibrationY2,
+                        scalingConstant, cmValue, video.scale
                     )
-                }
-            }
 
-            MaterialTheme {
-                Row(modifier = Modifier.padding(10.dp)) {
-                    VideoPlayer(video, width, syncing, onUpdate)
+                    if (aboutDialog.value) {
+                        if (aboutTimes.value <= 5) {
+                            AlertDialog(
+                                title = { Text("About") },
+                                text = {
+                                    Text("""
+                            Tracker but better! This application is brought to you by AppVenture, the CS Interest Group
+                            as well as your SYPT / IYPT alumni.
+                            It was created and is maintained by Jed, with the help of Luc, Kabir, Josher and Prannaya.
+                            """.trimIndent().replace("\n", " "))
+                                },
+                                confirmButton = {
+                                    TextButton({
+                                        aboutDialog.value = false
+                                        aboutTimes.value++
+                                    }) { Text("Ok") }
+                                },
+                                onDismissRequest = {
+                                    aboutDialog.value = false
+                                    aboutTimes.value++
+                                },
+                                modifier = Modifier.size(370.dp, 290.dp).padding(10.dp)
+                            )
+                        } else {
+                            AlertDialog(
+                                title = { Text(problems[index].first) },
+                                text = { Text(problems[index].second) },
+                                confirmButton = {
+                                    TextButton({ aboutDialog.value = false }) { Text("Ok") }
+                                    index = Random.nextInt(problems.size)
+                                },
+                                onDismissRequest = {
+                                    aboutDialog.value = false
+                                    index = Random.nextInt(problems.size)
+                                },
+                                modifier = Modifier.padding(10.dp)
+                            )
+                        }
+                    }
 
-                    Button(
-                        modifier = Modifier.fillMaxHeight()
-                            .width(1.dp)
-                            .pointerInput(Unit) {
-                                detectDragGestures { change, dragAmount ->
-                                    change.consume()
-                                    width.value += dragAmount.x.toDp()
+                    if (batchDialog.value) {
+                        AlertDialog(
+                            title = { Text("Batch Process Underway...") },
+                            text = {
+                                val remainingTime = (1 - batchProgress.value) / batchProgress.value *
+                                        (System.currentTimeMillis() / 1000 - batchStartTime.value)
+
+                                val hours = (remainingTime / 3600).toInt()
+                                val mins = ((remainingTime % 3600) / 60).toInt()
+                                val secs = (remainingTime % 60).toInt()
+                                val timeIndication: String = if(hours == 0) {
+                                    if (mins == 0) "$secs s"
+                                    else "$mins m $secs s"
+                                } else {
+                                    if (mins == 0) "$hours h $secs s"
+                                    else "$hours h $mins m $secs s"
+                                }
+
+                                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                    Text("Processing file ${batchFile.value.split(Regex("\\|/")).last()}.\n${batchTask.value}...")
+
+                                    LinearProgressIndicator(progress=batchProgress.value, modifier=Modifier.fillMaxWidth())
+
+                                    Text("ETA: $timeIndication")
                                 }
                             },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
-                        elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp, 0.dp),
-                        onClick = {}
+                            confirmButton = {},
+                            onDismissRequest = {},
+                            modifier = Modifier.size(500.dp, 200.dp).padding(10.dp)
+                        )
+                    }
+
+                    AnimatedVisibility(
+                        visible = fpsDialog.value,
+                        enter = fadeIn(),
+                        exit = fadeOut()
                     ) {
-                        Divider(
-                            color = Color.Red,
-                            modifier = Modifier.fillMaxHeight().width(1.dp)
+                        AlertDialog(
+                            onDismissRequest = {
+                                fpsDialog.value = false
+                            },
+                            text = {
+                                OutlinedTextField(
+                                    label = { Text("Enter FPS") },
+                                    value = fps.value,
+                                    onValueChange = { fps.value = it }
+                                )
+                            },
+                            confirmButton = { TextButton({
+                                try {
+                                    video.frameRate = fps.value.toDouble()
+                                } catch (ignored: NumberFormatException) { }
+                                fpsDialog.value = false
+                            }) { Text("Confirm") } },
+                            dismissButton = { TextButton({ fpsDialog.value = false }) { Text("Cancel") } },
                         )
                     }
-
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        NodesPane(video, graphs, windowWidth, width, onUpdate, syncing)
-                    }
                 }
-            }
-
-            if (isAxesVisible.value) Axes(originX, originY, scalingConstant, video)
-
-            if (croppingRectangleVisible.value) CroppingRectangle(cropX1, cropY1, cropX2, cropY2, scalingConstant, video)
-
-            if (isCalibrationVisible.value) Tape(
-                calibrationX1, calibrationY1, calibrationX2, calibrationY2,
-                videoCalibrationX1, videoCalibrationY1, videoCalibrationX2, videoCalibrationY2,
-                scalingConstant, cmValue, video.scale
-            )
-
-            if (aboutDialog.value) {
-                if (aboutTimes.value <= 5) {
-                    AlertDialog(
-                        title = { Text("About") },
-                        text = {
-                            Text("""
-                        Tracker but better! This application is brought to you by AppVenture, the CS Interest Group
-                        as well as your SYPT / IYPT alumni.
-                        It was created and is maintained by Jed, with the help of Luc, Kabir, Josher and Prannaya.
-                        """.trimIndent().replace("\n", " "))
-                        },
-                        confirmButton = {
-                            TextButton({
-                                aboutDialog.value = false
-                                aboutTimes.value++
-                            }) { Text("Ok") }
-                        },
-                        onDismissRequest = {
-                            aboutDialog.value = false
-                            aboutTimes.value++
-                        },
-                        modifier = Modifier.size(300.dp, 300.dp).padding(10.dp)
-                    )
-                } else {
-                    AlertDialog(
-                        title = { Text(problems[index].first) },
-                        text = { Text(problems[index].second) },
-                        confirmButton = {
-                            TextButton({ aboutDialog.value = false }) { Text("Ok") }
-                            index = Random.nextInt(problems.size)
-                        },
-                        onDismissRequest = {
-                            aboutDialog.value = false
-                            index = Random.nextInt(problems.size)
-                        },
-                        modifier = Modifier.size(300.dp, 300.dp).padding(10.dp)
-                    )
-                }
-            }
-
-            if (batchDialog.value) {
-                AlertDialog(
-                    title = { Text("Batch Process Underway...") },
-                    text = {
-                        val remainingTime = (1 - batchProgress.value) / batchProgress.value *
-                                (System.currentTimeMillis() / 1000 - batchStartTime.value)
-
-                        val hours = (remainingTime / 3600).toInt()
-                        val mins = ((remainingTime % 3600) / 60).toInt()
-                        val secs = (remainingTime % 60).toInt()
-                        val timeIndication: String = if(hours == 0) {
-                            if (mins == 0) "$secs s"
-                            else "$mins m $secs s"
-                        } else {
-                            if (mins == 0) "$hours h $secs s"
-                            else "$hours h $mins m $secs s"
-                        }
-
-                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Text("Processing file ${batchFile.value.split(Regex("\\|/")).last()}.\n${batchTask.value}...")
-
-                            LinearProgressIndicator(progress=batchProgress.value, modifier=Modifier.fillMaxWidth())
-
-                            Text("ETA: $timeIndication")
-                        }
-                    },
-                    confirmButton = {},
-                    onDismissRequest = {},
-                    modifier = Modifier.size(500.dp, 200.dp).padding(10.dp)
-                )
-            }
-
-            AnimatedVisibility(
-                visible = fpsDialog.value,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                AlertDialog(
-                    onDismissRequest = {
-                        fpsDialog.value = false
-                    },
-                    text = {
-                        OutlinedTextField(
-                            label = { Text("Enter FPS") },
-                            value = fps.value,
-                            onValueChange = { fps.value = it }
-                        )
-                    },
-                    confirmButton = { TextButton({
-                        try {
-                            video.frameRate = fps.value.toDouble()
-                        } catch (ignored: NumberFormatException) { }
-                        fpsDialog.value = false
-                    }) { Text("Confirm") } },
-                    dismissButton = { TextButton({ fpsDialog.value = false }) { Text("Cancel") } },
-                )
             }
         }
     }

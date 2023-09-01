@@ -4,9 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -82,6 +80,7 @@ fun TapeEnd(x: State<Double>, y: State<Double>,
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Tape(
     x1: State<Double>,
@@ -151,10 +150,11 @@ fun Tape(
                     (constant * 20).roundToInt() + ((x1.value + x2.value) / 2 / constant).roundToInt(),
                     (constant * 20).roundToInt() + ((y1.value + y2.value) / 2 / constant).roundToInt()
                 ) },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
-                textColor = Color.Green
+                unfocusedTextColor = Color.Green,
+                focusedTextColor = Color.Green
             )
         )
     }
