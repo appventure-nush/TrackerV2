@@ -20,6 +20,7 @@ import gui.charts.line.LineChart
 import gui.charts.line.LineChartData
 import gui.charts.line.render.SolidLineDrawer
 import gui.charts.line.render.point.FilledCircularPointDrawer
+import gui.charts.simpleChartAnimation
 
 
 abstract class GraphData
@@ -127,7 +128,7 @@ fun ScatterPlotPane(
                         )
                     }
                 ),
-                animation = null, //simpleChartAnimation(),
+                animation = null,
                 pointDrawer = FilledCircularPointDrawer(color=AppTheme.colorScheme.tertiary),
                 lineDrawer = SolidLineDrawer(color=AppTheme.colorScheme.tertiary),
                 modifier = Modifier.padding(15.dp).height(300.dp)

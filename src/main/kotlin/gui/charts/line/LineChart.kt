@@ -41,7 +41,7 @@ fun LineChart(
     lineShader: ILineShader = EmptyLineShader,
     xAxisDrawer: IXAxisDrawer = SimpleXAxisDrawer(),
     yAxisDrawer: IYAxisDrawer = SimpleYAxisDrawer(),
-    horizontalOffset: Float = 0F,
+    horizontalOffset: Float = 0F
 ) {
     check(horizontalOffset in 0F..25F) {
         "Horizontal Offset is the percentage offset from side, and must be between 0 and 25, included."

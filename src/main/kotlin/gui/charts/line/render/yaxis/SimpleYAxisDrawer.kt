@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import gui.AppTheme
 import gui.charts.LabelFormatter
 import org.jetbrains.skia.Font
 import org.jetbrains.skia.TextLine
@@ -30,11 +31,11 @@ val NICE_NUMBERS = listOf(1.0, 2.0, 2.5, 4.0, 5.0).map { x ->
 
 class SimpleYAxisDrawer(
     val labelTextSize: TextUnit = 12.sp,
-    val labelTextColor: Color = Color.Black,
+    val labelTextColor: Color = AppTheme.colorScheme.onSurface,
     val drawLabelEvery: Int = 1,
     val labelValueFormatter: LabelFormatter = { value -> "%.1f".format(value) },
     val axisLineThickness: Dp = 1.dp,
-    val axisLineColor: Color = Color.Black,
+    val axisLineColor: Color = AppTheme.colorScheme.onSurface,
 ) : IYAxisDrawer {
     private val mAxisLinePaint by lazy {
         Paint().apply {
