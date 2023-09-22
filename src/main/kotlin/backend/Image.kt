@@ -159,7 +159,11 @@ class Image(colourspace: Colourspace, img: Mat) {
         val roi = Rect(x1.toInt(), y1.toInt(), (x2 - x1).toInt(), (y2 - y1).toInt())
         val cropped = Mat(img, roi)
 
-        return Image(Colourspace.RGB, cropped)
+        val output = Image(Colourspace.RGB, cropped)
+        output.scale = scale
+        output.origin = origin
+
+        return output
 
         /*
         val dst = Mat.zeros(img.size(), CV_8UC3).asMat()
@@ -183,7 +187,12 @@ class Image(colourspace: Colourspace, img: Mat) {
         val dstROI = Mat(dst, roi)
 
         cropped.img.copyTo(dstROI, cropped.img)
-        return Image(cropped.colourspace, dst)
+
+        val output = Image(Colourspace.RGB, dst)
+        output.scale = scale
+        output.origin = origin
+
+        return output
     }
 
     /* Blurring */

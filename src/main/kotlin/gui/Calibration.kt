@@ -92,13 +92,13 @@ fun Tape(
     videoX2: MutableState<Double>,
     videoY2: MutableState<Double>,
     scalingConstant: State<Double>,
-    cmValue: MutableState<Double>,
+    mValue: MutableState<Double>,
     scale: MutableState<Double>
 ) {
     val constant = with(LocalDensity.current) { 1.dp.toPx() }
-    val cmTextValue = remember { mutableStateOf("1.0") }
+    val cmTextValue = remember { mutableStateOf(mValue.value.toString()) }
 
-    scale.value = (cmValue.value / 100) / (
+    scale.value = mValue.value / (
         (x2.value - x1.value).pow(2.0) + (y2.value - y1.value).pow(2.0)
     ).pow(0.5)
 
@@ -140,7 +140,7 @@ fun Tape(
             onValueChange = {
                 try {
                     cmTextValue.value = it
-                    cmValue.value = it.toDouble()
+                    mValue.value = it.toDouble()
                 } catch (ignored: Exception) { }
             },
             modifier = Modifier

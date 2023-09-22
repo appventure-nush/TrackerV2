@@ -144,7 +144,7 @@ class Video(videoCapture: VideoCapture) : Iterator<Image> {
         val nextImage2 = nextImage.clone()
         cvtColor(nextImage, nextImage, COLOR_BGR2RGB)
         currentImage = Image(Colourspace.RGB, nextImage)
-        currentImage.origin = Point(originX.value.toDouble(), originY.value.toDouble())
+        currentImage.origin = Point(originX.value, originY.value)
         currentImage.scale = scale.value
 
         var cropped = currentImage.crop(cropX1.value, cropY1.value, cropX2.value, cropY2.value)

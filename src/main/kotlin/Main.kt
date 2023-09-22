@@ -31,6 +31,7 @@ import org.bytedeco.opencv.opencv_videoio.VideoCapture
 import java.awt.FileDialog
 import java.io.File
 import kotlin.concurrent.thread
+import kotlin.math.pow
 import kotlin.random.Random
 
 
@@ -66,15 +67,15 @@ fun main() {
 
         val videoCalibrationX1 = remember { mutableStateOf(0.0) }
         val videoCalibrationY1 = remember { mutableStateOf(0.0) }
-        val videoCalibrationX2 = remember { mutableStateOf(100.0) }
-        val videoCalibrationY2 = remember { mutableStateOf(100.0) }
+        val videoCalibrationX2 = remember { mutableStateOf(100.0 / 2.0.pow(0.5)) }
+        val videoCalibrationY2 = remember { mutableStateOf(100.0 / 2.0.pow(0.5)) }
 
         val calibrationX1 = remember { derivedStateOf { videoCalibrationX1.value * scalingConstant.value } }
         val calibrationY1 = remember { derivedStateOf { videoCalibrationY1.value * scalingConstant.value } }
         val calibrationX2 = remember { derivedStateOf { videoCalibrationX2.value * scalingConstant.value } }
         val calibrationY2 = remember { derivedStateOf { videoCalibrationY2.value * scalingConstant.value } }
 
-        val cmValue = remember { mutableStateOf(1.0) }
+        val mValue = remember { mutableStateOf(1.0) }
 
         val cropX1 = remember { derivedStateOf { video.cropX1.value * scalingConstant.value } }
         val cropY1 = remember { derivedStateOf { video.cropY1.value * scalingConstant.value } }
@@ -309,7 +310,7 @@ fun main() {
                     if (isCalibrationVisible.value) Tape(
                         calibrationX1, calibrationY1, calibrationX2, calibrationY2,
                         videoCalibrationX1, videoCalibrationY1, videoCalibrationX2, videoCalibrationY2,
-                        scalingConstant, cmValue, video.scale
+                        scalingConstant, mValue, video.scale
                     )
 
                     if (aboutDialog.value) {
