@@ -80,7 +80,6 @@ fun TapeEnd(x: State<Double>, y: State<Double>,
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Tape(
     x1: State<Double>,

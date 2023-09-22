@@ -614,7 +614,6 @@ fun EllipseFittingPane(node: EllipseFittingNode, onDelete: () -> Unit, startColl
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun CircleFittingPane(node: CircleFittingNode, onDelete: () -> Unit, startCollecting: () -> Unit, save: () -> Unit) {
@@ -751,7 +750,7 @@ fun ContourFittingPane(node: ContourFittingNode, onDelete: () -> Unit, startColl
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> Unit) {
@@ -767,9 +766,9 @@ fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> 
         mutableStateOf(
             HsvColor.from(
                 Color(
-                    node.colours[0].first.red,
-                    node.colours[0].first.blue,
-                    node.colours[0].first.green
+                    red = node.colours[0].first.red,
+                    blue = node.colours[0].first.blue,
+                    green = node.colours[0].first.green
                 )
             )
         )
@@ -778,9 +777,9 @@ fun ColorRangePane(node: ColourRangeNode, onDelete: () -> Unit, shift: (Int) -> 
         mutableStateOf(
             HsvColor.from(
                 Color(
-                    node.colours[0].second.red,
-                    node.colours[0].second.blue,
-                    node.colours[0].second.green
+                    red = node.colours[0].second.red,
+                    blue = node.colours[0].second.blue,
+                    green = node.colours[0].second.green
                 )
             )
         )
