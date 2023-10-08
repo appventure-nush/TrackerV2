@@ -24,4 +24,9 @@ sealed class PreprocessingNode: Processing() {
      * Returns a deep copy of the preprocessing node
      */
     abstract fun clone(): PreprocessingNode
+
+    @OptIn(ExperimentalStdlibApi::class)
+    override fun toString(): String {
+        return "${name}@${hashCode().toHexString()}"
+    }
 }

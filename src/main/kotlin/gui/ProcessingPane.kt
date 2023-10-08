@@ -52,11 +52,31 @@ fun ProcessingPane(
         modifier = Modifier.padding(10.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
+
         Column(Modifier.padding(10.dp), Arrangement.spacedBy(5.dp)) {
             Box {
                 Row(Modifier.padding(10.dp).fillMaxWidth(), Arrangement.spacedBy(5.dp)) {
                     // The title
-                    Text(node.name, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    TooltipArea(
+                        tooltip = {
+                            Surface(
+                                modifier = Modifier.shadow(4.dp),
+                                color = Color(50, 50, 50, 255),
+                                shape = RoundedCornerShape(4.dp)
+                            ) {
+                                Text(
+                                    text = node.toString(),
+                                    fontSize = 8.sp,
+                                    modifier = Modifier.padding(5.dp),
+                                    color = Color(255, 255, 255)
+                                )
+                            }
+                        },
+                        modifier = Modifier.padding(start = 0.dp),
+                        delayMillis = 600
+                    ) {
+                        Text(node.name, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    }
 
                     // The help tooltip
                     TooltipArea(

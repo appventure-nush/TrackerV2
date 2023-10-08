@@ -5,6 +5,7 @@ import krangl.DataFrame
 import krangl.dataFrameOf
 import krangl.writeCSV
 import java.io.File
+import kotlin.random.Random
 
 /**
  * Performs postprocessing on the images and converts the outputs into a DataFrame that
@@ -57,5 +58,10 @@ class Postprocessor(val node: PostprocessingNode) {
      */
     fun clear() {
         data = null
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    override fun toString(): String {
+        return "${node.name}@${node.hashCode().toHexString()}"
     }
 }

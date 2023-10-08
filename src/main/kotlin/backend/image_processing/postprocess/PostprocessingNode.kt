@@ -38,4 +38,9 @@ sealed class PostprocessingNode: Processing() {
      * Returns a deep copy of the postprocessing node
      */
     abstract fun clone(): PostprocessingNode
+
+    @OptIn(ExperimentalStdlibApi::class)
+    override fun toString(): String {
+        return "${name}@${hashCode().toHexString()}"
+    }
 }
